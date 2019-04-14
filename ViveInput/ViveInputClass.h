@@ -3,13 +3,13 @@
 
 #include <iostream>
 #include <string>
-#include <mutex>
 
 // OpenVR
 #include <openvr.h>
 #include "../samples/shared/Matrices.h"
 
-class ViveInputClass {
+
+class __declspec(dllexport) ViveInputClass {
 private:
 
 	// Basic stuff
@@ -24,8 +24,7 @@ private:
 
 	// If false the program will parse tracking data continously and not wait for openvr events
 	bool bWaitForEventsBeforeParsing = false;
-	std::mutex mutex;
-
+	
 public:
 	~ViveInputClass();
 	ViveInputClass();

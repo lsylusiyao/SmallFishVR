@@ -6,7 +6,12 @@
 //
 
 #include "ViveInputClass.h"
+#include <Windows.h>
 
+void MySleep(int miliseconds)
+{
+	Sleep(miliseconds);
+}
 
 using std::string;
 // Destructor
@@ -26,9 +31,7 @@ ViveInputClass::ViveInputClass() {
 	if (eError != vr::VRInitError_None)
 	{
 		m_pHMD = NULL;
-		mutex.lock();
 		infoStr = "Unable to init VR runtime: %s", vr::VR_GetVRInitErrorAsEnglishDescription(eError);
-		mutex.unlock();
 		isStrGiven = true;
 		exit(EXIT_FAILURE);
 	}
@@ -49,9 +52,9 @@ bool ViveInputClass::RunProcedure(bool bWaitForEvents, int filterIndex = -1) {
 		{
 			// Process event
 			if (!ProcessVREvent(event, filterIndex)) {
-				mutex.lock();
+				
 				infoStr = "(OpenVR) service quit\n";
-				mutex.unlock();
+				
 				isStrGiven = true;
 				//return false;
 			}
@@ -421,9 +424,8 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 			// and print some more info to the user about the state of the device/pose
 			switch (eTrackingResult) {
 			case vr::ETrackingResult::TrackingResult_Uninitialized:
-				mutex.lock();
+				
 				infoStr = "Invalid tracking result";
-				mutex.unlock();
 				isStrGiven = true;
 				break;
 			case vr::ETrackingResult::TrackingResult_Calibrating_InProgress:
@@ -431,9 +433,8 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 				printf_s(buf);
 				break;
 			case vr::ETrackingResult::TrackingResult_Calibrating_OutOfRange:
-				mutex.lock();
+				
 				infoStr = "Calibrating Out of range";
-				mutex.unlock();
 				isStrGiven = true;
 				break;
 			case vr::ETrackingResult::TrackingResult_Running_OK:
@@ -441,11 +442,9 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 				printf_s(buf);
 				break;
 			case vr::ETrackingResult::TrackingResult_Running_OutOfRange:
-				mutex.lock();
+				
 				infoStr = "WARNING: Running Out of Range";
-				mutex.unlock();
 				isStrGiven = true;
-
 				break;
 			default:
 				sprintf_s(buf, sizeof(buf), "Default\n");
@@ -461,9 +460,7 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 
 			else
 			{
-				mutex.lock();
 				infoStr = "Invalid pose";
-				mutex.unlock();
 				isStrGiven = true;
 			}
 			break;
@@ -487,9 +484,9 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 			switch (vr::VRSystem()->GetControllerRoleForTrackedDeviceIndex(unDevice)) {
 			case vr::TrackedControllerRole_Invalid:
 				// invalid hand...
-				mutex.lock();
+				
 				infoStr = "Invalid hand";
-				mutex.unlock();
+				
 				isStrGiven = true;
 
 
@@ -522,9 +519,8 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 
 				switch (eTrackingResult) {
 				case vr::ETrackingResult::TrackingResult_Uninitialized:
-					mutex.lock();
+					
 					infoStr = "Invalid tracking result";
-					mutex.unlock();
 					isStrGiven = true;
 					break;
 				case vr::ETrackingResult::TrackingResult_Calibrating_InProgress:
@@ -532,9 +528,8 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 					printf_s(buf);
 					break;
 				case vr::ETrackingResult::TrackingResult_Calibrating_OutOfRange:
-					mutex.lock();
+					
 					infoStr = "Calibrating Out of range";
-					mutex.unlock();
 					isStrGiven = true;
 					break;
 				case vr::ETrackingResult::TrackingResult_Running_OK:
@@ -542,9 +537,8 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 					printf_s(buf);
 					break;
 				case vr::ETrackingResult::TrackingResult_Running_OutOfRange:
-					mutex.lock();
+					
 					infoStr = "WARNING: Running Out of Range";
-					mutex.unlock();
 					isStrGiven = true;
 
 					break;
@@ -562,9 +556,8 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 					
 				else
 				{
-					mutex.lock();
+					
 					infoStr = "Invalid pose";
-					mutex.unlock();
 					isStrGiven = true;
 				}
 				break;
@@ -587,9 +580,8 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 
 				switch (eTrackingResult) {
 				case vr::ETrackingResult::TrackingResult_Uninitialized:
-					mutex.lock();
+					
 					infoStr = "Invalid tracking result";
-					mutex.unlock();
 					isStrGiven = true;
 					break;
 				case vr::ETrackingResult::TrackingResult_Calibrating_InProgress:
@@ -597,9 +589,8 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 					printf_s(buf);
 					break;
 				case vr::ETrackingResult::TrackingResult_Calibrating_OutOfRange:
-					mutex.lock();
+					
 					infoStr = "Calibrating Out of range";
-					mutex.unlock();
 					isStrGiven = true;
 					break;
 				case vr::ETrackingResult::TrackingResult_Running_OK:
@@ -607,9 +598,8 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 					printf_s(buf);
 					break;
 				case vr::ETrackingResult::TrackingResult_Running_OutOfRange:
-					mutex.lock();
+					
 					infoStr = "WARNING: Running Out of Range";
-					mutex.unlock();
 					isStrGiven = true;
 
 					break;
@@ -627,9 +617,8 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 
 				else
 				{
-					mutex.lock();
+					
 					infoStr = "Invalid pose";
-					mutex.unlock();
 					isStrGiven = true;
 				}
 
@@ -637,9 +626,8 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 
 			default:
 				// incomplete code, only here for switch reference
-				mutex.lock();
+				
 				infoStr = "Not supported";
-				mutex.unlock();
 				isStrGiven = true;
 				break;
 			}
@@ -681,9 +669,8 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 
 
 		default: {
-			mutex.lock();
+			
 			infoStr = "Unsupported class: %d", trackedDeviceClass;
-			mutex.unlock();
 			isStrGiven = true;
 			}
 			break;
