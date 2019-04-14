@@ -151,10 +151,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="LighthouseTracking.cpp" />
+    <ClCompile Include="ViveInputClass.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LightHouseTracking.h" />
+    <ClInclude Include="ViveInputClass.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
