@@ -5,49 +5,51 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SmallFishVR"
         mc:Ignorable="d"
-        Title="VR机器鱼控制程序" Height="450" Width="800" MinHeight="450" MinWidth="800">
+        Title="VR机器鱼控制程序" Height="450" Width="800" MinHeight="450" MinWidth="800" Closed="Window_Closed">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <Button x:Name="InitVRButton" Content="初始化VR" HorizontalAlignment="Left" Margin="22.5,21.992,0,0" VerticalAlignment="Top" Width="79.473" Height="26.465" Click="InitVRButton_Click"/>
+        <Button x:Name="InitVRButton" Content="初始化VR" HorizontalAlignment="Left" Margin="22,22,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="InitVRButton_Click"/>
         <TextBlock Margin="0,0,10,10.5" TextWrapping="Wrap" FontSize="16" Height="44" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="100"><Run Text="by lsylusiyao"/><LineBreak/><Run Text="V 1.0"/></TextBlock>
-        <Grid Margin="10,62,0,0" HorizontalAlignment="Left" Width="378" Height="98" VerticalAlignment="Top">
+        <Grid Margin="10,62,0,0" HorizontalAlignment="Left" Width="378" Height="139" VerticalAlignment="Top">
             <Grid.RowDefinitions>
                 <RowDefinition Height="43*"/>
                 <RowDefinition Height="55*"/>
             </Grid.RowDefinitions>
             <TextBlock HorizontalAlignment="Left" Margin="14.5,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="端口选择"/><Run Text="："/></TextBlock>
-            <ComboBox HorizontalAlignment="Left" Margin="79.5,0,-35.5,0" VerticalAlignment="Top" Width="98"/>
+            <ComboBox x:Name="portBox" HorizontalAlignment="Left" Margin="79.5,0,-35.5,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding SpList}"/>
             <TextBlock HorizontalAlignment="Left" Margin="14.5,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.RowSpan="2"><Run Text="波特率"/><Run Text="："/></TextBlock>
-            <ComboBox HorizontalAlignment="Left" Margin="79.5,37,-35.5,0" VerticalAlignment="Top" Width="98" Grid.RowSpan="2"/>
+            <ComboBox x:Name="baudRateBox" HorizontalAlignment="Left" Margin="79.5,37,-35.5,0" VerticalAlignment="Top" Width="98" Grid.RowSpan="2" ItemsSource="{Binding BaudRate}"/>
             <TextBlock HorizontalAlignment="Left" Margin="195,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="数据位数"/><Run Text="："/></TextBlock>
-            <ComboBox HorizontalAlignment="Left" Margin="260,0,0,0" VerticalAlignment="Top" Width="98"/>
-            <TextBlock HorizontalAlignment="Left" Margin="195,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.344,2.787" Grid.RowSpan="2"><Run Text="校验位数"/><Run Text="："/></TextBlock>
-            <ComboBox HorizontalAlignment="Left" Margin="260,37,0,0" VerticalAlignment="Top" Width="98" Grid.RowSpan="2"/>
-            <ComboBox Margin="80,31,0,0" Grid.Row="1" HorizontalAlignment="Left" Width="98" Height="21" VerticalAlignment="Top"/>
-            <TextBlock HorizontalAlignment="Left" Margin="10.5,30.992,0,0" TextWrapping="Wrap" Text="使用手柄：" VerticalAlignment="Top" Grid.Row="1"/>
-            <Button Content="打开端口" HorizontalAlignment="Left" Margin="197,32.045,0,0" VerticalAlignment="Top" Width="75" Grid.Row="1"/>
+            <ComboBox x:Name="dataBitsBox" HorizontalAlignment="Left" Margin="260,0,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding DataBits}"/>
+            <TextBlock HorizontalAlignment="Left" Margin="14,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.344,2.787" Grid.Row="1"><Run Text="校验"/><Run Text="方式"/><Run Text="："/></TextBlock>
+            <ComboBox x:Name="parityBox" HorizontalAlignment="Left" Margin="80,12,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding Parity}" Grid.Row="1"/>
+            <ComboBox x:Name="switchHandBox" Margin="80,48,0,0" Grid.Row="1" HorizontalAlignment="Left" Width="98" Height="21" VerticalAlignment="Top"/>
+            <TextBlock HorizontalAlignment="Left" Margin="14,48,0,0" TextWrapping="Wrap" Text="使用手柄：" VerticalAlignment="Top" Grid.Row="1"/>
+            <Button x:Name="openClosePortButton" Content="打开端口" HorizontalAlignment="Left" Margin="195,14,0,0" VerticalAlignment="Top" Width="75" Grid.Row="1" IsEnabled="True" Click="OpenClosePortButton_Click"/>
+            <TextBlock HorizontalAlignment="Left" Margin="195,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="停止"/><Run Text="位数"/><Run Text="："/></TextBlock>
+            <ComboBox x:Name="stopBitsBox" HorizontalAlignment="Left" Margin="260,37,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding StopBits}"/>
 
         </Grid>
-        <Grid Margin="22,180,455,161.5">
-            <Button Content="连接鱼" HorizontalAlignment="Left" Margin="105,0,0,0" VerticalAlignment="Top" Width="85.5" Height="26.465"/>
-            <Button Content="颜色切换2(E)" HorizontalAlignment="Left" Margin="214,0,0,0" VerticalAlignment="Top" Width="85.5" Height="26.465" IsEnabled="False"/>
-            <Button Content="颜色切换1(Q)" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85.5" Height="26.465" IsEnabled="False"/>
+        <Grid Margin="22,216,456,125.5">
+            <Button x:Name="connectFishButton" Content="连接鱼" HorizontalAlignment="Left" Margin="105,0,0,0" VerticalAlignment="Top" Width="85.5" Height="26.465" IsEnabled="False"/>
+            <Button x:Name="switchColor2Button" Content="颜色切换2(E)" HorizontalAlignment="Left" Margin="214,0,0,0" VerticalAlignment="Top" Width="85.5" Height="26.465" IsEnabled="False"/>
+            <Button x:Name="switchColor1Button" Content="颜色切换1(Q)" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85.5" Height="26.465" IsEnabled="False"/>
             <Button Content="前进(W)" HorizontalAlignment="Left" Margin="105,44,0,0" VerticalAlignment="Top" Width="85.5" Height="26.465" IsEnabled="False"/>
-            <Button Content="右转(D)" HorizontalAlignment="Left" Margin="214,44,0,0" VerticalAlignment="Top" Width="85.5" Height="26.465" IsEnabled="False"/>
-            <Button Content="左转(A)" HorizontalAlignment="Left" Margin="0,44,0,0" VerticalAlignment="Top" Width="85.5" Height="26.465" IsEnabled="False"/>
+            <Button x:Name="turnRightButton" Content="右转(D)" HorizontalAlignment="Left" Margin="214,44,0,0" VerticalAlignment="Top" Width="85.5" Height="26.465" IsEnabled="False"/>
+            <Button x:Name="turnLeftButton" Content="左转(A)" HorizontalAlignment="Left" Margin="0,44,0,0" VerticalAlignment="Top" Width="85.5" Height="26.465" IsEnabled="False"/>
         </Grid>
-        <Button x:Name="ReCountCOMButton" Content="重新查询端口" HorizontalAlignment="Left" Margin="119.5,21.992,0,0" VerticalAlignment="Top" Width="85.5" Height="26.465" Click="ReCountCOMButton_Click"/>
+        <Button x:Name="ReCountCOMButton" Content="重新查询端口" HorizontalAlignment="Left" Margin="230,22,0,0" VerticalAlignment="Top" Width="85" Height="26" Click="ReCountCOMButton_Click"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,0,0,10.5" TextWrapping="Wrap" Width="60" Height="13" VerticalAlignment="Bottom"><Run FontWeight="Bold" Text="VR状态："/></TextBlock>
-        <TextBlock HorizontalAlignment="Left" Height="15" Margin="67,0,0,8.5" TextWrapping="Wrap" Text="未连接" VerticalAlignment="Bottom" Width="47"/>
+        <TextBlock x:Name="VRStateText" HorizontalAlignment="Left" Height="15" Margin="67,0,0,8.5" TextWrapping="Wrap" Text="未连接" VerticalAlignment="Bottom" Width="47"/>
         <TextBlock HorizontalAlignment="Left" Height="13" Margin="120,0,0,10.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="60"><Run FontWeight="Bold" Text="串口状态："/></TextBlock>
-        <TextBlock HorizontalAlignment="Left" Height="15" Margin="182,0,0,8.5" TextWrapping="Wrap" Text="未打开" VerticalAlignment="Bottom" Width="48"/>
+        <TextBlock x:Name="portStateText" HorizontalAlignment="Left" Height="15" Margin="182,0,0,8.5" TextWrapping="Wrap" Text="未打开" VerticalAlignment="Bottom" Width="48"/>
         <TextBlock HorizontalAlignment="Left" Height="13" Margin="230,0,0,10.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="60"><Run FontWeight="Bold" Text="连接状态："/></TextBlock>
-        <TextBlock HorizontalAlignment="Left" Height="15" Margin="292,0,0,8.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="48"><Run Text="未"/><Run Text="连接"/></TextBlock>
+        <TextBlock x:Name="connectStateText" HorizontalAlignment="Left" Height="15" Margin="292,0,0,8.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="48"><Run Text="未"/><Run Text="连接"/></TextBlock>
         <TextBlock HorizontalAlignment="Left" Height="13" Margin="338,0,0,10.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="60"><Run FontWeight="Bold" Text="运动状态："/></TextBlock>
-        <TextBlock HorizontalAlignment="Left" Height="15" Margin="400,0,0,8.5" TextWrapping="Wrap" Text="无" VerticalAlignment="Bottom" Width="48"/>
-        <Grid x:Name="grid" Margin="0,22,10,0" HorizontalAlignment="Right" Width="300" Height="288" VerticalAlignment="Top">
+        <TextBlock x:Name="moveStateText" HorizontalAlignment="Left" Height="15" Margin="400,0,0,8.5" TextWrapping="Wrap" Text="无" VerticalAlignment="Bottom" Width="48"/>
+        <Grid x:Name="VRGrid" Margin="0,22,10,0" HorizontalAlignment="Right" Width="300" Height="288" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="49*"/>
                 <ColumnDefinition Width="246*"/>
@@ -89,10 +91,11 @@
             <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="x" VerticalAlignment="Top" Margin="0.283,235.197,0,0" Grid.Column="1" Height="15.24" Width="6.083"/>
             <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="y" VerticalAlignment="Top" Margin="0.283,261.919,0,0" Grid.Column="1" Height="15.24" Width="6.35"/>
             <TextBlock HorizontalAlignment="Left" Height="16.21" Margin="52.84,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="138.666" TextAlignment="Center" Grid.Column="1"><Run FontWeight="Bold" Text="VR数据显示"/></TextBlock>
-            <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="{Binding ActualHeight, ElementName=grid, Mode=OneWay}" Margin="0" VerticalAlignment="Top" Width="{Binding ActualWidth, ElementName=grid, Mode=OneWay}" d:IsLocked="True" Grid.ColumnSpan="2"/>
+            <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="{Binding ActualHeight, ElementName=VRGrid, Mode=OneWay}" Margin="0" VerticalAlignment="Top" Width="{Binding ActualWidth, ElementName=VRGrid, Mode=OneWay}" d:IsLocked="True" Grid.ColumnSpan="2"/>
 
         </Grid>
-        <Button x:Name="exitButton" Content="退出程序" Margin="0,0,131,16.5" RenderTransformOrigin="0.758,0.817" HorizontalAlignment="Right" Width="66" Height="32" VerticalAlignment="Bottom"/>
+        <Button x:Name="exitButton" Content="退出程序" Margin="0,0,131,16.5" RenderTransformOrigin="0.758,0.817" HorizontalAlignment="Right" Width="66" Height="32" VerticalAlignment="Bottom" Click="ExitButton_Click"/>
+        <Button x:Name="startStopVRButton" Content="开始监听VR" HorizontalAlignment="Left" Margin="120,22,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="StartStopVRButton_Click" IsEnabled="False"/>
 
     </Grid>
 </Window>

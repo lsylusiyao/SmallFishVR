@@ -6,17 +6,14 @@ using namespace System;
 //C++提供最最基础的VR类封装，C++-C#提供main函数中的类似功能，使用callback手法；C#专注于图形界面以及顶层的指令控制，以及和鱼的字符串发送接受等
 
 namespace BridgeDll {
-	enum WhichOne
-	{
-		POSX, POSY, POSZ, EULAX, EULAY, EULAZ, STAX, STAY
-	};
 	public ref class BridgeClass
 	{
 	public:
 		BridgeClass() :p(new ViveInputClass()) {}
 		~BridgeClass() { delete p; }
 		String^ GetDevices() { return gcnew String(p->PrintDevices().data()); } //注意一下这里会不会出现指针数据被释放问题
-		bool keepVRworking = false; //想停止直接置为false就行
+		bool GetKeepVRWorking() { return keepVRworking; }
+		void SetKeepVRWorking(bool b) { keepVRworking = b; }
 		void Run()
 		{
 			keepVRworking = true;
@@ -31,6 +28,7 @@ namespace BridgeDll {
 		array<double>^ GetRightHandPos() { for (int i = 0; i < 8; i++) { rightHand[i] = p->GetRightHand()[i]; return rightHand; } }
 
 	private:
+		bool keepVRworking = false; //想停止直接置为false就行
 		ViveInputClass * p;
 		array<double>^ HMD = gcnew array<double>(6);
 		array<double>^ leftHand = gcnew array<double>(8);
