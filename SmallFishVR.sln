@@ -5,15 +5,15 @@ VisualStudioVersion = 15.0.28307.539
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmallFishVR", "SmallFishVR\SmallFishVR.csproj", "{C7E80DF4-9291-4C40-AAAA-6EE64CCDE4C7}"
 	ProjectSection(ProjectDependencies) = postProject
-		{571D8BF1-CA56-49E6-BF38-A15D4718E9AF} = {571D8BF1-CA56-49E6-BF38-A15D4718E9AF}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BridgeDLL", "BridgeDLL\BridgeDLL.vcxproj", "{571D8BF1-CA56-49E6-BF38-A15D4718E9AF}"
-	ProjectSection(ProjectDependencies) = postProject
-		{DF556ADF-49D7-42E8-BB85-69EB67D7FBE0} = {DF556ADF-49D7-42E8-BB85-69EB67D7FBE0}
+		{79E4445B-9990-4C86-A4E7-64B936633103} = {79E4445B-9990-4C86-A4E7-64B936633103}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ViveInput", "ViveInput\ViveInput.vcxproj", "{DF556ADF-49D7-42E8-BB85-69EB67D7FBE0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BridgeDll", "BridgeDll\BridgeDll.vcxproj", "{79E4445B-9990-4C86-A4E7-64B936633103}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DF556ADF-49D7-42E8-BB85-69EB67D7FBE0} = {DF556ADF-49D7-42E8-BB85-69EB67D7FBE0}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,16 +37,6 @@ Global
 		{C7E80DF4-9291-4C40-AAAA-6EE64CCDE4C7}.Release|x64.Build.0 = Release|Any CPU
 		{C7E80DF4-9291-4C40-AAAA-6EE64CCDE4C7}.Release|x86.ActiveCfg = Release|Any CPU
 		{C7E80DF4-9291-4C40-AAAA-6EE64CCDE4C7}.Release|x86.Build.0 = Release|Any CPU
-		{571D8BF1-CA56-49E6-BF38-A15D4718E9AF}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{571D8BF1-CA56-49E6-BF38-A15D4718E9AF}.Debug|x64.ActiveCfg = Debug|x64
-		{571D8BF1-CA56-49E6-BF38-A15D4718E9AF}.Debug|x64.Build.0 = Debug|x64
-		{571D8BF1-CA56-49E6-BF38-A15D4718E9AF}.Debug|x86.ActiveCfg = Debug|Win32
-		{571D8BF1-CA56-49E6-BF38-A15D4718E9AF}.Debug|x86.Build.0 = Debug|Win32
-		{571D8BF1-CA56-49E6-BF38-A15D4718E9AF}.Release|Any CPU.ActiveCfg = Release|Win32
-		{571D8BF1-CA56-49E6-BF38-A15D4718E9AF}.Release|x64.ActiveCfg = Release|x64
-		{571D8BF1-CA56-49E6-BF38-A15D4718E9AF}.Release|x64.Build.0 = Release|x64
-		{571D8BF1-CA56-49E6-BF38-A15D4718E9AF}.Release|x86.ActiveCfg = Release|Win32
-		{571D8BF1-CA56-49E6-BF38-A15D4718E9AF}.Release|x86.Build.0 = Release|Win32
 		{DF556ADF-49D7-42E8-BB85-69EB67D7FBE0}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{DF556ADF-49D7-42E8-BB85-69EB67D7FBE0}.Debug|x64.ActiveCfg = Debug|x64
 		{DF556ADF-49D7-42E8-BB85-69EB67D7FBE0}.Debug|x64.Build.0 = Debug|x64
@@ -57,6 +47,16 @@ Global
 		{DF556ADF-49D7-42E8-BB85-69EB67D7FBE0}.Release|x64.Build.0 = Release|x64
 		{DF556ADF-49D7-42E8-BB85-69EB67D7FBE0}.Release|x86.ActiveCfg = Release|Win32
 		{DF556ADF-49D7-42E8-BB85-69EB67D7FBE0}.Release|x86.Build.0 = Release|Win32
+		{79E4445B-9990-4C86-A4E7-64B936633103}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{79E4445B-9990-4C86-A4E7-64B936633103}.Debug|x64.ActiveCfg = Debug|x64
+		{79E4445B-9990-4C86-A4E7-64B936633103}.Debug|x64.Build.0 = Debug|x64
+		{79E4445B-9990-4C86-A4E7-64B936633103}.Debug|x86.ActiveCfg = Debug|Win32
+		{79E4445B-9990-4C86-A4E7-64B936633103}.Debug|x86.Build.0 = Debug|Win32
+		{79E4445B-9990-4C86-A4E7-64B936633103}.Release|Any CPU.ActiveCfg = Release|Win32
+		{79E4445B-9990-4C86-A4E7-64B936633103}.Release|x64.ActiveCfg = Release|x64
+		{79E4445B-9990-4C86-A4E7-64B936633103}.Release|x64.Build.0 = Release|x64
+		{79E4445B-9990-4C86-A4E7-64B936633103}.Release|x86.ActiveCfg = Release|Win32
+		{79E4445B-9990-4C86-A4E7-64B936633103}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

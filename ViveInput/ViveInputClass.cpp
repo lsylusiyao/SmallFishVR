@@ -419,7 +419,7 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 			sprintf_s(buf, sizeof(buf), "qw: %.2f qx: %.2f qy: %.2f qz: %.2f\n", quaternion.w, quaternion.x, quaternion.y, quaternion.z);
 			printf_s(buf);*/
 			temp = QuaternionToEulerAngle(quaternion);
-			for (int i = 0; i < 3; i++) { HMDPos[i] = position.v[i]; HMDEularAngle[i] = temp.v[i]; }
+			for (int i = 0; i < 3; i++) { HMD[i] = position.v[i]; HMD[i + 3] = temp.v[i]; }
 
 			// and print some more info to the user about the state of the device/pose
 			switch (eTrackingResult) {
@@ -513,9 +513,9 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 				printf_s(buf);*/
 				vr::VRSystem()->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_LeftHand);
 				temp = QuaternionToEulerAngle(quaternion);
-				for (int i = 0; i < 3; i++) { leftHandPos[i] = position.v[i]; leftHandEularAngle[i] = temp.v[i]; }
-				leftHandState[0] = controllerState.rAxis[0].x;
-				leftHandState[1] = controllerState.rAxis[0].y;
+				for (int i = 0; i < 3; i++) { leftHand[i] = position.v[i]; leftHand[i + 3] = temp.v[i]; }
+				leftHand[6] = controllerState.rAxis[0].x;
+				leftHand[7] = controllerState.rAxis[0].y;
 
 				switch (eTrackingResult) {
 				case vr::ETrackingResult::TrackingResult_Uninitialized:
@@ -566,9 +566,9 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 				// incomplete code, look at left hand for reference
 				vr::VRSystem()->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_RightHand);
 				temp = QuaternionToEulerAngle(quaternion);
-				for (int i = 0; i < 3; i++) { rightHandPos[i] = position.v[i]; rightHandEularAngle[i] = temp.v[i]; }
-				rightHandState[0] = controllerState.rAxis[0].x;
-				rightHandState[1] = controllerState.rAxis[0].y;
+				for (int i = 0; i < 3; i++) { rightHand[i] = position.v[i]; rightHand[i + 3] = temp.v[i]; }
+				rightHand[6] = controllerState.rAxis[0].x;
+				rightHand[7] = controllerState.rAxis[0].y;
 				/*sprintf_s(buf, sizeof(buf), "\nRightController i: %d index: %d\nx: %.2f y: %.2f z: %.2f\n", unDevice, vr::VRSystem()->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_LeftHand), position.v[0], position.v[1], position.v[2]);
 				printf_s(buf);
 

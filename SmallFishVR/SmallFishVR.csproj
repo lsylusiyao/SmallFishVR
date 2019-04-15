@@ -55,7 +55,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ViveClass.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -99,9 +98,9 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BridgeDLL\BridgeDLL.vcxproj">
-      <Project>{571d8bf1-ca56-49e6-bf38-a15d4718e9af}</Project>
-      <Name>BridgeDLL</Name>
+    <ProjectReference Include="..\BridgeDll\BridgeDll.vcxproj">
+      <Project>{79e4445b-9990-4c86-a4e7-64b936633103}</Project>
+      <Name>BridgeDll</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

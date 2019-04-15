@@ -1,4 +1,3 @@
-// LIGHTHOUSETRACKING.h
 #pragma once
 
 #include <iostream>
@@ -41,7 +40,16 @@ public:
 
 	// prints information of devices
 	std::string PrintDevices();
+	//访问private
+	bool GetIsStrGiven() { return isStrGiven; }
+	void SetIsStrGiven(bool b) { isStrGiven = b; }
+	std::string GetInfoStr() { return infoStr; }
+	void SetInfoStr(std::string s) { infoStr = s; }
+	double* GetHMD() { return HMD; }
+	double* GetLeftHand() { return leftHand; }
+	double* GetRightHand() { return rightHand; }
 
+private:
 	//向CLR传的数据
 	bool isStrGiven = false;
 	std::string infoStr; //这里如果given是true，那就去读取，然后马上把given变成false，然后把info清空
@@ -54,10 +62,10 @@ public:
 	* +x is to the right
 	* -z is going away from you
 	*/
-
-	double HMDPos[3]; double HMDEularAngle[3];
-	double leftHandPos[3]; double leftHandEularAngle[3]; double leftHandState[2];
-	double rightHandPos[3]; double rightHandEularAngle[3]; double rightHandState[2];
+	//pos*3, eularAngle*3, state*2
+	double HMD[6];
+	double leftHand[8];
+	double rightHand[8];
 
 };
 

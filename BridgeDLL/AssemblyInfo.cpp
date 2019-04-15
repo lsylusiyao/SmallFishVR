@@ -6,11 +6,11 @@ using namespace System::Runtime::CompilerServices;
 using namespace System::Runtime::InteropServices;
 using namespace System::Security::Permissions;
 
-[assembly:AssemblyTitleAttribute(L"BridgeDLL")];
+[assembly:AssemblyTitleAttribute(L"BridgeDll")];
 [assembly:AssemblyDescriptionAttribute(L"")];
 [assembly:AssemblyConfigurationAttribute(L"")];
 [assembly:AssemblyCompanyAttribute(L"")];
-[assembly:AssemblyProductAttribute(L"BridgeDLL")];
+[assembly:AssemblyProductAttribute(L"BridgeDll")];
 [assembly:AssemblyCopyrightAttribute(L"版权所有(c)  2019")];
 [assembly:AssemblyTrademarkAttribute(L"")];
 [assembly:AssemblyCultureAttribute(L"")];
