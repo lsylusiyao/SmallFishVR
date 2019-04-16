@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SmallFishVR"
         mc:Ignorable="d"
-        Title="VR机器鱼控制程序" Height="450" Width="800" MinHeight="450" MinWidth="800" Closed="Window_Closed">
+        Title="VR机器鱼控制程序" Height="450" Width="1024" MinHeight="450" MinWidth="1024" Closed="Window_Closed">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -32,7 +32,7 @@
             <ComboBox x:Name="stopBitsBox" HorizontalAlignment="Left" Margin="260,37,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding StopBits}"/>
 
         </Grid>
-        <Grid Margin="22,216,456,125.5">
+        <Grid Margin="22,216,679,125.5">
             <Button x:Name="connectFishButton" Content="连接鱼" HorizontalAlignment="Left" Margin="105,0,0,0" VerticalAlignment="Top" Width="85.5" Height="26.465" IsEnabled="False"/>
             <Button x:Name="switchColor2Button" Content="颜色切换2(E)" HorizontalAlignment="Left" Margin="214,0,0,0" VerticalAlignment="Top" Width="85.5" Height="26.465" IsEnabled="False"/>
             <Button x:Name="switchColor1Button" Content="颜色切换1(Q)" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85.5" Height="26.465" IsEnabled="False"/>
@@ -51,51 +51,52 @@
         <TextBlock x:Name="moveStateText" HorizontalAlignment="Left" Height="15" Margin="400,0,0,8.5" TextWrapping="Wrap" Text="无" VerticalAlignment="Bottom" Width="48"/>
         <Grid x:Name="VRGrid" Margin="0,22,10,0" HorizontalAlignment="Right" Width="300" Height="288" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="49*"/>
-                <ColumnDefinition Width="246*"/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="位置" VerticalAlignment="Bottom" Margin="4.002,0,0,228.263" Height="15.24" Width="24"/>
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="状态" VerticalAlignment="Top" Margin="4.002,236.343,0,0" Height="15.24" Width="24"/>
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="z" VerticalAlignment="Top" Margin="0.733,104.575,0,0" Grid.Column="1" Height="15.24" Width="5.9"/>
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="HMD" VerticalAlignment="Top" Margin="24.836,21.21,0,0" Grid.Column="1" Height="15.24" Width="30.144"/>
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="左手柄" VerticalAlignment="Top" Margin="98.83,21.209,0,0" Grid.Column="1" Height="15.24" Width="36"/>
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="右手柄" VerticalAlignment="Top" Margin="175.497,21.21,0,0" Grid.Column="1" Height="15.24" Width="36"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" Margin="18.837,44.419,0,0" Grid.Column="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" Margin="93.17,44.419,0,0" Grid.Column="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" RenderTransformOrigin="2.865,0.623" Margin="171.501,44.419,0,0" Grid.Column="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" Margin="18.837,72.512,0,0" Grid.Column="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" Margin="93.17,72.512,0,0" Grid.Column="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" RenderTransformOrigin="2.865,0.623" Margin="171.501,72.512,0,0" Grid.Column="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" Margin="18.837,101.898,0,0" Grid.Column="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" Margin="93.17,101.898,0,0" Grid.Column="1" BorderThickness="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" RenderTransformOrigin="2.865,0.623" Margin="171.501,101.898,0,0" Grid.Column="1"/>
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="x" VerticalAlignment="Top" Margin="0.733,47.246,0,0" Grid.Column="1" Height="15.24" Width="6.083"/>
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="y" VerticalAlignment="Top" Margin="0.733,73.968,0,0" Grid.Column="1" Height="15.24" Width="6.35"/>
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="z" VerticalAlignment="Top" Margin="0.733,199.598,0,0" Grid.Column="1" Height="15.24" Width="5.9"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" Margin="18.837,139.442,0,0" Grid.Column="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" Margin="93.17,139.442,0,0" Grid.Column="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" RenderTransformOrigin="2.865,0.623" Margin="171.501,139.442,0,0" Grid.Column="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" Margin="18.837,167.535,0,0" Grid.Column="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" Margin="93.17,167.535,0,0" Grid.Column="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" RenderTransformOrigin="2.865,0.623" Margin="171.501,167.535,0,0" Grid.Column="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" Margin="18.837,196.921,0,0" Grid.Column="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" Margin="93.17,196.921,0,0" Grid.Column="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" RenderTransformOrigin="2.865,0.623" Margin="171.501,196.921,0,0" Grid.Column="1"/>
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="x" VerticalAlignment="Top" Margin="0.733,141.602,0,0" Grid.Column="1" Height="15.24" Width="6.083"/>
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="y" VerticalAlignment="Top" Margin="0.733,168.991,0,0" Grid.Column="1" Height="15.24" Width="6.35"/>
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="欧拉角" VerticalAlignment="Top" Margin="4.002,142.269,0,0" Height="15.24" Width="36"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" Margin="93.17,232.2,0,0" Grid.Column="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" RenderTransformOrigin="2.865,0.623" Margin="171.501,232.2,0,0" Grid.Column="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" Margin="93.17,261.586,0,0" Grid.Column="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="69.333" RenderTransformOrigin="2.865,0.623" Margin="171.501,261.586,0,0" Grid.Column="1"/>
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="x" VerticalAlignment="Top" Margin="0.283,235.197,0,0" Grid.Column="1" Height="15.24" Width="6.083"/>
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="y" VerticalAlignment="Top" Margin="0.283,261.919,0,0" Grid.Column="1" Height="15.24" Width="6.35"/>
-            <TextBlock HorizontalAlignment="Left" Height="16.21" Margin="52.84,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="138.666" TextAlignment="Center" Grid.Column="1"><Run FontWeight="Bold" Text="VR数据显示"/></TextBlock>
-            <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="{Binding ActualHeight, ElementName=VRGrid, Mode=OneWay}" Margin="0" VerticalAlignment="Top" Width="{Binding ActualWidth, ElementName=VRGrid, Mode=OneWay}" d:IsLocked="True" Grid.ColumnSpan="2"/>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="位置" VerticalAlignment="Bottom" Margin="4,0,0,228" Height="16" Width="24"/>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="状态" VerticalAlignment="Top" Margin="4,236,0,0" Height="16" Width="24"/>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="z" VerticalAlignment="Top" Margin="51,105,0,0" Height="16" Width="6"/>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="HMD" VerticalAlignment="Top" Margin="75,21,0,0" Height="15" Width="37"/>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="左手柄" VerticalAlignment="Top" Margin="149,21,0,0" Height="16" Width="36"/>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="右手柄" VerticalAlignment="Top" Margin="225,21,0,0" Height="16" Width="36"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" Margin="69,44,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" Margin="143,44,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,44,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" Margin="69,73,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" Margin="143,73,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,73,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" Margin="69,102,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" Margin="143,102,0,0" BorderThickness="1"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,102,0,0"/>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="x" VerticalAlignment="Top" Margin="51,47,0,0" Height="16" Width="7"/>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="y" VerticalAlignment="Top" Margin="51,74,0,0" Height="16" Width="7"/>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="z" VerticalAlignment="Top" Margin="51,200,0,0" Height="16" Width="6"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" Margin="69,139,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" Margin="143,139,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,139,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" Margin="69,168,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" Margin="143,168,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,168,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" Margin="69,197,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" Margin="143,197,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,197,0,0"/>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="x" VerticalAlignment="Top" Margin="51,142,0,0" Height="16" Width="7"/>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="y" VerticalAlignment="Top" Margin="51,169,0,0" Height="16" Width="7"/>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="欧拉角" VerticalAlignment="Top" Margin="4,142,0,0" Height="16" Width="36"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" Margin="143,232,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,232,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" Margin="143,262,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,262,0,0"/>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="x" VerticalAlignment="Top" Margin="50,235,0,0" Height="16" Width="7"/>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="y" VerticalAlignment="Top" Margin="50,262,0,0" Height="16" Width="7"/>
+            <TextBlock HorizontalAlignment="Left" Height="16" Margin="103,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="139" TextAlignment="Center"><Run FontWeight="Bold" Text="VR数据显示"/></TextBlock>
+            <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="{Binding ActualHeight, ElementName=VRGrid, Mode=OneWay}" Margin="0" VerticalAlignment="Top" Width="{Binding ActualWidth, ElementName=VRGrid, Mode=OneWay}" d:IsLocked="True"/>
 
         </Grid>
         <Button x:Name="exitButton" Content="退出程序" Margin="0,0,131,16.5" RenderTransformOrigin="0.758,0.817" HorizontalAlignment="Right" Width="66" Height="32" VerticalAlignment="Bottom" Click="ExitButton_Click"/>
         <Button x:Name="startStopVRButton" Content="开始监听VR" HorizontalAlignment="Left" Margin="120,22,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="StartStopVRButton_Click" IsEnabled="False"/>
+        <RichTextBox x:Name="SPDataBox" Height="326" Margin="0,48,346,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="285"/>
+        <TextBlock Margin="0,19,447,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="26" FontSize="14" HorizontalAlignment="Right" Width="90"><Run FontWeight="Bold" Text="串口数据显示"/></TextBlock>
 
     </Grid>
 </Window>
