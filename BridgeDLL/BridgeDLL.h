@@ -22,6 +22,7 @@ namespace BridgeDll {
 		void SetIsStrGiven(bool b) { p->SetIsStrGiven(b); }
 		bool GetIsStrGiven() { return p->GetIsStrGiven(); }
 		String^ GetInfoStr() { return gcnew String(p->GetInfoStr().data()); }
+		void ClearInfoStr() { p->SetInfoStr(""); }
 
 		array<double>^ GetHMD() { for (int i = 0; i < 6; i++) { HMD[i] = p->GetHMD()[i]; return HMD; } }
 		array<double>^ GetLeftHand() { for (int i = 0; i < 8; i++) { leftHand[i] = p->GetLeftHand()[i]; return leftHand; } }
