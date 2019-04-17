@@ -33,6 +33,7 @@
             <Button x:Name="openClosePortButton" Content="打开端口" HorizontalAlignment="Left" Margin="195,14,0,0" VerticalAlignment="Top" Width="75" Grid.Row="1" IsEnabled="True" Click="OpenClosePortButton_Click"/>
             <TextBlock HorizontalAlignment="Left" Margin="195,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="停止"/><Run Text="位数"/><Run Text="："/></TextBlock>
             <ComboBox x:Name="stopBitsBox" HorizontalAlignment="Left" Margin="260,37,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding StopBits}"/>
+            <Button x:Name="cheeckStateButton" Content="查询状态" HorizontalAlignment="Left" Margin="195,50,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75" Click="CheeckStateButton_Click"/>
 
         </Grid>
         <Grid Margin="22,216,679,125.5">
@@ -98,8 +99,9 @@
         </Grid>
         <Button x:Name="exitButton" Content="退出程序" Margin="0,0,131,16.5" RenderTransformOrigin="0.758,0.817" HorizontalAlignment="Right" Width="66" Height="32" VerticalAlignment="Bottom" Click="ExitButton_Click"/>
         <Button x:Name="startStopVRButton" Content="开始监听VR" HorizontalAlignment="Left" Margin="120,22,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="StartStopVRButton_Click" IsEnabled="False"/>
-        <RichTextBox x:Name="SPDataBox" Height="326" Margin="393,42,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="285"/>
+        <RichTextBox x:Name="SPDataBox" Height="326" Margin="393,42,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="285" TextChanged="SPDataBox_TextChanged" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
         <TextBlock Margin="489,11,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="26" FontSize="14" HorizontalAlignment="Left" Width="90"><Run FontWeight="Bold" Text="串口数据显示"/></TextBlock>
+        <Button x:Name="clearButton" Content="清空输出" HorizontalAlignment="Left" Margin="497,380,0,0" VerticalAlignment="Top" Width="75" Click="ClearButton_Click"/>
 
     </Grid>
 </Window>

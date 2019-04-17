@@ -24,53 +24,13 @@ namespace SmallFishVR
     public enum WhichOne
     { POSX, POSY, POSZ, EULAX, EULAY, EULAZ, STAX, STAY}
     /// <summary>
-    /// 存放数据的类，MainWindows中新建一个对象以使用其中的数据
-    /// </summary>
-    public class DataStore
-    {
-        public struct RealPortInfo
-        {
-            public string portName;
-            public int baudRate;
-            public int dataBits;
-            public StopBits stopBits;
-            public Parity parity;
-        };
-        private readonly List<string> whichHand = new List<string> { "leftHand", "rightHand" };
-        public List<string> SpList { get; set; }
-        public List<int> BaudRate { get; set; }
-        public List<int> DataBits { get; set; }
-        public List<double> StopBits { get; set; }
-        public List<string> Parity { get; set; }
-        public List<double> HMDData { get; set; }
-        public List<double> LeftHandData { get; set; }
-        public List<double> RightHandData { get; set; }
-        public List<string> WhichHand => whichHand;
-
-        private List<double> a = new List<double> { 1, 2, 3 };
-        public List<double> A { get => a; set => a = value; }
-        public List<double> HandData { get; set; }
-
-        public RealPortInfo Real;
-
-        public void Init()
-        {
-            SpList = new List<string>(SerialPort.GetPortNames());
-            BaudRate = new List<int> { 9600, 19200, 38400, 115200 };
-            DataBits = new List<int> { 5, 6, 7, 8 };
-            StopBits = new List<double> { 1, 1.5, 2 };
-            Parity = new List<string> { "NONE", "ODD", "EVEN" };
-        }
-    }
-    
-    /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
     public partial class MainWindow : Window
     {
         private BridgeClass bridge; //新建一个VR类（从CLR）
         DataStore data = new DataStore(); //新建数据存储对象
-        SerialPort sp = new SerialPort(); //新建串口对象
+        SendData2Fish spSend = new SendData2Fish(); //新建继承的带处理数据的串口对象
         public delegate void UpdateDataInvoke(string s); //更新数据的委托
         public string TempStr { get; set; }
         
@@ -114,7 +74,7 @@ namespace SmallFishVR
         /// <param name="e"></param>
         private void Window_Closed(object sender, EventArgs e)
         {
-            if (sp.IsOpen) sp.Close();
+            if (spSend.IsOpen) spSend.Close();
         }
         /// <summary>
         /// 将获取到的数据解析成为真正的数据，并准备存放到SerialPort对象中
@@ -139,21 +99,8 @@ namespace SmallFishVR
                     MessageBox.Show("Error：参数不正确!", "Error");
                     break;
             }
-            switch(parityBox.SelectedIndex)
-            {
-                case 0:
-                    data.Real.parity = Parity.None;
-                    break;
-                case 1:
-                    data.Real.parity = Parity.Odd;
-                    break;
-                case 2:
-                    data.Real.parity = Parity.Even;
-                    break;
-                default:
-                    MessageBox.Show("Error：参数不正确!", "Error");
-                    break;
-            }
+            if (parityBox.SelectedIndex >= 0) { data.Real.parity = (Parity)parityBox.SelectedIndex; }
+            else { MessageBox.Show("Error：参数不正确!", "Error"); }
         }
 
         /// <summary>
@@ -181,25 +128,24 @@ namespace SmallFishVR
         /// <param name="e"></param>
         private void OpenClosePortButton_Click(object sender, RoutedEventArgs e)
         {
-            
             try
             {
                 Switch2RealInfo();
-                if (!sp.IsOpen)
+                if (!spSend.IsOpen)
                 {
                     Switch2RealInfo();
-                    sp.PortName = data.Real.portName;
-                    sp.BaudRate = data.Real.baudRate;
-                    sp.StopBits = data.Real.stopBits;
-                    sp.DataBits = data.Real.dataBits;
-                    sp.Parity = data.Real.parity;
-                    sp.DtrEnable = true;
-                    sp.RtsEnable = true;
-                    sp.ReadTimeout = 1000; //miliseconds
+                    spSend.PortName = data.Real.portName;
+                    spSend.BaudRate = data.Real.baudRate;
+                    spSend.StopBits = data.Real.stopBits;
+                    spSend.DataBits = data.Real.dataBits;
+                    spSend.Parity = data.Real.parity;
+                    spSend.DtrEnable = true;
+                    spSend.RtsEnable = true;
+                    spSend.ReadTimeout = 1000; //miliseconds
 
-                    sp.Close(); //为了防止之前端口打开，因此先关闭
+                    spSend.Close(); //为了防止之前端口打开，因此先关闭
 
-                    sp.DataReceived += new SerialDataReceivedEventHandler(Sp_DataReceived); //收到数据的时候激活这个事件
+                    spSend.DataReceived += new SerialDataReceivedEventHandler(Sp_DataReceived); //收到数据的时候激活这个事件
 
                     var updateData = new UpdateDataInvoke( //一个委托，用来向图形界面添加数据的
                         delegate (string s) { SPDataBox.AppendText(s + "\r\n"); });
@@ -215,7 +161,7 @@ namespace SmallFishVR
                             }
                         }
                     });
-                    sp.Open();
+                    spSend.Open();
                     listenSPDataThread.Start();
                     openClosePortButton.Content = "关闭端口"; //更改显示文字
                     portStateText.Text = "已打开"; //更改下方文字
@@ -223,7 +169,7 @@ namespace SmallFishVR
                 }
                 else
                 {
-                    sp.Close();
+                    spSend.Close();
                     listenSPDataThread.Abort();
                     openClosePortButton.Content = "打开端口";
                     portStateText.Text = "未打开";
@@ -248,8 +194,8 @@ namespace SmallFishVR
             {
                 lock (this)
                 {
-                    TempStr = sp.ReadLine();
-                    sp.DiscardInBuffer();
+                    TempStr = spSend.ReadLine();
+                    spSend.DiscardInBuffer();
                 }
             }
             catch (System.Exception ex)
@@ -258,6 +204,26 @@ namespace SmallFishVR
             }
             
 
+        }
+
+        /// <summary>
+        /// 清空SPDataBox的内容
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            SPDataBox.Document.Blocks.Clear();
+        }
+
+        /// <summary>
+        /// 自动调节滚动位置到末尾
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SPDataBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            SPDataBox.ScrollToEnd();
         }
 
         /// <summary>
@@ -312,6 +278,7 @@ namespace SmallFishVR
             while(VRThread.IsAlive)
             {
                 // 绑定只能用List之类的类型（集成INotifyPropertyChanged的）
+                // TODO：这里会不会因为更新了指针指向而不更新？
                 data.HMDData = new List<double>(bridge.GetHMD());
                 data.LeftHandData = new List<double>(bridge.GetLeftHand());
                 data.RightHandData = new List<double>(bridge.GetRightHand());
@@ -325,6 +292,21 @@ namespace SmallFishVR
                     }
                 }
                 Thread.Sleep(15);
+            }
+        }
+
+        private void CheeckStateButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                spSend.SetInit(SendData2Fish.Function.GetIPs);
+                spSend.SetInit(SendData2Fish.Function.CheckStatus);
+                MessageBox.Show("检查完成，请查看返回信息状态和IP", "提示信息", MessageBoxButton.OKCancel);
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show("Error:" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
         }
 
@@ -342,8 +324,19 @@ namespace SmallFishVR
                     MessageBox.Show("未选择哪一个手柄，请选择手柄", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
             }
-            sp.WriteLine("AT+CIPMUX=1\r\n"); //启用多路连接
-            sp.WriteLine("AT+CIPSTART=0,\"TCP\",\"192.168.4.2\",1001\r\n"); //写入ID号，连接类型，IP，端口
+            try
+            {
+                spSend.SetInit(SendData2Fish.Function.SetMux, SendData2Fish.MuxType.Multi); //还没写Single的
+                spSend.SetNetwork(0, SendData2Fish.NetType.TCP, "192.168.4.2", 1001);
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show("Error:" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
         }
+
+        
     }
 }
