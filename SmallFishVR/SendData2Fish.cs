@@ -5,6 +5,7 @@ using System.Threading;
 namespace SmallFishVR
 {
     //VR控制的时候不能太快，不然串口线程的sleep时间挺长的
+
     /// <summary>
     /// 将发送给鱼的数据再次封装，成为简单易懂的数据
     /// TODO：没有写单连接的，因此一定要用多连接……
@@ -18,7 +19,7 @@ namespace SmallFishVR
         /// <summary>
         /// 当前颜色
         /// </summary>
-        private Color colorNow;
+        private Color colorNow = Color.Blue;
         /// <summary>
         /// 功能的枚举
         /// </summary>
@@ -43,11 +44,12 @@ namespace SmallFishVR
         }
         public enum Speed
         {
-            Stop = 0x00, Low, Medium, High = 0x04
+            VeryLow = 0x00, Low, Medium, High = 0x03
         }
         public enum Direction
         {
             Forward = 0x00,
+            Stop = 0x01,
             Right = 0x02,
             Left = 0x03
         }
@@ -111,18 +113,22 @@ namespace SmallFishVR
             SetColor(which, tempColor);
         }
 
-        public void SetMove(int which, Direction direction, Speed speed)
+        public void SetMove(int which, Direction direction, Speed speed, bool isSentFlag = false)
         {
-            WriteLine("AT+CIPSEND=" + which.ToString() + ",8\r\n");
-            Thread.Sleep(40);
-            byte[] byteBuffer = new byte[8];
-            baseCmd.CopyTo(byteBuffer, 0);
-            byteBuffer[4] = 0x00;
-            byteBuffer[5] = (byte)direction;
-            byteBuffer[6] = (byte)speed;
-            byteBuffer[7] = 0xFF;
-            Write(byteBuffer, 0, 8);
-            Thread.Sleep(10);
+            if(!isSentFlag)
+            {
+                WriteLine("AT+CIPSEND=" + which.ToString() + ",8\r\n");
+                Thread.Sleep(40);
+                byte[] byteBuffer = new byte[8];
+                baseCmd.CopyTo(byteBuffer, 0);
+                byteBuffer[4] = 0x00;
+                byteBuffer[5] = (byte)direction;
+                byteBuffer[6] = (byte)speed;
+                byteBuffer[7] = 0xFF;
+                Write(byteBuffer, 0, 8);
+                Thread.Sleep(10);
+            }
+            
         }
         public void Reset(int which)
         {

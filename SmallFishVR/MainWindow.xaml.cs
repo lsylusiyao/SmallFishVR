@@ -18,27 +18,28 @@ using BridgeDll;
 
 namespace SmallFishVR
 {
-    /// <summary>
-    /// 解析数组的时候使用的，指定位置为指定数据
-    /// </summary>
-    public enum WhichOne
-    { POSX, POSY, POSZ, EULAX, EULAY, EULAZ, STAX, STAY}
+    
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region 定义区
         private BridgeClass bridge; //新建一个VR类（从CLR）
         DataStore data = new DataStore(); //新建数据存储对象
         SendData2Fish spSend = new SendData2Fish(); //新建继承的带处理数据的串口对象
         public delegate void UpdateDataInvoke(string s); //更新数据的委托
         public string TempStr { get; set; }
+        private bool isVRControlStart = false;
         
         Thread listenSPDataThread; //监听串口数据的线程
         Thread VRThread; //VR线程
         Thread listenVRThread; //监听VR数据线程，在有信息传来的时候也会报错
         Thread VRControlFishThread; //VR控制鱼的运动方向的控制
-        
+        #endregion
+
+        #region 窗口主要功能区
+
         public MainWindow()
         {
             InitializeComponent();
@@ -110,6 +111,9 @@ namespace SmallFishVR
         /// <param name="e"></param>
         private void ExitButton_Click(object sender, RoutedEventArgs e) => Close();
 
+        #endregion
+
+        #region 串口功能区
         /// <summary>
         /// 重新统计串口名称列表的按钮
         /// </summary>
@@ -225,7 +229,9 @@ namespace SmallFishVR
         {
             SPDataBox.ScrollToEnd();
         }
+        #endregion
 
+        #region VR功能区，包括VR控制机器鱼的线程
         /// <summary>
         /// 初始化VR的按钮，一旦没有连接成功硬件和Steam的话，程序会自动退出
         /// </summary>
@@ -237,10 +243,19 @@ namespace SmallFishVR
                 "\n选择\"是\"来继续，\"否\"来返回", "VR连接提示", MessageBoxButton.YesNo, MessageBoxImage.Information);
             if (result == MessageBoxResult.Yes)
             {
-                bridge = new BridgeClass();
-                startStopVRButton.IsEnabled = true;
-                VRThread = new Thread(bridge.Run);
-                listenVRThread = new Thread(ListenVR);
+                try
+                {
+                    bridge = new BridgeClass();
+                    startStopVRButton.IsEnabled = true;
+                    VRThread = new Thread(bridge.Run);
+                    listenVRThread = new Thread(ListenVRThread);
+                }
+                catch (System.Exception ex)
+                {
+                    MessageBox.Show("Error:" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
             }
             else if (result == MessageBoxResult.No) return;
         }
@@ -271,9 +286,9 @@ namespace SmallFishVR
         }
 
         /// <summary>
-        /// 监听VR后台的返回数据的线程，并把数据给图形界面，Binding用
+        /// 监听VR后台的返回数据的线程，并通过Binding把数据给图形界面
         /// </summary>
-        private void ListenVR()
+        private void ListenVRThread()
         {
             while(VRThread.IsAlive)
             {
@@ -295,6 +310,91 @@ namespace SmallFishVR
             }
         }
 
+        private void StartVRControlButton_Click(object sender, RoutedEventArgs e)
+        {
+            VRControlFishThread = new Thread(VRControlFishThreadFunc);
+            VRControlFishThread.Start();
+            MessageBox.Show("VR控制机器鱼已经开始，手动控制仍然生效", "提示"); //flag
+            startVRControlButton.Content = "停止VR控制";
+        }
+
+        private void VRControlFishThreadFunc()
+        {
+            /*
+            * Also:
+            * Open VR Convention (same as OpenGL)
+            * right-handed system
+            * +y is up，逆时针切换为正，顺时针为负
+            * +x is to the right，手柄向后为正，向前为负
+            * -z is going away from you ，左转为正，右转为负
+            */
+            /*
+             * 数组解析：
+             * 0 ~ 2： 位置的x， y, z坐标
+             * 3 ~ 5： 欧拉角x, y, z的度数（角度）
+             * 6 ~ 7： 手柄的状态的x, y
+             */
+            int[] divisionPoint = new int[] { 5, 25, 45, 65 }; //Stop-1-2-3-4的分界角度点
+            while (true)
+            {
+                bool isSent = false;
+                if (data.HandData[3] < divisionPoint[0] && data.HandData[3] > -divisionPoint[0] &&
+                    data.HandData[5] < divisionPoint[0] && data.HandData[5] > -divisionPoint[0])
+                { spSend.SetMove(0, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);} //这里速度随便给
+                else
+                {
+                    if (data.HandData[3] > divisionPoint[0]) //足够靠后
+                    {
+                        spSend.SetMove(0, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
+                        isSent = true;
+                    }
+                    #region 左右转发送数据
+                    if (data.HandData[5] <= divisionPoint[1] || data.HandData[5] >= -divisionPoint[1])
+                    {
+                        spSend.SetMove(0,
+                          data.HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
+                          SendData2Fish.Speed.VeryLow,isSent);
+                        isSent = true;
+                    }
+                    else if (data.HandData[5] <= divisionPoint[2] || data.HandData[5] >= -divisionPoint[2])
+                    {
+                        spSend.SetMove(0,
+                          data.HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
+                          SendData2Fish.Speed.Low,isSent);
+                        isSent = true;
+                    }
+                    else if (data.HandData[5] <= divisionPoint[3] || data.HandData[5] >= -divisionPoint[3])
+                    {
+                        spSend.SetMove(0,
+                          data.HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
+                          SendData2Fish.Speed.Medium,isSent);
+                        isSent = true;
+                    }
+                    else
+                    {
+                        spSend.SetMove(0,
+                          data.HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
+                          SendData2Fish.Speed.High,isSent);
+                        isSent = true;
+                    }
+                    #endregion
+
+                    #region 前进发送数据
+
+                    if (data.HandData[3] )
+                    {
+
+                    }
+
+
+                    #endregion
+                }
+                Thread.Sleep(80);
+            }
+        }
+        #endregion
+
+        #region 手动控制机器鱼功能区
         private void CheeckStateButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -334,9 +434,41 @@ namespace SmallFishVR
                 MessageBox.Show("Error:" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-
+            connectStateText.Text = "已连接";
+            speedSlider.IsEnabled = true;
+            switchColor1Button.IsEnabled = true;
+            switchColor2Button.IsEnabled = true;
+            turnForwardButton.IsEnabled = true;
+            turnLeftButton.IsEnabled = true;
+            turnRightButton.IsEnabled = true;
+            startVRControlButton.IsEnabled = true;
         }
 
-        
+        private void SwitchColor1Button_Click(object sender, RoutedEventArgs e)
+        {
+            spSend.SetColorCycle(0, '-');
+        }
+
+        private void SwitchColor2Button_Click(object sender, RoutedEventArgs e)
+        {
+            spSend.SetColorCycle(0, '+');
+        }
+
+        private void TurnLeftButton_Click(object sender, RoutedEventArgs e)
+        {
+            spSend.SetMove(0, SendData2Fish.Direction.Left, (SendData2Fish.Speed)speedSlider.Value);
+        }
+
+        private void TurnForwardButton_Click(object sender, RoutedEventArgs e)
+        {
+            spSend.SetMove(0, SendData2Fish.Direction.Forward, (SendData2Fish.Speed)speedSlider.Value);
+        }
+
+        private void TurnRightButton_Click(object sender, RoutedEventArgs e)
+        {
+            spSend.SetMove(0, SendData2Fish.Direction.Right, (SendData2Fish.Speed)speedSlider.Value);
+        }
+        #endregion
+
     }
 }

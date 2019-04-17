@@ -31,9 +31,10 @@ ViveInputClass::ViveInputClass() {
 	if (eError != vr::VRInitError_None)
 	{
 		m_pHMD = NULL;
-		infoStr = "Unable to init VR runtime: %s", vr::VR_GetVRInitErrorAsEnglishDescription(eError);
-		isStrGiven = true;
-		exit(EXIT_FAILURE);
+		//infoStr = "Unable to init VR runtime: %s", vr::VR_GetVRInitErrorAsEnglishDescription(eError);
+		//isStrGiven = true;
+		//TODO：这里怎么才能把错误throw回去？？
+		throw "Unable to init VR runtime: %s", vr::VR_GetVRInitErrorAsEnglishDescription(eError);
 	}
 }
 
