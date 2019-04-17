@@ -93,24 +93,28 @@ namespace SmallFishVR
             Thread.Sleep(10);
         }
 
-        public void SetColorCycle(int which, char dir)
-        {
-            int temp = (int)colorNow;
-            Color tempColor;
-            switch (dir)
+        public void SetColorCycle(int which, char dir, bool isChangedColor = false)
+        {            
+            if(!isChangedColor)
             {
-                case '+':
-                    temp++;
-                    tempColor = temp >= 8 ? (Color)temp - 8 : (Color)temp;
-                    break;
-                case '-':
-                    temp--;
-                    tempColor = temp < 0 ? (Color)temp + 8 : (Color)temp;
-                    break;
-                default:
-                    throw new Exception("程序编写错误");
+                int temp = (int)colorNow;
+                Color tempColor;
+                switch (dir)
+                {
+                    case '+':
+                        temp++;
+                        tempColor = temp >= 8 ? (Color)temp - 8 : (Color)temp;
+                        break;
+                    case '-':
+                        temp--;
+                        tempColor = temp < 0 ? (Color)temp + 8 : (Color)temp;
+                        break;
+                    default:
+                        throw new Exception("程序编写错误");
+                }
+                SetColor(which, tempColor);
             }
-            SetColor(which, tempColor);
+
         }
 
         public void SetMove(int which, Direction direction, Speed speed, bool isSentFlag = false)
