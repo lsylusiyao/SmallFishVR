@@ -40,13 +40,13 @@
             <Button x:Name="connectFishButton" Content="连接鱼" HorizontalAlignment="Left" Margin="113,30,0,0" VerticalAlignment="Top" Width="85" Height="26" IsEnabled="False" Click="ConnectFishButton_Click"/>
             <Button x:Name="switchColor2Button" Content="颜色切换2(E)" HorizontalAlignment="Left" Margin="222,30,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="SwitchColor2Button_Click"/>
             <Button x:Name="switchColor1Button" Content="颜色切换1(Q)" HorizontalAlignment="Left" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Margin="8,30,0,0" Click="SwitchColor1Button_Click"/>
-            <Button x:Name="turnForwardButton" Content="前进(W)" HorizontalAlignment="Left" Margin="113,74,0,0" VerticalAlignment="Top" Width="85" Height="26" IsEnabled="False" Click="TurnForwardButton_Click"/>
-            <Button x:Name="turnRightButton" Content="右转(D)" HorizontalAlignment="Left" Margin="222,74,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="TurnRightButton_Click"/>
-            <Button x:Name="turnLeftButton" Content="左转(A)" HorizontalAlignment="Left" Margin="8,74,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="TurnLeftButton_Click"/>
+            <Button x:Name="turnForwardButton" Content="前进(W)" HorizontalAlignment="Left" Margin="113,70,0,0" VerticalAlignment="Top" Width="85" Height="26" IsEnabled="False" Click="TurnForwardButton_Click"/>
+            <Button x:Name="turnRightButton" Content="右转(D)" HorizontalAlignment="Left" Margin="222,70,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="TurnRightButton_Click"/>
+            <Button x:Name="turnLeftButton" Content="左转(A)" HorizontalAlignment="Left" Margin="8,70,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="TurnLeftButton_Click"/>
             <Slider x:Name="speedSlider" HorizontalAlignment="Left" Margin="55,115,0,0" VerticalAlignment="Top" Width="143" Maximum="3" SmallChange="1" Value="1" IsEnabled="False"/>
             <TextBlock HorizontalAlignment="Left" Margin="8,115,0,0" TextWrapping="Wrap" Text="速度" VerticalAlignment="Top" FontSize="14"/>
             <TextBlock HorizontalAlignment="Left" Margin="102,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14"><Run FontWeight="Bold" Text="连接及手动控制框"/></TextBlock>
-            <Button x:Name="startVRControlButton" Content="开启VR控制" HorizontalAlignment="Left" Margin="222,115,0,0" VerticalAlignment="Top" Width="86" IsEnabled="False" Click="StartVRControlButton_Click"/>
+            <Button x:Name="startStopVRControlButton" Content="开启VR控制" HorizontalAlignment="Left" Margin="222,109,0,0" VerticalAlignment="Top" Width="86" IsEnabled="False" Click="StartStopVRControlButton_Click" Height="28"/>
         </Grid>
         <Button x:Name="ReCountCOMButton" Content="重新查询端口" HorizontalAlignment="Left" Margin="230,22,0,0" VerticalAlignment="Top" Width="85" Height="26" Click="ReCountCOMButton_Click"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,0,0,10.5" TextWrapping="Wrap" Width="60" Height="13" VerticalAlignment="Bottom"><Run FontWeight="Bold" Text="VR状态："/></TextBlock>
@@ -104,6 +104,8 @@
         <RichTextBox x:Name="SPDataBox" Height="326" Margin="393,42,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="285" TextChanged="SPDataBox_TextChanged" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
         <TextBlock Margin="496,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="26" FontSize="14" HorizontalAlignment="Left" Width="90"><Run FontWeight="Bold" Text="串口数据显示"/></TextBlock>
         <Button x:Name="clearButton" Content="清空输出" HorizontalAlignment="Left" Margin="497,380,0,0" VerticalAlignment="Top" Width="75" Click="ClearButton_Click"/>
+        <TextBlock HorizontalAlignment="Left" Height="13" Margin="340,0,0,10.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="60"><Run FontWeight="Bold" Text="控制"/><Run FontWeight="Bold" Text="状态："/></TextBlock>
+        <TextBlock x:Name="VRControlStateBox" HorizontalAlignment="Left" Height="15" Margin="400,0,0,8.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="58" Text="VR未控制"/>
 
     </Grid>
 </Window>

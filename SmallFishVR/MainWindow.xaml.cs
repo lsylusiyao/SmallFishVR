@@ -1,24 +1,14 @@
-﻿using System;
-using System.IO.Ports;
+﻿using BridgeDll;
+using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Threading;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using BridgeDll;
 
 namespace SmallFishVR
 {
-    
+
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
@@ -29,8 +19,8 @@ namespace SmallFishVR
         DataStore data = new DataStore(); //新建数据存储对象
         SendData2Fish spSend = new SendData2Fish(); //新建继承的带处理数据的串口对象
         public delegate void UpdateDataInvoke(string s); //更新数据的委托
-        public string TempStr { get; set; }
-        private bool isVRControlStart = false;
+        public string TempStr { get; set; } //委托临时使用的，提交给界面更新数据
+        private bool isVRControlStart = false; //VR控制是否开启
         
         Thread listenSPDataThread; //监听串口数据的线程
         Thread VRThread; //VR线程
@@ -48,6 +38,7 @@ namespace SmallFishVR
             DefaultSettings();
             
         }
+
         /// <summary>
         /// 数据绑定类，所有的数据绑定类都写在这里
         /// </summary>
@@ -56,6 +47,7 @@ namespace SmallFishVR
             setPortGrid.DataContext = data;
             VRGrid.DataContext = data;
         }
+
         /// <summary>
         /// 缺省设置，默认选择的Index，暂时写在这里
         /// </summary>
@@ -68,8 +60,9 @@ namespace SmallFishVR
             stopBitsBox.SelectedIndex = 0;
             TempStr = string.Empty;
         }
+
         /// <summary>
-        /// 重写关闭事件
+        /// 重写关闭事件，关闭的时候自动关串口
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -77,6 +70,7 @@ namespace SmallFishVR
         {
             if (spSend.IsOpen) spSend.Close();
         }
+
         /// <summary>
         /// 将获取到的数据解析成为真正的数据，并准备存放到SerialPort对象中
         /// </summary>
@@ -232,6 +226,7 @@ namespace SmallFishVR
         #endregion
 
         #region VR功能区，包括VR控制机器鱼的线程
+
         /// <summary>
         /// 初始化VR的按钮，一旦没有连接成功硬件和Steam的话，程序会自动退出
         /// </summary>
@@ -259,6 +254,7 @@ namespace SmallFishVR
             }
             else if (result == MessageBoxResult.No) return;
         }
+
         /// <summary>
         /// 开启关闭VR的按钮
         /// </summary>
@@ -310,26 +306,38 @@ namespace SmallFishVR
             }
         }
 
-        private void StartVRControlButton_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// 开启VR控制机器鱼的线程（或者终止）
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StartStopVRControlButton_Click(object sender, RoutedEventArgs e)
         {
             if (!isVRControlStart)
             {
                 VRControlFishThread = new Thread(VRControlFishThreadFunc);
                 VRControlFishThread.Start();
                 isVRControlStart = true;
-                startVRControlButton.Content = "停止VR控制";
+                startStopVRControlButton.Content = "停止VR控制";
+                VRControlStateBox.Text = "VR已控制";
+                InitVRButton.IsEnabled = false;
                 MessageBox.Show("VR控制机器鱼已经开始，手动控制仍然生效", "提示");
             }
             else
             {
                 VRControlFishThread.Abort();
                 isVRControlStart = false;
-                startVRControlButton.Content = "开始VR控制";
+                startStopVRControlButton.Content = "开始VR控制";
+                VRControlStateBox.Text = "VR未控制";
+                InitVRButton.IsEnabled = true;
                 MessageBox.Show("VR控制机器鱼已经停止", "提示");
             }
 
         }
 
+        /// <summary>
+        /// VR控制机器鱼的后台数据解析和发送指令的线程
+        /// </summary>
         private void VRControlFishThreadFunc()
         {
             /*
@@ -358,12 +366,12 @@ namespace SmallFishVR
                 else
                 {
                     spSend.SetColorCycle(0, data.HandData[4] > 0 ? '-' : '+', isChangedColor);
-                    isChangedColor = true;
+                    isChangedColor = true; //每次转手柄，颜色只改变一次，直到恢复到初始位置
                 }
                 #endregion
 
                 if (data.HandData[3] < divisionPoint[0] && data.HandData[3] > -divisionPoint[0] &&
-                    data.HandData[5] < divisionPoint[0] && data.HandData[5] > -divisionPoint[0])
+                    data.HandData[5] < divisionPoint[0] && data.HandData[5] > -divisionPoint[0]) //在一开始的范围内就认为停止
                 {
                     spSend.SetMove(0, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
                     //isSent = false;
@@ -371,7 +379,7 @@ namespace SmallFishVR
                 } //这里速度随便给
                 else
                 {
-                    if (data.HandData[3] > divisionPoint[0]) //左右任意，只要前后足够靠后
+                    if (data.HandData[3] > divisionPoint[0]) //左右任意，只要前后足够靠后，就认为停止
                     {
                         spSend.SetMove(0, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
                         isStop = true;
@@ -416,7 +424,7 @@ namespace SmallFishVR
 
                     if (data.HandData[3] > -divisionPoint[0] && data.HandData[3] < 0)
                     {
-                        //这条其实不写也行？
+                        //这条其实不写也行，反正应该到不了这个区域
                         spSend.SetMove(0, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
                     }
                     else if (data.HandData[3] > -divisionPoint[1])
@@ -432,6 +440,12 @@ namespace SmallFishVR
         #endregion
 
         #region 手动控制机器鱼功能区
+
+        /// <summary>
+        /// 检查连接IP和状态的，由人看返回值决定
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CheeckStateButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -447,9 +461,14 @@ namespace SmallFishVR
             }
         }
 
+        /// <summary>
+        /// 连接鱼，注意这里要设置手柄使用哪个
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ConnectFishButton_Click(object sender, RoutedEventArgs e)
         {
-            switch (switchHandBox.SelectedIndex)
+            switch (switchHandBox.SelectedIndex) //没选就返回
             {
                 case 0:
                     data.HandData = data.LeftHandData;
@@ -471,6 +490,7 @@ namespace SmallFishVR
                 MessageBox.Show("Error:" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            //更改文字，开启各种控件
             connectStateText.Text = "已连接";
             speedSlider.IsEnabled = true;
             switchColor1Button.IsEnabled = true;
@@ -478,29 +498,54 @@ namespace SmallFishVR
             turnForwardButton.IsEnabled = true;
             turnLeftButton.IsEnabled = true;
             turnRightButton.IsEnabled = true;
-            startVRControlButton.IsEnabled = true;
+            startStopVRControlButton.IsEnabled = startStopVRButton.Content as string == "停止监听VR"; //说明监听VR已经开始了
         }
 
+        /// <summary>
+        /// 逆时针方向（-）设置鱼颜色
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SwitchColor1Button_Click(object sender, RoutedEventArgs e)
         {
             spSend.SetColorCycle(0, '-');
         }
 
+        /// <summary>
+        /// 顺时针方向（+）设置鱼颜色
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SwitchColor2Button_Click(object sender, RoutedEventArgs e)
         {
             spSend.SetColorCycle(0, '+');
         }
 
+        /// <summary>
+        /// 左转按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TurnLeftButton_Click(object sender, RoutedEventArgs e)
         {
             spSend.SetMove(0, SendData2Fish.Direction.Left, (SendData2Fish.Speed)speedSlider.Value);
         }
 
+        /// <summary>
+        /// 前进按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TurnForwardButton_Click(object sender, RoutedEventArgs e)
         {
             spSend.SetMove(0, SendData2Fish.Direction.Forward, (SendData2Fish.Speed)speedSlider.Value);
         }
 
+        /// <summary>
+        /// 右转按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TurnRightButton_Click(object sender, RoutedEventArgs e)
         {
             spSend.SetMove(0, SendData2Fish.Direction.Right, (SendData2Fish.Speed)speedSlider.Value);
