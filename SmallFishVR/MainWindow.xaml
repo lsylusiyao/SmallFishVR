@@ -30,14 +30,14 @@
             <ComboBox x:Name="parityBox" HorizontalAlignment="Left" Margin="80,12,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding Parity}" Grid.Row="1"/>
             <ComboBox x:Name="switchHandBox" Margin="80,48,0,0" Grid.Row="1" HorizontalAlignment="Left" Width="98" Height="21" VerticalAlignment="Top" ItemsSource="{Binding WhichHand}"/>
             <TextBlock HorizontalAlignment="Left" Margin="14,48,0,0" TextWrapping="Wrap" Text="使用手柄：" VerticalAlignment="Top" Grid.Row="1"/>
-            <Button x:Name="openClosePortButton" Content="打开端口" HorizontalAlignment="Left" Margin="195,14,0,0" VerticalAlignment="Top" Width="75" Grid.Row="1" IsEnabled="True" Click="OpenClosePortButton_Click"/>
+            <Button x:Name="openClosePortButton" Content="打开端口" HorizontalAlignment="Left" Margin="195,14,0,0" VerticalAlignment="Top" Width="73" Grid.Row="1" IsEnabled="True" Click="OpenClosePortButton_Click"/>
             <TextBlock HorizontalAlignment="Left" Margin="195,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="停止"/><Run Text="位数"/><Run Text="："/></TextBlock>
             <ComboBox x:Name="stopBitsBox" HorizontalAlignment="Left" Margin="260,37,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding StopBits}"/>
-            <Button x:Name="checkStateButton" Content="查询机器鱼状态" HorizontalAlignment="Left" Margin="241,49,0,0" Grid.Row="1" VerticalAlignment="Top" Width="127" Click="CheeckStateButton_Click" IsEnabled="False"/>
-            <Button x:Name="startStopVRControlButton" Content="开启VR控制" HorizontalAlignment="Left" Margin="282,14,0,0" VerticalAlignment="Top" Width="86" Click="StartStopVRControlButton_Click" Height="19" Grid.Row="1"/>
+            <Button x:Name="checkStateButton" Content="查询机器鱼状态" HorizontalAlignment="Left" Margin="231,49,0,0" Grid.Row="1" VerticalAlignment="Top" Width="127" Click="CheckStateButton_Click" IsEnabled="False"/>
+            <Button x:Name="startStopVRControlButton" Content="开启VR控制" HorizontalAlignment="Left" Margin="282,14,0,0" VerticalAlignment="Top" Width="76" Click="StartStopVRControlButton_Click" Height="19" Grid.Row="1"/>
 
         </Grid>
-        <Grid Margin="22,206,679,39.5">
+        <Grid Margin="22,206,662,39.5">
             <Grid Margin="8,30,10,139">
                 <Button x:Name="connectFishButton" Content="连接鱼" HorizontalAlignment="Left" Margin="105,0,0,0" VerticalAlignment="Top" Width="85" Height="26" IsEnabled="False" Click="ConnectFishButton_Click"/>
                 <Button x:Name="switchColor2Button" Content="颜色切换2(E)" HorizontalAlignment="Left" Margin="214,0,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="SwitchColor2Button_Click"/>
