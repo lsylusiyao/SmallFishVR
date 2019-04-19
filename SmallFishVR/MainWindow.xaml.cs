@@ -1,6 +1,7 @@
 ﻿using BridgeDll;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Ports;
 using System.Threading;
 using System.Windows;
@@ -18,14 +19,21 @@ namespace SmallFishVR
         private BridgeClass bridge; //新建一个VR类（从CLR）
         DataStore data = new DataStore(); //新建数据存储对象
         SendData2Fish spSend = new SendData2Fish(); //新建继承的带处理数据的串口对象
-        public delegate void UpdateDataInvoke(string s); //更新数据的委托
         public string TempStr { get; set; } //委托临时使用的，提交给界面更新数据
         private bool isVRControlStart = false; //VR控制是否开启
+        private bool isLeftHandFishChecked = true; //左手柄控制鱼是否开启
+        private bool isRightHandFishChecked = true; //右手柄控制鱼是否开启
         
         Thread listenSPDataThread; //监听串口数据的线程
         Thread VRThread; //VR线程
         Thread listenVRThread; //监听VR数据线程，在有信息传来的时候也会报错
         Thread VRControlFishThread; //VR控制鱼的运动方向的控制
+        
+        private void UpdateBox(string msg) //委托更新图形界面
+        {
+            Dispatcher.Invoke((ThreadStart)delegate () {
+                SPDataBox.AppendText(string.Format("{0}\r\n", msg)); });
+        }
         #endregion
 
         #region 窗口主要功能区
@@ -36,7 +44,7 @@ namespace SmallFishVR
             data.Init();
             Bindings();
             DefaultSettings();
-            
+
         }
 
         /// <summary>
@@ -69,6 +77,10 @@ namespace SmallFishVR
         private void Window_Closed(object sender, EventArgs e)
         {
             if (spSend.IsOpen) spSend.Close();
+            if (listenSPDataThread != null && listenSPDataThread.IsAlive) listenSPDataThread.Abort();
+            if (VRThread != null && VRThread.IsAlive) VRThread.Abort();
+            if (listenVRThread != null && listenVRThread.IsAlive) listenVRThread.Abort();
+            if (VRControlFishThread != null && VRControlFishThread.IsAlive) VRControlFishThread.Abort();
         }
 
         /// <summary>
@@ -144,9 +156,6 @@ namespace SmallFishVR
                     spSend.Close(); //为了防止之前端口打开，因此先关闭
 
                     spSend.DataReceived += new SerialDataReceivedEventHandler(Sp_DataReceived); //收到数据的时候激活这个事件
-
-                    var updateData = new UpdateDataInvoke( //一个委托，用来向图形界面添加数据的
-                        delegate (string s) { SPDataBox.AppendText(s + "\r\n"); });
                     
                     listenSPDataThread = new Thread(()=> //一个线程，用来将数据实时发送给委托的
                     {
@@ -154,13 +163,15 @@ namespace SmallFishVR
                         {
                             if (TempStr.Length > 0)
                             {
-                                updateData(TempStr);
+                                UpdateBox(TempStr);
                                 lock (this) {TempStr = string.Empty; }
                             }
+                            Thread.Sleep(15);
                         }
                     });
                     spSend.Open();
                     listenSPDataThread.Start();
+                    listenSPDataThread.IsBackground = true;
                     openClosePortButton.Content = "关闭端口"; //更改显示文字
                     portStateText.Text = "已打开"; //更改下方文字
                     connectFishButton.IsEnabled = true;
@@ -175,6 +186,11 @@ namespace SmallFishVR
                     portStateText.Text = "未打开";
                     connectFishButton.IsEnabled = false;
                     checkStateButton.IsEnabled = false;
+                    turnForwardButton.IsEnabled = false;
+                    turnLeftButton.IsEnabled = false;
+                    turnRightButton.IsEnabled = false;
+                    switchColor1Button.IsEnabled = false;
+                    switchColor2Button.IsEnabled = false;
                 }
             }
             catch (System.Exception ex)
@@ -196,7 +212,7 @@ namespace SmallFishVR
                 lock (this)
                 {
                     TempStr = spSend.ReadLine();
-                    spSend.DiscardInBuffer();
+                    //spSend.DiscardInBuffer();
                 }
             }
             catch (System.Exception ex)
@@ -245,7 +261,7 @@ namespace SmallFishVR
                 {
                     bridge = new BridgeClass();
                     startStopVRButton.IsEnabled = true;
-                    VRThread = new Thread(bridge.Run);
+                    VRThread = new Thread(()=> { bridge.Run(); });
                     listenVRThread = new Thread(ListenVRThread);
                 }
                 catch (System.Exception ex)
@@ -268,6 +284,7 @@ namespace SmallFishVR
             if (!bridge.GetKeepVRWorking())
             {
                 VRThread.Start();
+                listenVRThread.Start();
                 startStopVRButton.Content = "停止监听VR";
                 VRStateText.Text = "已连接";
                 MessageBox.Show("监听VR已经开始", "提示");
@@ -289,22 +306,44 @@ namespace SmallFishVR
         /// </summary>
         private void ListenVRThread()
         {
-            while(VRThread.IsAlive)
+            
+            while (VRThread.IsAlive)
             {
                 // 绑定只能用List之类的类型（集成INotifyPropertyChanged的）
                 // TODO：这里会不会因为更新了指针指向而不更新？
                 data.HMDData = new List<double>(bridge.GetHMD());
                 data.LeftHandData = new List<double>(bridge.GetLeftHand());
                 data.RightHandData = new List<double>(bridge.GetRightHand());
-                if(bridge.GetIsStrGiven())
+                FileStream fs = new FileStream("C:/useful/VRdata.txt", FileMode.Append, FileAccess.Write);
+                StreamWriter w = new StreamWriter(fs);
+                w.WriteLine("HMD: ");
+                foreach (var a in data.HMDData)
                 {
-                    MessageBox.Show(bridge.GetInfoStr(), "VR信息");
-                    lock (this)
-                    {
-                        bridge.ClearInfoStr();
-                        bridge.SetIsStrGiven(false);
-                    }
+                    w.Write(a.ToString() + ", ");
                 }
+                w.WriteLine("\nLeftHand: ");
+                foreach (var a in data.LeftHandData)
+                {
+                    w.Write(a.ToString() + ", ");
+                }
+                w.WriteLine("\nRightHand: ");
+                foreach (var a in data.RightHandData)
+                {
+                    w.Write(a.ToString() + ", ");
+                }
+                w.WriteLine("\n");
+                Thread.Sleep(100);
+                w.Close();
+
+                if (bridge.GetIsStrGiven())
+                    {
+                        MessageBox.Show(bridge.GetInfoStr(), "VR信息");
+                        lock (this)
+                        {
+                            bridge.ClearInfoStr();
+                            bridge.SetIsStrGiven(false);
+                        }
+                    }
                 Thread.Sleep(15);
             }
         }
@@ -361,14 +400,31 @@ namespace SmallFishVR
             bool isStop = false;
             //bool isSent = false;
             bool isChangedColor = false;
-            while (true)
+            bool keepWhile = true;
+            while (keepWhile)
             {
                 Thread.Sleep(80);
+                
                 //对于两个机器鱼的适配
                 for (int i = 0; i < 2; i++)
                 {
-                    if (i == 0 && (bool)leftHandFishCheckBox.IsChecked) data.HandData = data.LeftHandData;
-                    if (i == 1 && (bool)rightHandFishCheckBox.IsChecked) data.HandData = data.RightHandData;
+                    if (!isLeftHandFishChecked && !isRightHandFishChecked)
+                    {
+                        MessageBox.Show("没有选择手柄控制，请至少选择一个", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        keepWhile = false;
+                        break;
+                    }
+                    if (i == 0)
+                    {
+                        if (isLeftHandFishChecked) data.HandData = data.LeftHandData;
+                        else continue;
+                    }
+                    Thread.Sleep(50);
+                    if (i == 1)
+                    {
+                        if (isRightHandFishChecked) data.HandData = data.RightHandData;
+                        else continue;
+                    }
 
                     #region 设置颜色部分
 
@@ -465,6 +521,7 @@ namespace SmallFishVR
             try
             {
                 spSend.SetInit(SendData2Fish.Function.GetIPs);
+                Thread.Sleep(100);
                 spSend.SetInit(SendData2Fish.Function.CheckStatus);
                 MessageBox.Show("检查完成，请查看返回信息状态和IP", "提示信息", MessageBoxButton.OKCancel);
             }
@@ -637,6 +694,17 @@ namespace SmallFishVR
         }
 
         #endregion
+
+        private void LeftHandFishCheckBox_Checked(object sender, RoutedEventArgs e) 
+            => isLeftHandFishChecked = (bool)leftHandFishCheckBox.IsChecked;
+
+        private void RightHandFishCheckBox_Checked(object sender, RoutedEventArgs e) 
+            => isRightHandFishChecked = (bool)rightHandFishCheckBox.IsChecked;
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            data.A[0]++;
+        }
     }
 
 }

@@ -73,11 +73,15 @@ namespace SmallFishVR
         /// 选择的手柄的数据（指针）
         /// </summary>
         public List<double> HandData { get; set; }
+        
 
         /// <summary>
         /// 定义结构的对象
         /// </summary>
         public RealPortInfo Real;
+
+        private List<double> a = new List<double> { 1, 2, 3, 4, 5 };
+        public List<double> A { get => a; set => a = value; }
 
         //控制的时候，方向数据实时解析发送就行（单独写一个运动类），颜色使用顺时针逆时针控制，一次是切换一种颜色，用一个flag，
         //切换完了就不再使用，直到复原之后

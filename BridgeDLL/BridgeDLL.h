@@ -17,16 +17,41 @@ namespace BridgeDll {
 		void Run()
 		{
 			keepVRworking = true;
-			while (keepVRworking && p->RunProcedure(true, -1)) { System::Threading::Thread::Sleep(10); }
+			while (keepVRworking) 
+			{
+				auto result = p->RunProcedure(true, -1);
+				if (!result) break;
+				System::Threading::Thread::Sleep(10); 
+			}
 		}
 		void SetIsStrGiven(bool b) { p->SetIsStrGiven(b); }
 		bool GetIsStrGiven() { return p->GetIsStrGiven(); }
 		String^ GetInfoStr() { return gcnew String(p->GetInfoStr().data()); }
 		void ClearInfoStr() { p->SetInfoStr(""); }
 
-		array<double>^ GetHMD() { for (int i = 0; i < 6; i++) { HMD[i] = p->GetHMD()[i]; return HMD; } }
-		array<double>^ GetLeftHand() { for (int i = 0; i < 8; i++) { leftHand[i] = p->GetLeftHand()[i] / Math::PI * 180; return leftHand; } }
-		array<double>^ GetRightHand() { for (int i = 0; i < 8; i++) { rightHand[i] = p->GetRightHand()[i] / Math::PI * 180; return rightHand; } }
+		array<double>^ GetHMD() {
+			for (int i = 0; i < 6; i++)
+			{
+				HMD[i] = p->GetHMD()[i];
+			}
+			return HMD;
+		}
+		array<double>^ GetLeftHand()
+		{
+			for (int i = 0; i < 8; i++)
+			{
+				leftHand[i] = p->GetLeftHand()[i] / Math::PI * 180;
+			}
+			return leftHand;
+		}
+		array<double>^ GetRightHand()
+		{
+			for (int i = 0; i < 8; i++)
+			{
+				rightHand[i] = p->GetRightHand()[i] / Math::PI * 180;
+			}
+			return rightHand;
+		}
 
 	private:
 		bool keepVRworking = false; //想停止直接置为false就行

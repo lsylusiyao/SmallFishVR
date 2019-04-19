@@ -85,7 +85,7 @@ namespace SmallFishVR
                 case Function.GetIPs: WriteLine("AT+CWLIF\r\n"); break; //查看接入设备的IP
                 case Function.CheckStatus: WriteLine("AT+CIPSTATUS\r\n"); break;
                 case Function.SetMux:
-                    if (muxType != MuxType.None) throw new Exception("程序编写错误");
+                    if (muxType == MuxType.None) throw new Exception("程序编写错误");
                     else WriteLine("AT+CIPMUX=" + Convert.ToString((int)muxType) + "\r\n"); //设置单连接还是多连接
                     break;
                 default: throw new Exception("程序编写错误");

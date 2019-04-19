@@ -6,12 +6,6 @@
 //
 
 #include "ViveInputClass.h"
-#include <Windows.h>
-
-void MySleep(int miliseconds)
-{
-	Sleep(miliseconds);
-}
 
 using std::string;
 // Destructor
@@ -62,6 +56,7 @@ bool ViveInputClass::RunProcedure(bool bWaitForEvents, int filterIndex = -1) {
 
 			// parse a frame
 			ParseTrackingFrame(filterIndex);
+
 		}
 	}
 	else {
@@ -363,7 +358,7 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 			continue;
 		}
 
-		if (filterIndex != unDevice)
+		if (filterIndex == unDevice)
 			continue;
 
 		vr::TrackedDevicePose_t trackedDevicePose;
