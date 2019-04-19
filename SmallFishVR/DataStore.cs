@@ -80,6 +80,11 @@ namespace SmallFishVR
         /// </summary>
         public RealPortInfo Real;
 
+        public string LeftHandFishIP { get; set; }
+        public string RightHandFishIP { get; set; }
+        public int LeftHandPort { get; set; }
+        public int RightHandPort { get; set; }
+
         private List<double> a = new List<double> { 1, 2, 3, 4, 5 };
         public List<double> A { get => a; set => a = value; }
 

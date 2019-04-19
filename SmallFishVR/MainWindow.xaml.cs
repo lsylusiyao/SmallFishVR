@@ -7,9 +7,10 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
+
 namespace SmallFishVR
 {
-
+    
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
@@ -54,6 +55,7 @@ namespace SmallFishVR
         {
             setPortGrid.DataContext = data;
             VRGrid.DataContext = data;
+            setIPPortGrid.DataContext = data;
         }
 
         /// <summary>
@@ -67,6 +69,10 @@ namespace SmallFishVR
             dataBitsBox.SelectedIndex = 3;
             stopBitsBox.SelectedIndex = 0;
             TempStr = string.Empty;
+            data.LeftHandFishIP = "192.168.4.2";
+            data.LeftHandPort = 1001;
+            data.RightHandFishIP = "192.168.4.3";
+            data.RightHandPort = 1002;
         }
 
         /// <summary>
@@ -175,6 +181,7 @@ namespace SmallFishVR
                     openClosePortButton.Content = "关闭端口"; //更改显示文字
                     portStateText.Text = "已打开"; //更改下方文字
                     connectFishButton.IsEnabled = true;
+                    connectFishButton2.IsEnabled = true;
                     checkStateButton.IsEnabled = true;
                     
                 }
@@ -185,6 +192,7 @@ namespace SmallFishVR
                     openClosePortButton.Content = "打开端口";
                     portStateText.Text = "未打开";
                     connectFishButton.IsEnabled = false;
+                    connectFishButton2.IsEnabled = false;
                     checkStateButton.IsEnabled = false;
                     turnForwardButton.IsEnabled = false;
                     turnLeftButton.IsEnabled = false;
@@ -221,6 +229,27 @@ namespace SmallFishVR
             }
             
 
+        }
+
+        /// <summary>
+        /// 检查连接IP和状态的，由人看返回值决定
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CheckStateButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                spSend.SetInit(SendData2Fish.Function.GetIPs);
+                Thread.Sleep(100);
+                spSend.SetInit(SendData2Fish.Function.CheckStatus);
+                MessageBox.Show("检查完成，请查看返回信息状态和IP", "提示信息", MessageBoxButton.OKCancel);
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show("Error:" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
         }
 
         /// <summary>
@@ -511,26 +540,7 @@ namespace SmallFishVR
         #endregion
 
 
-        /// <summary>
-        /// 检查连接IP和状态的，由人看返回值决定
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CheckStateButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                spSend.SetInit(SendData2Fish.Function.GetIPs);
-                Thread.Sleep(100);
-                spSend.SetInit(SendData2Fish.Function.CheckStatus);
-                MessageBox.Show("检查完成，请查看返回信息状态和IP", "提示信息", MessageBoxButton.OKCancel);
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show("Error:" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-        }
+        
 
         #region 手动控制机器鱼功能区（左手柄）
 
@@ -701,10 +711,6 @@ namespace SmallFishVR
         private void RightHandFishCheckBox_Checked(object sender, RoutedEventArgs e) 
             => isRightHandFishChecked = (bool)rightHandFishCheckBox.IsChecked;
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            data.A[0]++;
-        }
     }
 
 }
