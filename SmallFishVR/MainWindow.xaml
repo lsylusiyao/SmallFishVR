@@ -121,7 +121,6 @@
         <Button x:Name="startStopVRControlButton" Content="开启VR控制" HorizontalAlignment="Left" Margin="280,24,0,0" VerticalAlignment="Top" Width="76" Click="StartStopVRControlButton_Click" Height="26"/>
         <Button x:Name="InitVRButton" Content="初始化VR" HorizontalAlignment="Left" Margin="24,26,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="InitVRButton_Click"/>
         <Button x:Name="startStopVRButton" Content="开始监听VR" HorizontalAlignment="Left" Margin="150,26,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="StartStopVRButton_Click" IsEnabled="False"/>
-        <Button Content="Button" HorizontalAlignment="Left" Margin="400,414,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
 
     </Grid>
 </Window>

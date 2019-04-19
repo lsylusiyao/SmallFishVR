@@ -61,7 +61,6 @@ namespace SmallFishVR
         /// </summary>
         void DefaultSettings()
         {
-            //portBox.SelectedIndex = 0 ;
             baudRateBox.SelectedIndex = 3;
             parityBox.SelectedIndex = 0;
             dataBitsBox.SelectedIndex = 3;
@@ -648,50 +647,40 @@ namespace SmallFishVR
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SwitchColor1Button2_Click(object sender, RoutedEventArgs e)
-        {
-            spSend.SetColorCycle(1, '-');
-        }
+        private void SwitchColor1Button2_Click(object sender, RoutedEventArgs e) 
+            => spSend.SetColorCycle(1, '-');
 
         /// <summary>
         /// 顺时针方向（+）设置鱼颜色
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SwitchColor2Button2_Click(object sender, RoutedEventArgs e)
-        {
-            spSend.SetColorCycle(1, '+');
-        }
+        private void SwitchColor2Button2_Click(object sender, RoutedEventArgs e) 
+            => spSend.SetColorCycle(1, '+');
 
         /// <summary>
         /// 左转按钮
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TurnLeftButton2_Click(object sender, RoutedEventArgs e)
-        {
-            spSend.SetMove(1, SendData2Fish.Direction.Left, (SendData2Fish.Speed)speedSlider.Value);
-        }
+        private void TurnLeftButton2_Click(object sender, RoutedEventArgs e) 
+            => spSend.SetMove(1, SendData2Fish.Direction.Left, (SendData2Fish.Speed)speedSlider.Value);
 
         /// <summary>
         /// 前进按钮
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TurnForwardButton2_Click(object sender, RoutedEventArgs e)
-        {
-            spSend.SetMove(1, SendData2Fish.Direction.Forward, (SendData2Fish.Speed)speedSlider.Value);
-        }
+        private void TurnForwardButton2_Click(object sender, RoutedEventArgs e) 
+            => spSend.SetMove(1, SendData2Fish.Direction.Forward, (SendData2Fish.Speed)speedSlider.Value);
 
         /// <summary>
         /// 右转按钮
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TurnRightButton2_Click(object sender, RoutedEventArgs e)
-        {
-            spSend.SetMove(1, SendData2Fish.Direction.Right, (SendData2Fish.Speed)speedSlider.Value);
-        }
+        private void TurnRightButton2_Click(object sender, RoutedEventArgs e) 
+            => spSend.SetMove(1, SendData2Fish.Direction.Right, (SendData2Fish.Speed)speedSlider.Value);
 
         #endregion
 
@@ -701,10 +690,6 @@ namespace SmallFishVR
         private void RightHandFishCheckBox_Checked(object sender, RoutedEventArgs e) 
             => isRightHandFishChecked = (bool)rightHandFishCheckBox.IsChecked;
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            data.A[0]++;
-        }
     }
 
 }
