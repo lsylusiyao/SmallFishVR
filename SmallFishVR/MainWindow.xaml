@@ -49,7 +49,7 @@
                 <TextBlock HorizontalAlignment="Left" Margin="0,85,0,0" TextWrapping="Wrap" Text="速度" VerticalAlignment="Top" FontSize="14"/>
                 <CheckBox x:Name="leftHandFishCheckBox" Content="左手柄机器鱼" HorizontalAlignment="Left" Margin="194,88,0,0" VerticalAlignment="Top" FontSize="14" IsChecked="True" Checked="LeftHandFishCheckBox_Checked"/>
             </Grid>
-            <TextBlock HorizontalAlignment="Left" Margin="102,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14" Width="119"><Run FontWeight="Bold" Text="连接及手动控制框"/></TextBlock>
+            <TextBlock HorizontalAlignment="Left" Margin="102,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14"><Run FontWeight="Bold" Text="连接及手动控制框"/></TextBlock>
             <Grid Margin="10,153,8,17">
                 <Button x:Name="connectFishButton2" Content="连接鱼" HorizontalAlignment="Left" Margin="105,0,0,0" VerticalAlignment="Top" Width="85" Height="26" IsEnabled="False" Click="ConnectFishButton2_Click"/>
                 <Button x:Name="switchColor2Button2" Content="颜色切换2(E)" HorizontalAlignment="Left" Margin="214,0,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="SwitchColor2Button2_Click"/>
@@ -121,17 +121,6 @@
         <Button x:Name="startStopVRControlButton" Content="开启VR控制" HorizontalAlignment="Left" Margin="280,24,0,0" VerticalAlignment="Top" Width="76" Click="StartStopVRControlButton_Click" Height="26"/>
         <Button x:Name="InitVRButton" Content="初始化VR" HorizontalAlignment="Left" Margin="24,26,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="InitVRButton_Click"/>
         <Button x:Name="startStopVRButton" Content="开始监听VR" HorizontalAlignment="Left" Margin="150,26,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="StartStopVRButton_Click" IsEnabled="False"/>
-        <Grid x:Name="setIPPortGrid" Margin="393,404,0,39.4" HorizontalAlignment="Left" Width="289">
-            <TextBox HorizontalAlignment="Left" Height="23" Margin="98,28,0,0" TextWrapping="Wrap" Text="{Binding LeftHandFishIP, Mode=TwoWay}" VerticalAlignment="Top" Width="120"/>
-            <TextBox HorizontalAlignment="Left" Height="23" Margin="232,28,0,0" TextWrapping="Wrap" Text="{Binding LeftHandFishPort,Mode=TwoWay}" VerticalAlignment="Top" Width="57"/>
-            <TextBox HorizontalAlignment="Left" Height="23" Margin="98,60,0,0" TextWrapping="Wrap" Text="{Binding RightHandFishIP,Mode=TwoWay}" VerticalAlignment="Top" Width="120"/>
-            <TextBox HorizontalAlignment="Left" Height="23" Margin="232,60,0,0" TextWrapping="Wrap" Text="{Binding RightHandFishPort,Mode=TwoWay}" VerticalAlignment="Top" Width="57"/>
-            <TextBlock HorizontalAlignment="Left" Margin="0,28,0,0" TextWrapping="Wrap" Text="左手柄机器鱼" VerticalAlignment="Top" FontSize="14"/>
-            <TextBlock HorizontalAlignment="Left" Margin="139,6,0,0" TextWrapping="Wrap" Text="IP地址" VerticalAlignment="Top" FontSize="14"/>
-            <TextBlock HorizontalAlignment="Left" Margin="0,61,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14"><Run Text="右"/><Run Text="手柄机器鱼"/></TextBlock>
-            <TextBlock HorizontalAlignment="Left" Margin="248,7,0,0" TextWrapping="Wrap" Text="端口" VerticalAlignment="Top" FontSize="14"/>
-
-        </Grid>
 
     </Grid>
 </Window>
