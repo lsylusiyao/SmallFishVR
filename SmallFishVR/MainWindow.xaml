@@ -121,6 +121,17 @@
         <Button x:Name="startStopVRControlButton" Content="开启VR控制" HorizontalAlignment="Left" Margin="280,24,0,0" VerticalAlignment="Top" Width="76" Click="StartStopVRControlButton_Click" Height="26"/>
         <Button x:Name="InitVRButton" Content="初始化VR" HorizontalAlignment="Left" Margin="24,26,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="InitVRButton_Click"/>
         <Button x:Name="startStopVRButton" Content="开始监听VR" HorizontalAlignment="Left" Margin="150,26,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="StartStopVRButton_Click" IsEnabled="False"/>
+        <Grid x:Name="setIPPortGrid" Margin="393,413,0,0" Height="80" VerticalAlignment="Top" HorizontalAlignment="Left" Width="290">
+            <TextBox HorizontalAlignment="Left" Height="22" Margin="92,20,0,0" TextWrapping="Wrap" Text="{Binding LeftHandFishIP,Mode=TwoWay}" VerticalAlignment="Top" Width="120"/>
+            <TextBox HorizontalAlignment="Left" Height="22" Margin="92,46,0,0" TextWrapping="Wrap" Text="{Binding RightHandFishIP,Mode=TwoWay}" VerticalAlignment="Top" Width="120"/>
+            <TextBox HorizontalAlignment="Left" Height="22" Margin="218,20,0,0" TextWrapping="Wrap" Text="{Binding LeftHandFishPort,Mode=TwoWay}" VerticalAlignment="Top" Width="54"/>
+            <TextBox HorizontalAlignment="Left" Height="22" Margin="218,46,0,0" TextWrapping="Wrap" Text="{Binding RightHandFishPort,Mode=TwoWay}" VerticalAlignment="Top" Width="54"/>
+            <TextBlock HorizontalAlignment="Left" Margin="126,0,0,0" TextWrapping="Wrap" Text="IP" VerticalAlignment="Top" FontSize="14"/>
+            <TextBlock HorizontalAlignment="Left" Margin="232,0,0,0" TextWrapping="Wrap" Text="端口" VerticalAlignment="Top" RenderTransformOrigin="1.292,0.525" FontSize="14"/>
+            <TextBlock Margin="0,24,190,0" TextWrapping="Wrap" Text="左手柄机器鱼" VerticalAlignment="Top" FontSize="14"/>
+            <TextBlock Margin="0,48,190,-4" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14"><Run Text="右"/><Run Text="手柄机器鱼"/></TextBlock>
+
+        </Grid>
 
     </Grid>
 </Window>

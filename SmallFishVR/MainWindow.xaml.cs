@@ -69,9 +69,9 @@ namespace SmallFishVR
             stopBitsBox.SelectedIndex = 0;
             TempStr = string.Empty;
             data.LeftHandFishIP = "192.168.4.2";
-            data.LeftHandPort = 1001;
+            data.LeftHandFishPort = 1001;
             data.RightHandFishIP = "192.168.4.3";
-            data.RightHandPort = 1002;
+            data.RightHandFishPort = 1002;
         }
 
         /// <summary>
@@ -242,7 +242,6 @@ namespace SmallFishVR
                 spSend.SetInit(SendData2Fish.Function.GetIPs);
                 Thread.Sleep(100);
                 spSend.SetInit(SendData2Fish.Function.CheckStatus);
-                MessageBox.Show("检查完成，请查看返回信息状态和IP", "提示信息", MessageBoxButton.OKCancel);
             }
             catch (System.Exception ex)
             {
@@ -539,9 +538,17 @@ namespace SmallFishVR
         #endregion
 
 
-        
+
 
         #region 手动控制机器鱼功能区（左手柄）
+
+        /// <summary>
+        /// 一旦变化，就把状态交给变量，方便读取（避免跨线程问题）
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LeftHandFishCheckBox_Checked(object sender, RoutedEventArgs e)
+            => isLeftHandFishChecked = (bool)leftHandFishCheckBox.IsChecked;
 
         /// <summary>
         /// 连接鱼
@@ -553,7 +560,7 @@ namespace SmallFishVR
             try
             {
                 spSend.SetInit(SendData2Fish.Function.SetMux, SendData2Fish.MuxType.Multi); //还没写Single的
-                spSend.SetNetwork(0, SendData2Fish.NetType.TCP, "192.168.4.2", 1001);
+                spSend.SetNetwork(0, SendData2Fish.NetType.TCP, data.LeftHandFishIP, data.LeftHandFishPort);
             }
             catch (System.Exception ex)
             {
@@ -625,6 +632,14 @@ namespace SmallFishVR
         #region 手动控制机器鱼功能区（右手柄）
 
         /// <summary>
+        /// 一旦变化，就把状态交给变量，方便读取（避免跨线程问题）
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RightHandFishCheckBox_Checked(object sender, RoutedEventArgs e)
+            => isRightHandFishChecked = (bool)rightHandFishCheckBox.IsChecked;
+
+        /// <summary>
         /// 连接鱼
         /// </summary>
         /// <param name="sender"></param>
@@ -634,7 +649,7 @@ namespace SmallFishVR
             try
             {
                 spSend.SetInit(SendData2Fish.Function.SetMux, SendData2Fish.MuxType.Multi); //还没写Single的
-                spSend.SetNetwork(1, SendData2Fish.NetType.TCP, "192.168.4.3", 1002);
+                spSend.SetNetwork(1, SendData2Fish.NetType.TCP, data.RightHandFishIP, data.RightHandFishPort);
             }
             catch (System.Exception ex)
             {
@@ -694,11 +709,9 @@ namespace SmallFishVR
 
         #endregion
 
-        private void LeftHandFishCheckBox_Checked(object sender, RoutedEventArgs e) 
-            => isLeftHandFishChecked = (bool)leftHandFishCheckBox.IsChecked;
+        
 
-        private void RightHandFishCheckBox_Checked(object sender, RoutedEventArgs e) 
-            => isRightHandFishChecked = (bool)rightHandFishCheckBox.IsChecked;
+        
 
     }
 
