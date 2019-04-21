@@ -6,6 +6,8 @@ using System.IO.Ports;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 
 namespace SmallFishVR
@@ -14,27 +16,40 @@ namespace SmallFishVR
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         #region 定义区
         private BridgeClass bridge; //新建一个VR类（从CLR）
-        DataStore data = new DataStore(); //新建数据存储对象
+        DataStore data; //新建数据存储对象
         SendData2Fish spSend = new SendData2Fish(); //新建继承的带处理数据的串口对象
         public string TempStr { get; set; } //委托临时使用的，提交给界面更新数据
+        public bool IsVRSave2FileChecked { get; set; } = false; //是否把VR数据存储成文件
+        public bool IsLeftHandFishChecked { get; set; } = true; //是否开启左手柄控制鱼
+        public bool IsRightHandFishChecked { get; set; } = true; //是否开启右手柄控制鱼
+
         private bool isVRControlStart = false; //VR控制是否开启
-        private bool isLeftHandFishChecked = true; //左手柄控制鱼是否开启
-        private bool isRightHandFishChecked = true; //右手柄控制鱼是否开启
-        
+
         Thread listenSPDataThread; //监听串口数据的线程
         Thread VRThread; //VR线程
         Thread listenVRThread; //监听VR数据线程，在有信息传来的时候也会报错
         Thread VRControlFishThread; //VR控制鱼的运动方向的控制
         
-        private void UpdateBox(string msg) //委托更新图形界面
+        /// <summary>
+        /// 委托更新图形界面
+        /// </summary>
+        /// <param name="msg">要添加到RichTextBox中的信息</param>
+        private void UpdateBox(string msg) 
         {
             Dispatcher.Invoke((ThreadStart)delegate () {
                 SPDataBox.AppendText(string.Format("{0}\r\n", msg)); });
         }
+
+        /// <summary>
+        /// 发送event，提醒数据已经改变
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "") 
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         #endregion
 
         #region 窗口主要功能区
@@ -42,10 +57,9 @@ namespace SmallFishVR
         public MainWindow()
         {
             InitializeComponent();
-            data.Init();
+            data = new DataStore();
             Bindings();
             DefaultSettings();
-
         }
 
         /// <summary>
@@ -56,6 +70,9 @@ namespace SmallFishVR
             setPortGrid.DataContext = data;
             VRGrid.DataContext = data;
             setIPPortGrid.DataContext = data;
+            VRSave2FileCheckBox.DataContext = this;
+            leftHandFishCheckBox.DataContext = this;
+            rightHandFishCheckBox.DataContext = this;
         }
 
         /// <summary>
@@ -302,6 +319,14 @@ namespace SmallFishVR
         }
 
         /// <summary>
+        /// 查看VR设备列表
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ShowVRDevicesButton_Click(object sender, RoutedEventArgs e)
+            => MessageBox.Show(bridge.GetDevices(), "VR设备列表");
+
+        /// <summary>
         /// 开启关闭VR的按钮
         /// </summary>
         /// <param name="sender"></param>
@@ -341,26 +366,31 @@ namespace SmallFishVR
                 data.HMDData = new List<double>(bridge.GetHMD());
                 data.LeftHandData = new List<double>(bridge.GetLeftHand());
                 data.RightHandData = new List<double>(bridge.GetRightHand());
-                FileStream fs = new FileStream("C:/useful/VRdata.txt", FileMode.Append, FileAccess.Write);
-                StreamWriter w = new StreamWriter(fs);
-                w.WriteLine("HMD: ");
-                foreach (var a in data.HMDData)
-                {
-                    w.Write(a.ToString() + ", ");
-                }
-                w.WriteLine("\nLeftHand: ");
-                foreach (var a in data.LeftHandData)
-                {
-                    w.Write(a.ToString() + ", ");
-                }
-                w.WriteLine("\nRightHand: ");
-                foreach (var a in data.RightHandData)
-                {
-                    w.Write(a.ToString() + ", ");
-                }
-                w.WriteLine("\n");
+                NotifyPropertyChanged();
                 Thread.Sleep(100);
-                w.Close();
+                if (IsVRSave2FileChecked)
+                {
+                    FileStream fs = new FileStream("../VRData.txt", FileMode.Append, FileAccess.Write);
+                    StreamWriter w = new StreamWriter(fs);
+                    w.WriteLine("HMD: ");
+                    foreach (var a in data.HMDData)
+                    {
+                        w.Write(a.ToString() + ", ");
+                    }
+                    w.WriteLine("\nLeftHand: ");
+                    foreach (var a in data.LeftHandData)
+                    {
+                        w.Write(a.ToString() + ", ");
+                    }
+                    w.WriteLine("\nRightHand: ");
+                    foreach (var a in data.RightHandData)
+                    {
+                        w.Write(a.ToString() + ", ");
+                    }
+                    w.WriteLine("\n");
+                    w.Close();
+                }
+                
 
                 if (bridge.GetIsStrGiven())
                     {
@@ -424,32 +454,32 @@ namespace SmallFishVR
              * 6 ~ 7： 手柄的状态的x, y
              */
             int[] divisionPoint = new int[] { 5, 25, 45, 65 }; //Stop-1-2-3-4的分界角度点
-            bool isStop = false;
+            bool isStop = false; //鱼在停止范围内，所有数据都不发送
             //bool isSent = false;
-            bool isChangedColor = false;
-            bool keepWhile = true;
-            while (keepWhile)
+            bool isChangedColor = false; //颜色改变完了的话，就不重复发送了，直到手柄恢复到0位置
+            bool keepWhileFlag = true; //颜色改变完了的话，就不重复发送了，直到手柄恢复到0位置
+            while (keepWhileFlag)
             {
-                Thread.Sleep(80);
+                Thread.Sleep(800); //这里不能太短了，测试发现VR的数据响应是1Hz，估计是电脑性能不够？？再加上鱼本身反应速度不快，就这样吧
                 
                 //对于两个机器鱼的适配
                 for (int i = 0; i < 2; i++)
                 {
-                    if (!isLeftHandFishChecked && !isRightHandFishChecked)
+                    if (!IsLeftHandFishChecked && !IsRightHandFishChecked)
                     {
                         MessageBox.Show("没有选择手柄控制，请至少选择一个", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        keepWhile = false;
+                        keepWhileFlag = false;
                         break;
                     }
                     if (i == 0)
                     {
-                        if (isLeftHandFishChecked) data.HandData = data.LeftHandData;
+                        if (IsLeftHandFishChecked) data.HandData = data.LeftHandData;
                         else continue;
                     }
                     Thread.Sleep(50);
                     if (i == 1)
                     {
-                        if (isRightHandFishChecked) data.HandData = data.RightHandData;
+                        if (IsRightHandFishChecked) data.HandData = data.RightHandData;
                         else continue;
                     }
 
@@ -537,18 +567,7 @@ namespace SmallFishVR
         }
         #endregion
 
-
-
-
         #region 手动控制机器鱼功能区（左手柄）
-
-        /// <summary>
-        /// 一旦变化，就把状态交给变量，方便读取（避免跨线程问题）
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void LeftHandFishCheckBox_Checked(object sender, RoutedEventArgs e)
-            => isLeftHandFishChecked = (bool)leftHandFishCheckBox.IsChecked;
 
         /// <summary>
         /// 连接鱼
@@ -632,14 +651,6 @@ namespace SmallFishVR
         #region 手动控制机器鱼功能区（右手柄）
 
         /// <summary>
-        /// 一旦变化，就把状态交给变量，方便读取（避免跨线程问题）
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void RightHandFishCheckBox_Checked(object sender, RoutedEventArgs e)
-            => isRightHandFishChecked = (bool)rightHandFishCheckBox.IsChecked;
-
-        /// <summary>
         /// 连接鱼
         /// </summary>
         /// <param name="sender"></param>
@@ -707,12 +718,13 @@ namespace SmallFishVR
         private void TurnRightButton2_Click(object sender, RoutedEventArgs e) 
             => spSend.SetMove(1, SendData2Fish.Direction.Right, (SendData2Fish.Speed)speedSlider.Value);
 
+
+
+
+
         #endregion
 
         
-
-        
-
     }
 
 }

@@ -15,26 +15,29 @@
         </Grid.ColumnDefinitions>
         <TextBlock Margin="0,0,10,5.5" TextWrapping="Wrap" FontSize="16" Height="44" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="100"><Run Text="by lsylusiyao"/><LineBreak/><Run Text="V 1.0"/></TextBlock>
         <Grid x:Name="setPortGrid" Margin="10,62,0,0" HorizontalAlignment="Left" Width="378" Height="139" VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150*"/>
+                <ColumnDefinition Width="229*"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="43*"/>
                 <RowDefinition Height="55*"/>
             </Grid.RowDefinitions>
-            <TextBlock HorizontalAlignment="Left" Margin="14.5,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="端口选择"/><Run Text="："/></TextBlock>
-            <ComboBox x:Name="portBox" HorizontalAlignment="Left" Margin="80,0,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding SpList}"/>
-            <TextBlock HorizontalAlignment="Left" Margin="14.5,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.RowSpan="2"><Run Text="波特率"/><Run Text="："/></TextBlock>
-            <ComboBox x:Name="baudRateBox" HorizontalAlignment="Left" Margin="80,37,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding BaudRate}"/>
-            <TextBlock HorizontalAlignment="Left" Margin="195,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="数据位数"/><Run Text="："/></TextBlock>
-            <ComboBox x:Name="dataBitsBox" HorizontalAlignment="Left" Margin="260,0,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding DataBits}"/>
+            <TextBlock HorizontalAlignment="Left" Margin="14,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="端口选择"/><Run Text="："/></TextBlock>
+            <ComboBox x:Name="portBox" HorizontalAlignment="Left" Margin="80,0,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding SpList}" Grid.ColumnSpan="2"/>
+            <TextBlock HorizontalAlignment="Left" Margin="14,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="波特率"/><Run Text="："/></TextBlock>
+            <ComboBox x:Name="baudRateBox" HorizontalAlignment="Left" Margin="80,37,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding BaudRate}" Grid.ColumnSpan="2"/>
+            <TextBlock HorizontalAlignment="Left" Margin="45.5,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Column="1"><Run Text="数据位数"/><Run Text="："/></TextBlock>
+            <ComboBox x:Name="dataBitsBox" HorizontalAlignment="Left" Margin="110.5,0,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding DataBits}" Grid.Column="1"/>
             <TextBlock HorizontalAlignment="Left" Margin="14,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.344,2.787" Grid.Row="1"><Run Text="校验"/><Run Text="方式"/><Run Text="："/></TextBlock>
-            <ComboBox x:Name="parityBox" HorizontalAlignment="Left" Margin="80,12,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding Parity}" Grid.Row="1"/>
-            <ComboBox x:Name="switchHandBox" Margin="80,48,0,0" Grid.Row="1" HorizontalAlignment="Left" Width="98" Height="21" VerticalAlignment="Top" ItemsSource="{Binding WhichHand}"/>
-            <TextBlock HorizontalAlignment="Left" Margin="14,48,0,0" TextWrapping="Wrap" Text="使用手柄：" VerticalAlignment="Top" Grid.Row="1"/>
+            <ComboBox x:Name="parityBox" HorizontalAlignment="Left" Margin="80,12,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding Parity}" Grid.Row="1" Grid.ColumnSpan="2"/>
 
-            <TextBlock HorizontalAlignment="Left" Margin="195,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="停止"/><Run Text="位数"/><Run Text="："/></TextBlock>
-            <ComboBox x:Name="stopBitsBox" HorizontalAlignment="Left" Margin="260,37,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding StopBits}"/>
-            <Button x:Name="openClosePortButton" Content="打开端口" HorizontalAlignment="Left" Margin="195,7.2,0,0" VerticalAlignment="Top" Width="67" IsEnabled="True" Click="OpenClosePortButton_Click" Height="26" Grid.Row="1"/>
-            <Button x:Name="checkStateButton" Content="查询机器鱼状态" HorizontalAlignment="Left" Margin="195,46.2,0,0" VerticalAlignment="Top" Width="127" Click="CheckStateButton_Click" IsEnabled="False" Height="26" Grid.Row="1"/>
-            <Button x:Name="ReCountCOMButton" Content="重新查询端口" HorizontalAlignment="Left" Margin="277,7.2,0,0" VerticalAlignment="Top" Width="81" Height="26" Click="ReCountCOMButton_Click" Grid.Row="1"/>
+            <TextBlock HorizontalAlignment="Left" Margin="45.5,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Column="1"><Run Text="停止"/><Run Text="位数"/><Run Text="："/></TextBlock>
+            <ComboBox x:Name="stopBitsBox" HorizontalAlignment="Left" Margin="110.5,37,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding StopBits}" Grid.Column="1"/>
+            <Button x:Name="openClosePortButton" Content="打开端口" HorizontalAlignment="Left" Margin="45.5,7,0,0" VerticalAlignment="Top" Width="67" IsEnabled="True" Click="OpenClosePortButton_Click" Height="26" Grid.Row="1" Grid.Column="1"/>
+            <Button x:Name="checkStateButton" Content="查询机器鱼状态" HorizontalAlignment="Left" Margin="45.5,46,0,0" VerticalAlignment="Top" Width="127" Click="CheckStateButton_Click" IsEnabled="False" Height="26" Grid.Row="1" Grid.Column="1"/>
+            <Button x:Name="ReCountCOMButton" Content="重新查询端口" HorizontalAlignment="Left" Margin="127.5,7,0,0" VerticalAlignment="Top" Width="81" Height="26" Click="ReCountCOMButton_Click" Grid.Row="1" Grid.Column="1"/>
+            <Button x:Name="startStopVRControlButton" Content="开启VR控制" HorizontalAlignment="Left" Margin="80,46,0,0" VerticalAlignment="Top" Width="76" Click="StartStopVRControlButton_Click" Height="26" Grid.Row="1" Grid.ColumnSpan="2"/>
 
         </Grid>
         <Grid Margin="22,206,662,39.5">
@@ -47,7 +50,7 @@
                 <Button x:Name="turnLeftButton" Content="左转(A)" HorizontalAlignment="Left" Margin="0,40,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="TurnLeftButton_Click"/>
                 <Slider x:Name="speedSlider" HorizontalAlignment="Left" Margin="47,85,0,0" VerticalAlignment="Top" Width="142" Maximum="3" SmallChange="1" Value="1" IsEnabled="False"/>
                 <TextBlock HorizontalAlignment="Left" Margin="0,85,0,0" TextWrapping="Wrap" Text="速度" VerticalAlignment="Top" FontSize="14"/>
-                <CheckBox x:Name="leftHandFishCheckBox" Content="左手柄机器鱼" HorizontalAlignment="Left" Margin="194,88,0,0" VerticalAlignment="Top" FontSize="14" IsChecked="True" Checked="LeftHandFishCheckBox_Checked"/>
+                <CheckBox x:Name="leftHandFishCheckBox" Content="左手柄机器鱼" HorizontalAlignment="Left" Margin="194,88,0,0" VerticalAlignment="Top" FontSize="14" IsChecked="{Binding IsLeftHandFishChecked,Mode=TwoWay}"/>
             </Grid>
             <TextBlock HorizontalAlignment="Left" Margin="102,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14"><Run FontWeight="Bold" Text="连接及手动控制框"/></TextBlock>
             <Grid Margin="10,153,8,17">
@@ -59,7 +62,7 @@
                 <Button x:Name="turnLeftButton2" Content="左转(A)" HorizontalAlignment="Left" Margin="0,40,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="TurnLeftButton2_Click"/>
                 <Slider x:Name="speedSlider2" HorizontalAlignment="Left" Margin="47,85,0,0" VerticalAlignment="Top" Width="143" Maximum="3" SmallChange="1" Value="1" IsEnabled="False"/>
                 <TextBlock HorizontalAlignment="Left" Margin="0,85,0,0" TextWrapping="Wrap" Text="速度" VerticalAlignment="Top" FontSize="14"/>
-                <CheckBox x:Name="rightHandFishCheckBox" Content="右手柄机器鱼" HorizontalAlignment="Left" Margin="190,86,0,0" VerticalAlignment="Top" FontSize="14" IsChecked="True" Checked="RightHandFishCheckBox_Checked"/>
+                <CheckBox x:Name="rightHandFishCheckBox" Content="右手柄机器鱼" HorizontalAlignment="Left" Margin="190,86,0,0" VerticalAlignment="Top" FontSize="14" IsChecked="{Binding IsRightHandFishChecked,Mode=TwoWay}"/>
             </Grid>
         </Grid>
         <TextBlock HorizontalAlignment="Left" Margin="10,0,0,10.5" TextWrapping="Wrap" Width="60" Height="13" VerticalAlignment="Bottom"><Run FontWeight="Bold" Text="VR状态："/></TextBlock>
@@ -78,34 +81,34 @@
             <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="HMD" VerticalAlignment="Top" Margin="75,41,0,0" Height="15" Width="37"/>
             <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="左手柄" VerticalAlignment="Top" Margin="149,41,0,0" Height="16" Width="36"/>
             <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="右手柄" VerticalAlignment="Top" Margin="225,41,0,0" Height="16" Width="36"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="70" Margin="69,64,0,0" Text="{Binding HMDData[0]}"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding leftHandData[0]}" VerticalAlignment="Top" Width="70" Margin="143,64,0,0"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding A[0],Mode=OneTime}" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,64,0,0"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding HMDData[1]}" VerticalAlignment="Top" Width="70" Margin="69,93,0,0"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding leftHandData[1]}" VerticalAlignment="Top" Width="70" Margin="143,93,0,0"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding rightHandData[1]}" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,93,0,0"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding HMDData[2]}" VerticalAlignment="Top" Width="70" Margin="69,122,0,0"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding leftHandData[2]}" VerticalAlignment="Top" Width="70" Margin="143,122,0,0" BorderThickness="1"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding rightHandData[2]}" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,122,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="70" Margin="69,64,0,0" Text="{Binding HMDData[0],Mode=OneWay}"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding LeftHandData[0],Mode=OneWay}" VerticalAlignment="Top" Width="70" Margin="143,64,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding RightHandData[0],Mode=OneWay}" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,64,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding HMDData[1],Mode=OneWay}" VerticalAlignment="Top" Width="70" Margin="69,93,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding LeftHandData[1],Mode=OneWay}" VerticalAlignment="Top" Width="70" Margin="143,93,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding RightHandData[1],Mode=OneWay}" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,93,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding HMDData[2],Mode=OneWay}" VerticalAlignment="Top" Width="70" Margin="69,122,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding LeftHandData[2],Mode=OneWay}" VerticalAlignment="Top" Width="70" Margin="143,122,0,0" BorderThickness="1"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding RightHandData[2],Mode=OneWay}" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,122,0,0"/>
             <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="x" VerticalAlignment="Top" Margin="51,67,0,0" Height="16" Width="7"/>
             <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="y" VerticalAlignment="Top" Margin="51,94,0,0" Height="16" Width="7"/>
             <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="z" VerticalAlignment="Top" Margin="51,220,0,0" Height="16" Width="6"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding HMDData[3]}" VerticalAlignment="Top" Width="70" Margin="69,159,0,0"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding leftHandData[3]}" VerticalAlignment="Top" Width="70" Margin="143,159,0,0"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding rightHandData[3]}" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,159,0,0"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding HMDData[4]}" VerticalAlignment="Top" Width="70" Margin="69,188,0,0"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding leftHandData[4]}" VerticalAlignment="Top" Width="70" Margin="143,188,0,0"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding rightHandData[4]}" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,188,0,0"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding HMDData[5]}" VerticalAlignment="Top" Width="70" Margin="69,217,0,0"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding leftHandData[5]}" VerticalAlignment="Top" Width="70" Margin="143,217,0,0"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding rightHandData[5]}" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,217,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding HMDData[3],Mode=OneWay}" VerticalAlignment="Top" Width="70" Margin="69,159,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding LeftHandData[3],Mode=OneWay}" VerticalAlignment="Top" Width="70" Margin="143,159,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding RightHandData[3],Mode=OneWay}" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,159,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding HMDData[4],Mode=OneWay}" VerticalAlignment="Top" Width="70" Margin="69,188,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding LeftHandData[4],Mode=OneWay}" VerticalAlignment="Top" Width="70" Margin="143,188,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding RightHandData[4],Mode=OneWay}" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,188,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding HMDData[5],Mode=OneWay}" VerticalAlignment="Top" Width="70" Margin="69,217,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding LeftHandData[5],Mode=OneWay}" VerticalAlignment="Top" Width="70" Margin="143,217,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding RightHandData[5],Mode=OneWay}" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,217,0,0"/>
             <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="x" VerticalAlignment="Top" Margin="51,162,0,0" Height="16" Width="7"/>
             <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="y" VerticalAlignment="Top" Margin="51,189,0,0" Height="16" Width="7"/>
             <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="欧拉角" VerticalAlignment="Top" Margin="4,162,0,0" Height="16" Width="36"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding leftHandData[6]}" VerticalAlignment="Top" Width="70" Margin="143,252,0,0"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding rightHandData[6]}" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,252,0,0"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding leftHandData[7]}" VerticalAlignment="Top" Width="70" Margin="143,282,0,0"/>
-            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding rightHandData[7]}" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,282,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding LeftHandData[6],Mode=OneWay}" VerticalAlignment="Top" Width="70" Margin="143,252,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding RightHandData[6],Mode=OneWay}" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,252,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding LeftHandData[7],Mode=OneWay}" VerticalAlignment="Top" Width="70" Margin="143,282,0,0"/>
+            <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding RightHandData[7],Mode=OneWay}" VerticalAlignment="Top" Width="70" RenderTransformOrigin="2.865,0.623" Margin="222,282,0,0"/>
             <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="x" VerticalAlignment="Top" Margin="50,255,0,0" Height="16" Width="7"/>
             <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="y" VerticalAlignment="Top" Margin="50,282,0,0" Height="16" Width="7"/>
             <TextBlock HorizontalAlignment="Left" Height="18" Margin="92,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="148" TextAlignment="Center" FontSize="14"><Run FontWeight="Bold" Text="VR数据显示"/></TextBlock>
@@ -118,9 +121,8 @@
         <Button x:Name="clearButton" Content="清空输出" HorizontalAlignment="Left" Margin="497,380,0,0" VerticalAlignment="Top" Width="75" Click="ClearButton_Click"/>
         <TextBlock HorizontalAlignment="Left" Height="13" Margin="340,0,0,10.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="60"><Run FontWeight="Bold" Text="控制"/><Run FontWeight="Bold" Text="状态："/></TextBlock>
         <TextBlock x:Name="VRControlStateBox" HorizontalAlignment="Left" Height="15" Margin="400,0,0,8.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="58" Text="VR未控制"/>
-        <Button x:Name="startStopVRControlButton" Content="开启VR控制" HorizontalAlignment="Left" Margin="280,24,0,0" VerticalAlignment="Top" Width="76" Click="StartStopVRControlButton_Click" Height="26"/>
         <Button x:Name="InitVRButton" Content="初始化VR" HorizontalAlignment="Left" Margin="24,26,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="InitVRButton_Click"/>
-        <Button x:Name="startStopVRButton" Content="开始监听VR" HorizontalAlignment="Left" Margin="150,26,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="StartStopVRButton_Click" IsEnabled="False"/>
+        <Button x:Name="startStopVRButton" Content="开始监听VR" HorizontalAlignment="Left" Margin="207,26,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="StartStopVRButton_Click" IsEnabled="False"/>
         <Grid x:Name="setIPPortGrid" Margin="393,413,0,0" Height="80" VerticalAlignment="Top" HorizontalAlignment="Left" Width="290">
             <TextBox HorizontalAlignment="Left" Height="22" Margin="92,20,0,0" TextWrapping="Wrap" Text="{Binding LeftHandFishIP,Mode=TwoWay}" VerticalAlignment="Top" Width="120"/>
             <TextBox HorizontalAlignment="Left" Height="22" Margin="92,46,0,0" TextWrapping="Wrap" Text="{Binding RightHandFishIP,Mode=TwoWay}" VerticalAlignment="Top" Width="120"/>
@@ -132,6 +134,8 @@
             <TextBlock Margin="0,48,190,-4" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14"><Run Text="右"/><Run Text="手柄机器鱼"/></TextBlock>
 
         </Grid>
+        <CheckBox x:Name="VRSave2FileCheckBox" Content="VR存储到文件" HorizontalAlignment="Left" Margin="292,31,0,0" VerticalAlignment="Top" IsChecked="{Binding IsVRSave2FileChecked,Mode=OneWayToSource}"/>
+        <Button x:Name="showVRDevicesButton" Content="查看VR设备" HorizontalAlignment="Left" Margin="114,26,0,0" VerticalAlignment="Top" Width="84" Height="26" Click="ShowVRDevicesButton_Click"/>
 
     </Grid>
 </Window>
