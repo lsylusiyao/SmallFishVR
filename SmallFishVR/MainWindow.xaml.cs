@@ -481,7 +481,7 @@ namespace SmallFishVR
              * 3 ~ 5： 欧拉角x, y, z的度数（角度）
              * 6 ~ 7： 手柄的状态的x, y
              */
-            int[] divisionPoint = new int[] { 5, 25, 45, 65 }; //Stop-1-2-3-4的分界角度点
+            int[] divisionPoint = new int[] { 15, 25, 40, 50 }; //Stop-1-2-3-4的分界角度点
             bool isStop = false; //鱼在停止范围内，所有数据都不发送
             //bool isSent = false;
             bool isChangedColor = false; //颜色改变完了的话，就不重复发送了，直到手柄恢复到0位置
