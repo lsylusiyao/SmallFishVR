@@ -8,6 +8,7 @@
 #include "ViveInputClass.h"
 
 using std::string;
+using std::to_string;
 // Destructor
 ViveInputClass::~ViveInputClass() {
 	if (m_pHMD != NULL)
@@ -698,7 +699,7 @@ string ViveInputClass::PrintDevices() {
 		switch (trackedDeviceClass) {
 		case vr::ETrackedDeviceClass::TrackedDeviceClass_HMD:
 			// print stuff for the HMD here, see controller stuff in next case block
-			s = "Device %d: [HMD]", unDevice;
+			s += "Device "+ to_string(unDevice) +": [HMD]" ;
 			break;
 
 		case vr::ETrackedDeviceClass::TrackedDeviceClass_Controller:
@@ -709,19 +710,19 @@ string ViveInputClass::PrintDevices() {
 			switch (vr::VRSystem()->GetControllerRoleForTrackedDeviceIndex(unDevice)) {
 			case vr::TrackedControllerRole_Invalid:
 				// invalid hand...
-				s += "Device %d: [Invalid Controller]", unDevice;
+				s += "Device " + to_string(unDevice) + ": [Invalid Controller]";
 				break;
 
 			case vr::TrackedControllerRole_LeftHand:
-				s += "Device %d: [Controller - Left]", unDevice;
+				s += "Device " + to_string(unDevice) + ": [Controller - Left]";
 				break;
 
 			case vr::TrackedControllerRole_RightHand:
-				s += "Device %d: [Controller - Right]", unDevice;
+				s += "Device " + to_string(unDevice) + ": [Controller - Right]";
 				break;
 
 			case vr::TrackedControllerRole_Treadmill:
-				s += "Device %d: [Treadmill]", unDevice;
+				s += "Device " + to_string(unDevice) + ": [Treadmill]";
 				break;
 			}
 
@@ -730,25 +731,25 @@ string ViveInputClass::PrintDevices() {
 		case vr::ETrackedDeviceClass::TrackedDeviceClass_GenericTracker:
 			// print stuff for the HMD here, see controller stuff in next case block
 
-			s += "Device %d: [GenericTracker]", unDevice;
+			s += "Device " + to_string(unDevice) + ": [GenericTracker]";
 			break;
 
 		case vr::ETrackedDeviceClass::TrackedDeviceClass_TrackingReference:
 			// print stuff for the HMD here, see controller stuff in next case block
 
-			s += "Device %d: [TrackingReference]", unDevice;
+			s += "Device " + to_string(unDevice) + ": [TrackingReference]";
 			break;
 
 		case vr::ETrackedDeviceClass::TrackedDeviceClass_DisplayRedirect:
 			// print stuff for the HMD here, see controller stuff in next case block
 
-			s += "Device %d: [DisplayRedirect]", unDevice;
+			s += "Device " + to_string(unDevice) + ": [DisplayRedirect]";
 			break;
 
 		case vr::ETrackedDeviceClass::TrackedDeviceClass_Invalid:
 			// print stuff for the HMD here, see controller stuff in next case block
 
-			s += "Device %d: [Invalid]", unDevice;
+			s += "Device " + to_string(unDevice) + ": [Invalid]";
 			break;
 
 		}
@@ -761,8 +762,10 @@ string ViveInputClass::PrintDevices() {
 
 		char serialnumber[1024];
 		vr::VRSystem()->GetStringTrackedDeviceProperty(unDevice, vr::ETrackedDeviceProperty::Prop_SerialNumber_String, serialnumber, sizeof(serialnumber));
-
-		s += " %s - %s [%s]\n", manufacturer, modelnumber, serialnumber;
+		char buffer[1024];
+		sprintf_s(buffer, " %s - %s [%s]\n", manufacturer, modelnumber, serialnumber);
+		s += buffer;
+		
 	}
 	s += "---------------------------\nEnd of device list\n\n";
 	return s;

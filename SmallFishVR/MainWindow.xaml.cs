@@ -33,7 +33,12 @@ namespace SmallFishVR
         Thread VRThread; //VR线程
         Thread listenVRThread; //监听VR数据线程，在有信息传来的时候也会报错
         Thread VRControlFishThread; //VR控制鱼的运动方向的控制
-        
+
+        public double[] LeftHandData { set; get; } = new double[8];
+        public double[] RightHandData { set; get; } = new double[8];
+        public double[] HandData { set; get; } = null;
+        public double[] HMDData { set; get; } = new double[6];
+
         /// <summary>
         /// 委托更新图形界面
         /// </summary>
@@ -68,7 +73,7 @@ namespace SmallFishVR
         void Bindings()
         {
             setPortGrid.DataContext = data;
-            VRGrid.DataContext = data;
+            VRGrid.DataContext = this;
             setIPPortGrid.DataContext = data;
             VRSave2FileCheckBox.DataContext = this;
             leftHandFishCheckBox.DataContext = this;
@@ -304,10 +309,11 @@ namespace SmallFishVR
                 try
                 {
                     bridge = new BridgeClass();
-                    startStopVRButton.IsEnabled = true;
                     VRThread = new Thread(bridge.Run);
                     listenVRThread = new Thread(ListenVRThread);
+                    startStopVRButton.IsEnabled = true;
                     showVRDevicesButton.IsEnabled = true;
+                    setDataZeroButton.IsEnabled = true;
                 }
                 catch (System.Exception ex)
                 {
@@ -348,6 +354,8 @@ namespace SmallFishVR
                 Thread.Sleep(20);
                 bridge.Dispose();
                 startStopVRButton.IsEnabled = false;
+                showVRDevicesButton.IsEnabled = false;
+                setDataZeroButton.IsEnabled = false;
                 startStopVRButton.Content = "开始监听VR";
                 VRStateText.Text = "未连接";
                 MessageBox.Show("监听VR已经停止", "提示");
@@ -362,29 +370,35 @@ namespace SmallFishVR
             
             while (VRThread.IsAlive)
             {
-                // 绑定只能用List之类的类型（集成INotifyPropertyChanged的）
-                // TODO：这里会不会因为更新了指针指向而不更新？
-                data.HMDData = new List<double>(bridge.GetHMD());
-                data.LeftHandData = new List<double>(bridge.GetLeftHand());
-                data.RightHandData = new List<double>(bridge.GetRightHand());
-                NotifyPropertyChanged();
+                data.HMDDataOrigin = bridge.GetHMD();
+                data.LeftHandDataOrigin = bridge.GetLeftHand();
+                data.RightHandDataOrigin = bridge.GetRightHand();
+                for (int i = 0; i < LeftHandData.Length; i++)
+                {
+                    if (i < 6) HMDData[i] = data.HMDDataOrigin[i] - data.HMDZero[i];
+                    LeftHandData[i] = data.LeftHandDataOrigin[i] - data.LeftHandZero[i];
+                    RightHandData[i] = data.RightHandDataOrigin[i] - data.RightHandZero[i];
+                }
+                NotifyPropertyChanged(nameof(HMDData));
+                NotifyPropertyChanged(nameof(LeftHandData));
+                NotifyPropertyChanged(nameof(RightHandData));
                 Thread.Sleep(100);
                 if (IsVRSave2FileChecked)
                 {
                     FileStream fs = new FileStream("../VRData.txt", FileMode.Append, FileAccess.Write);
                     StreamWriter w = new StreamWriter(fs);
                     w.WriteLine("HMD: ");
-                    foreach (var a in data.HMDData)
+                    foreach (var a in HMDData)
                     {
                         w.Write(a.ToString() + ", ");
                     }
                     w.WriteLine("\nLeftHand: ");
-                    foreach (var a in data.LeftHandData)
+                    foreach (var a in LeftHandData)
                     {
                         w.Write(a.ToString() + ", ");
                     }
                     w.WriteLine("\nRightHand: ");
-                    foreach (var a in data.RightHandData)
+                    foreach (var a in RightHandData)
                     {
                         w.Write(a.ToString() + ", ");
                     }
@@ -404,6 +418,19 @@ namespace SmallFishVR
                     }
                 Thread.Sleep(15);
             }
+        }
+
+        /// <summary>
+        /// 设置数据零点
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SetDataZeroButton_Click(object sender, RoutedEventArgs e)
+        {
+            //在data中已经new了一个区域，因此直接赋值就行
+            data.HMDDataOrigin.CopyTo(data.HMDZero, 0);
+            data.LeftHandDataOrigin.CopyTo(data.LeftHandZero, 0);
+            data.RightHandDataOrigin.CopyTo(data.RightHandZero, 0);
         }
 
         /// <summary>
@@ -474,28 +501,28 @@ namespace SmallFishVR
                     }
                     if (i == 0)
                     {
-                        if (IsLeftHandFishChecked) data.HandData = data.LeftHandData;
+                        if (IsLeftHandFishChecked) HandData = LeftHandData;
                         else continue;
                     }
                     Thread.Sleep(50);
                     if (i == 1)
                     {
-                        if (IsRightHandFishChecked) data.HandData = data.RightHandData;
+                        if (IsRightHandFishChecked) HandData = RightHandData;
                         else continue;
                     }
 
                     #region 设置颜色部分
 
-                    if (data.HandData[4] < divisionPoint[0] && data.HandData[4] > -divisionPoint[0]) { isChangedColor = false; }
+                    if (HandData[4] < divisionPoint[0] && HandData[4] > -divisionPoint[0]) { isChangedColor = false; }
                     else
                     {
-                        spSend.SetColorCycle(i, data.HandData[4] > 0 ? '-' : '+', isChangedColor);
+                        spSend.SetColorCycle(i, HandData[4] > 0 ? '-' : '+', isChangedColor);
                         isChangedColor = true; //每次转手柄，颜色只改变一次，直到恢复到初始位置
                     }
                     #endregion
 
-                    if (data.HandData[3] < divisionPoint[0] && data.HandData[3] > -divisionPoint[0] &&
-                        data.HandData[5] < divisionPoint[0] && data.HandData[5] > -divisionPoint[0]) //在一开始的范围内就认为停止
+                    if (HandData[3] < divisionPoint[0] && HandData[3] > -divisionPoint[0] &&
+                        HandData[5] < divisionPoint[0] && HandData[5] > -divisionPoint[0]) //在一开始的范围内就认为停止
                     {
                         spSend.SetMove(i, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
                         //isSent = false;
@@ -503,7 +530,7 @@ namespace SmallFishVR
                     } //这里速度随便给
                     else
                     {
-                        if (data.HandData[3] > divisionPoint[0]) //左右任意，只要前后足够靠后，就认为停止
+                        if (HandData[3] > divisionPoint[0]) //左右任意，只要前后足够靠后，就认为停止
                         {
                             spSend.SetMove(i, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
                             isStop = true;
@@ -513,25 +540,25 @@ namespace SmallFishVR
                         #region 左右转发送数据
 
                         //只有左右方向恢复，鱼才会前进运动
-                        if (data.HandData[5] <= divisionPoint[1] || data.HandData[5] >= -divisionPoint[1])
+                        if (HandData[5] <= divisionPoint[1] || HandData[5] >= -divisionPoint[1])
                         {
                             spSend.SetMove(i,
-                              data.HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
+                              HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
                               SendData2Fish.Speed.VeryLow, isStop);
                             //isSent = true;
                         }
-                        else if (data.HandData[5] <= divisionPoint[2] || data.HandData[5] >= -divisionPoint[2])
+                        else if (HandData[5] <= divisionPoint[2] || HandData[5] >= -divisionPoint[2])
                         {
                             spSend.SetMove(i,
-                              data.HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
+                              HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
                               SendData2Fish.Speed.Low, isStop);
                             continue;
                             //isSent = true;
                         }
-                        else if (data.HandData[5] <= divisionPoint[3] || data.HandData[5] >= -divisionPoint[3])
+                        else if (HandData[5] <= divisionPoint[3] || HandData[5] >= -divisionPoint[3])
                         {
                             spSend.SetMove(i,
-                              data.HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
+                              HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
                               SendData2Fish.Speed.Medium, isStop);
                             continue;
                             //isSent = true;
@@ -539,7 +566,7 @@ namespace SmallFishVR
                         else
                         {
                             spSend.SetMove(i,
-                              data.HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
+                              HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
                               SendData2Fish.Speed.High, isStop);
                             continue;
                             //isSent = true;
@@ -548,14 +575,14 @@ namespace SmallFishVR
 
                         #region 前进发送数据
 
-                        if (data.HandData[3] > -divisionPoint[0] && data.HandData[3] < 0)
+                        if (HandData[3] > -divisionPoint[0] && HandData[3] < 0)
                         {
                             //这条其实不写也行，反正应该到不了这个区域
                             spSend.SetMove(i, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
                         }
-                        else if (data.HandData[3] > -divisionPoint[1])
+                        else if (HandData[3] > -divisionPoint[1])
                         { spSend.SetMove(i, SendData2Fish.Direction.Forward, SendData2Fish.Speed.Low); }
-                        else if (data.HandData[3] > -divisionPoint[2])
+                        else if (HandData[3] > -divisionPoint[2])
                         { spSend.SetMove(i, SendData2Fish.Direction.Forward, SendData2Fish.Speed.Medium); }
                         else { spSend.SetMove(i, SendData2Fish.Direction.Forward, SendData2Fish.Speed.High); }
 
@@ -718,6 +745,7 @@ namespace SmallFishVR
         /// <param name="e"></param>
         private void TurnRightButton2_Click(object sender, RoutedEventArgs e) 
             => spSend.SetMove(1, SendData2Fish.Direction.Right, (SendData2Fish.Speed)speedSlider.Value);
+
 
 
 

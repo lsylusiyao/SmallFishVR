@@ -45,28 +45,13 @@ namespace SmallFishVR
         /// </summary>
         public List<string> Parity { get; } = new List<string> { "NONE", "ODD", "EVEN" };
 
-        /// <summary>
-        /// HMD的所有数据
-        /// </summary>
-        public List<double> HMDData { get; set; } = new List<double>(new double[6]);
+        public double[] HMDZero { set; get; } = new double[6];
+        public double[] LeftHandZero { set; get; } = new double[8];
+        public double[] RightHandZero { set; get; } = new double[8];
 
-        /// <summary>
-        /// 左手柄的所有数据
-        /// </summary>
-        public List<double> LeftHandData { get; set; } = new List<double>(new double[8]);
-
-        /// <summary>
-        /// 右手柄的所有数据
-        /// </summary>
-        public List<double> RightHandData { get; set; } = new List<double>(new double[8]);
-
-
-        /// <summary>
-        /// 选择的手柄的数据（指针）
-        /// </summary>
-        public List<double> HandData { get; set; }
-        
-
+        public double[] HMDDataOrigin { set; get; }
+        public double[] LeftHandDataOrigin { set; get; }
+        public double[] RightHandDataOrigin { set; get; }
         /// <summary>
         /// 定义结构的对象
         /// </summary>
