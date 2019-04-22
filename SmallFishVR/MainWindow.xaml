@@ -135,7 +135,7 @@
 
         </Grid>
         <CheckBox x:Name="VRSave2FileCheckBox" Content="VR存储到文件" HorizontalAlignment="Left" Margin="292,31,0,0" VerticalAlignment="Top" IsChecked="{Binding IsVRSave2FileChecked,Mode=OneWayToSource}"/>
-        <Button x:Name="showVRDevicesButton" Content="查看VR设备" HorizontalAlignment="Left" Margin="114,26,0,0" VerticalAlignment="Top" Width="84" Height="26" Click="ShowVRDevicesButton_Click"/>
+        <Button x:Name="showVRDevicesButton" Content="查看VR设备" HorizontalAlignment="Left" Margin="114,26,0,0" VerticalAlignment="Top" Width="84" Height="26" Click="ShowVRDevicesButton_Click" IsEnabled="False"/>
 
     </Grid>
 </Window>

@@ -305,8 +305,9 @@ namespace SmallFishVR
                 {
                     bridge = new BridgeClass();
                     startStopVRButton.IsEnabled = true;
-                    VRThread = new Thread(()=> { bridge.Run(); });
+                    VRThread = new Thread(bridge.Run);
                     listenVRThread = new Thread(ListenVRThread);
+                    showVRDevicesButton.IsEnabled = true;
                 }
                 catch (System.Exception ex)
                 {
