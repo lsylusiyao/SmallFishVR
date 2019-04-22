@@ -5,7 +5,10 @@
 // Shows how to extract basic tracking data
 //
 
+#define _USE_MATH_DEFINES
+
 #include "ViveInputClass.h"
+#include <math.h>
 
 using std::string;
 using std::to_string;
@@ -322,11 +325,41 @@ vr::HmdVector3_t ViveInputClass::GetPosition(vr::HmdMatrix34_t matrix) {
 	return vector;
 }
 
-vr::HmdVector3_t ViveInputClass::QuaternionToEulerAngle(vr::HmdQuaternion_t matrix) {
+//vr::HmdVector3_t ViveInputClass::QuaternionToEulerAngle(vr::HmdQuaternion_t matrix) {
+//	vr::HmdVector3_t vector;
+//	vector.v[0] = atan2(2 * (matrix.w*matrix.x + matrix.y*matrix.z), 1 - 2 * (matrix.x*matrix.x + matrix.y*matrix.y));
+//	vector.v[1] = asin(2 * (matrix.w*matrix.y - matrix.z*matrix.x));
+//	vector.v[2] = atan2(2 * (matrix.w*matrix.z + matrix.x*matrix.y), 1 - 2 * (matrix.y*matrix.y + matrix.z*matrix.z));
+//
+//	return vector;
+//}
+
+vr::HmdVector3_t ViveInputClass::QuaternionToEulerAngle(vr::HmdQuaternion_t q1) {
+	//formula derivation reference  http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/index.htm
 	vr::HmdVector3_t vector;
-	vector.v[0] = atan2(2 * (matrix.w*matrix.x + matrix.y*matrix.z), 1 - 2 * (matrix.x*matrix.x + matrix.y*matrix.y));
-	vector.v[1] = asin(2 * (matrix.w*matrix.y - matrix.z*matrix.x));
-	vector.v[2] = atan2(2 * (matrix.w*matrix.z + matrix.x*matrix.y), 1 - 2 * (matrix.y*matrix.y + matrix.z*matrix.z));
+	double sqw = q1.w*q1.w;
+	double sqx = q1.x*q1.x;
+	double sqy = q1.y*q1.y;
+	double sqz = q1.z*q1.z;
+	double unit = sqx + sqy + sqz + sqw; // if normalised is one, otherwise is correction factor
+	double test = q1.x*q1.y + q1.z*q1.w;
+	if (test > 0.499*unit) { // singularity at north pole
+		vector.v[0] = 2 * atan2(q1.x, q1.w);
+		vector.v[1] =  M_PI_2;
+		vector.v[2] = 0;
+		return vector;
+	}
+	if (test < -0.499*unit) { // singularity at south pole
+		vector.v[0] = -2 * atan2(q1.x, q1.w);
+		vector.v[1] = -M_PI_2;
+		vector.v[2] = 0;
+		return vector;
+	}
+	vector.v[0] = atan2(2 * q1.y*q1.w - 2 * q1.x*q1.z, sqx - sqy - sqz + sqw);
+	vector.v[1] = asin(2 * test / unit);
+	vector.v[2] = atan2(2 * q1.x*q1.w - 2 * q1.y*q1.z, -sqx + sqy - sqz + sqw);
+
+
 
 	return vector;
 }

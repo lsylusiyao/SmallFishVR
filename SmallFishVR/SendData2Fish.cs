@@ -166,7 +166,7 @@ namespace SmallFishVR
         /// <param name="direction">方向</param>
         /// <param name="speed">速度</param>
         /// <param name="isSentFlag">限制是否执行这个函数，true表示不再执行</param>
-        public void SetMove(int which, Direction direction, Speed speed, bool isSentFlag = false)
+        public void SetMove(int which, Direction direction, Speed speed = Speed.VeryLow, bool isSentFlag = false)
         {
             if(!isSentFlag)
             {

@@ -71,12 +71,12 @@
         <TextBlock x:Name="portStateText" HorizontalAlignment="Left" Height="15" Margin="182,0,0,8.5" TextWrapping="Wrap" Text="未打开" VerticalAlignment="Bottom" Width="48"/>
         <TextBlock HorizontalAlignment="Left" Height="13" Margin="230,0,0,10.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="60"><Run FontWeight="Bold" Text="连接状态："/></TextBlock>
         <TextBlock x:Name="connectStateText" HorizontalAlignment="Left" Height="15" Margin="292,0,0,8.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="48"><Run Text="未"/><Run Text="连接"/></TextBlock>
-        <Grid x:Name="VRGrid" Margin="701,42,0,0" Height="326" VerticalAlignment="Top" HorizontalAlignment="Left" Width="300">
+        <Grid x:Name="VRGrid" Margin="701,42,0,0" Height="344" VerticalAlignment="Top" HorizontalAlignment="Left" Width="300">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="位置" VerticalAlignment="Bottom" Margin="9,0,0,258" Height="16" Width="24"/>
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="状态" VerticalAlignment="Top" Margin="10,256,0,0" Height="16" Width="24"/>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="触摸板" VerticalAlignment="Top" Margin="5,256,0,0" Height="16" Width="40"/>
             <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="z" VerticalAlignment="Top" Margin="51,125,0,0" Height="16" Width="6"/>
             <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="HMD" VerticalAlignment="Top" Margin="75,41,0,0" Height="15" Width="37"/>
             <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="左手柄" VerticalAlignment="Top" Margin="149,41,0,0" Height="16" Width="36"/>
@@ -117,14 +117,14 @@
 
         </Grid>
         <Button x:Name="exitButton" Content="退出程序" Margin="0,0,131,11.5" RenderTransformOrigin="0.758,0.817" HorizontalAlignment="Right" Width="66" Height="32" VerticalAlignment="Bottom" Click="ExitButton_Click"/>
-        <RichTextBox x:Name="SPDataBox" Height="326" Margin="393,42,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="290" TextChanged="SPDataBox_TextChanged" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+        <RichTextBox x:Name="SPDataBox" Height="213" Margin="393,42,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="303" TextChanged="SPDataBox_TextChanged" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
         <TextBlock Margin="496,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="26" FontSize="14" HorizontalAlignment="Left" Width="90"><Run FontWeight="Bold" Text="串口数据显示"/></TextBlock>
-        <Button x:Name="clearButton" Content="清空输出" HorizontalAlignment="Left" Margin="497,380,0,0" VerticalAlignment="Top" Width="75" Click="ClearButton_Click"/>
+        <Button x:Name="clearButton" Content="清空输出" HorizontalAlignment="Left" Margin="621,400,0,0" VerticalAlignment="Top" Width="75" Click="ClearButton_Click" RenderTransformOrigin="0.224,1.219"/>
         <TextBlock HorizontalAlignment="Left" Height="13" Margin="340,0,0,10.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="60"><Run FontWeight="Bold" Text="控制"/><Run FontWeight="Bold" Text="状态："/></TextBlock>
         <TextBlock x:Name="VRControlStateBox" HorizontalAlignment="Left" Height="15" Margin="400,0,0,8.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="58" Text="VR未控制"/>
         <Button x:Name="InitVRButton" Content="初始化VR" HorizontalAlignment="Left" Margin="24,26,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="InitVRButton_Click"/>
         <Button x:Name="startStopVRButton" Content="开始监听VR" HorizontalAlignment="Left" Margin="207,26,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="StartStopVRButton_Click" IsEnabled="False"/>
-        <Grid x:Name="setIPPortGrid" Margin="393,413,0,0" Height="80" VerticalAlignment="Top" HorizontalAlignment="Left" Width="290">
+        <Grid x:Name="setIPPortGrid" Margin="393,424,0,0" Height="78" VerticalAlignment="Top" HorizontalAlignment="Left" Width="290">
             <TextBox HorizontalAlignment="Left" Height="22" Margin="92,20,0,0" TextWrapping="Wrap" Text="{Binding LeftHandFishIP,Mode=TwoWay}" VerticalAlignment="Top" Width="120"/>
             <TextBox HorizontalAlignment="Left" Height="22" Margin="92,46,0,0" TextWrapping="Wrap" Text="{Binding RightHandFishIP,Mode=TwoWay}" VerticalAlignment="Top" Width="120"/>
             <TextBox HorizontalAlignment="Left" Height="22" Margin="218,20,0,0" TextWrapping="Wrap" Text="{Binding LeftHandFishPort,Mode=TwoWay}" VerticalAlignment="Top" Width="54"/>
@@ -137,6 +137,10 @@
         </Grid>
         <CheckBox x:Name="VRSave2FileCheckBox" Content="VR存储到文件" HorizontalAlignment="Left" Margin="292,31,0,0" VerticalAlignment="Top" IsChecked="{Binding IsVRSave2FileChecked,Mode=OneWayToSource}"/>
         <Button x:Name="showVRDevicesButton" Content="查看VR设备" HorizontalAlignment="Left" Margin="114,26,0,0" VerticalAlignment="Top" Width="84" Height="26" Click="ShowVRDevicesButton_Click" IsEnabled="False"/>
+        <TextBlock Margin="496,260,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="26" FontSize="14" HorizontalAlignment="Left" Width="90"><Run FontWeight="Bold" Text="VR返回"/><Run FontWeight="Bold" Text="数据"/></TextBlock>
+        <RichTextBox x:Name="VRDataBox" HorizontalAlignment="Left" Height="100" Margin="393,286,0,0" VerticalAlignment="Top" Width="303" TextChanged="VRDataBox_TextChanged" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True">
+            <FlowDocument/>
+        </RichTextBox>
 
     </Grid>
 </Window>
