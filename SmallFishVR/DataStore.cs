@@ -45,13 +45,36 @@ namespace SmallFishVR
         /// </summary>
         public List<string> Parity { get; } = new List<string> { "NONE", "ODD", "EVEN" };
 
+        /// <summary>
+        /// 头盔数据零点记录
+        /// </summary>
         public double[] HMDZero { set; get; } = new double[6];
+
+        /// <summary>
+        /// 左手柄数据零点记录
+        /// </summary>
         public double[] LeftHandZero { set; get; } = new double[8];
+
+        /// <summary>
+        /// 右手柄数据零点记录
+        /// </summary>
         public double[] RightHandZero { set; get; } = new double[8];
 
+        /// <summary>
+        /// 头盔原始数据
+        /// </summary>
         public double[] HMDDataOrigin { set; get; }
+
+        /// <summary>
+        /// 左手柄原始数据
+        /// </summary>
         public double[] LeftHandDataOrigin { set; get; }
+
+        /// <summary>
+        /// 右手柄原始数据
+        /// </summary>
         public double[] RightHandDataOrigin { set; get; }
+
         /// <summary>
         /// 定义结构的对象
         /// </summary>
@@ -64,13 +87,6 @@ namespace SmallFishVR
         public string RightHandFishIP { get; set; }
         public int LeftHandFishPort { get; set; }
         public int RightHandFishPort { get; set; }
-
-        private List<double> a = new List<double> { 1, 2, 3, 4, 5 };
-        public List<double> A { get => a; set => a = value; }
-
-        //控制的时候，方向数据实时解析发送就行（单独写一个运动类），颜色使用顺时针逆时针控制，一次是切换一种颜色，用一个flag，
-        //切换完了就不再使用，直到复原之后
-        //写一个发送数据封装类（enum或者字符串解析为命令），一个解析VR运动类（尺度，方向，应该返回哪种东西），
 
     }
 }

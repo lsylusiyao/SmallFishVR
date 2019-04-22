@@ -52,8 +52,7 @@ bool ViveInputClass::RunProcedure(bool bWaitForEvents, int filterIndex = -1) {
 			// Process event
 			if (!ProcessVREvent(event, filterIndex)) {
 				
-				infoStr = "(OpenVR) service quit\n";
-				
+				infoStr = "(OpenVR) service quit";
 				isStrGiven = true;
 				//return false;
 			}
@@ -90,94 +89,115 @@ bool ViveInputClass::ProcessVREvent(const vr::VREvent_t & event, int filterOutIn
 		case vr::VREvent_TrackedDeviceActivated:
 		{
 			//SetupRenderModelForTrackedDevice(event.trackedDeviceIndex);
-			char buf[1024];
+			/*char buf[1024];
 			sprintf_s(buf, sizeof(buf), "(OpenVR) Device : %d attached\n", event.trackedDeviceIndex);
-			printf_s(buf);
+			printf_s(buf);*/
+			infoStr = "(OpenVR) Device : " + to_string(event.trackedDeviceIndex) + " attached";
+			isStrGiven = true;
 		}
 		break;
 
 		case vr::VREvent_TrackedDeviceDeactivated:
 		{
-			char buf[1024];
+			/*char buf[1024];
 			sprintf_s(buf, sizeof(buf), "(OpenVR) Device : %d detached\n", event.trackedDeviceIndex);
-			printf_s(buf);
+			printf_s(buf);*/
+			infoStr = "(OpenVR) Device : " + to_string(event.trackedDeviceIndex) + " detached";
+			isStrGiven = true;
 		}
 		break;
 
 		case vr::VREvent_TrackedDeviceUpdated:
 		{
-			char buf[1024];
+			/*char buf[1024];
 			sprintf_s(buf, sizeof(buf), "(OpenVR) Device : %d updated\n", event.trackedDeviceIndex);
-			printf_s(buf);
+			printf_s(buf);*/
+			infoStr = "(OpenVR) Device : " + to_string(event.trackedDeviceIndex) + " updated";
+			isStrGiven = true;
 		}
 		break;
 
 		case (vr::VREvent_DashboardActivated) :
 		{
-			char buf[1024];
+			/*char buf[1024];
 			sprintf_s(buf, sizeof(buf), "(OpenVR) Dashboard activated\n");
-			printf_s(buf);
+			printf_s(buf);*/
+			infoStr = "(OpenVR) Dashboard activated";
+			isStrGiven = true;
 		}
 		break;
 
 		case (vr::VREvent_DashboardDeactivated) :
 		{
-			char buf[1024];
+			/*char buf[1024];
 			sprintf_s(buf, sizeof(buf), "(OpenVR) Dashboard deactivated\n");
-			printf_s(buf);
+			printf_s(buf);*/
+			infoStr = "(OpenVR) Dashboard deactivated";
+			isStrGiven = true;
 
 		}
 		break;
 
 		case (vr::VREvent_ChaperoneDataHasChanged) :
 		{
-			char buf[1024];
+			/*char buf[1024];
 			sprintf_s(buf, sizeof(buf), "(OpenVR) Chaperone data has changed\n");
-			printf_s(buf);
-
+			printf_s(buf);*/
+			infoStr = "(OpenVR) Chaperone data has changed";
+			isStrGiven = true;
 		}
 		break;
 
 		case (vr::VREvent_ChaperoneSettingsHaveChanged) :
 		{
-			char buf[1024];
+			/*char buf[1024];
 			sprintf_s(buf, sizeof(buf), "(OpenVR) Chaperone settings have changed\n");
-			printf_s(buf);
+			printf_s(buf);*/
+			infoStr = "(OpenVR) Chaperone settings have changed";
+			isStrGiven = true;
 		}
 		break;
 
 		case (vr::VREvent_ChaperoneUniverseHasChanged) :
 		{
-			char buf[1024];
+			/*char buf[1024];
 			sprintf_s(buf, sizeof(buf), "(OpenVR) Chaperone universe has changed\n");
-			printf_s(buf);
+			printf_s(buf);*/
+			infoStr = "(OpenVR) Chaperone universe has changed";
+			isStrGiven = true;
 
 		}
 		break;
 
 		case (vr::VREvent_ApplicationTransitionStarted) :
 		{
-			char buf[1024];
+			/*char buf[1024];
 			sprintf_s(buf, sizeof(buf), "(OpenVR) Application Transition: Transition has started\n");
-			printf_s(buf);
+			printf_s(buf);*/
+			infoStr = "(OpenVR) Application Transition: Transition has started";
+			isStrGiven = true;
 
 		}
 		break;
 
 		case (vr::VREvent_ApplicationTransitionNewAppStarted) :
 		{
-			char buf[1024];
+			/*char buf[1024];
 			sprintf_s(buf, sizeof(buf), "(OpenVR) Application transition: New app has started\n");
-			printf_s(buf);
+			printf_s(buf);*/
+			infoStr = "(OpenVR) Application transition: New app has started";
+			isStrGiven = true;
 
 		}
 		break;
 
 		case (vr::VREvent_Quit) :
 		{
-			char buf[1024];
+			/*char buf[1024];
 			sprintf_s(buf, sizeof(buf), "(OpenVR) Received SteamVR Quit (%d)\n", vr::VREvent_Quit);
-			printf_s(buf);
+			printf_s(buf);*/
+			infoStr = "(OpenVR) Received SteamVR Quit :" + to_string(vr::VREvent_Quit);
+			isStrGiven = true;
 
 			return false;
 		}
@@ -185,9 +205,11 @@ bool ViveInputClass::ProcessVREvent(const vr::VREvent_t & event, int filterOutIn
 
 		case (vr::VREvent_ProcessQuit) :
 		{
-			char buf[1024];
+			/*char buf[1024];
 			sprintf_s(buf, sizeof(buf), "(OpenVR) SteamVR Quit Process (%d)\n", vr::VREvent_ProcessQuit);
-			printf_s(buf);
+			printf_s(buf);*/
+			infoStr = "(OpenVR) SteamVR Quit Process" + to_string(vr::VREvent_ProcessQuit);
+			isStrGiven = true;
 
 			return false;
 		}
@@ -195,20 +217,22 @@ bool ViveInputClass::ProcessVREvent(const vr::VREvent_t & event, int filterOutIn
 
 		case (vr::VREvent_QuitAborted_UserPrompt) :
 		{
-			char buf[1024];
+			/*char buf[1024];
 			sprintf_s(buf, sizeof(buf), "(OpenVR) SteamVR Quit Aborted UserPrompt (%d)\n", vr::VREvent_QuitAborted_UserPrompt);
-			printf_s(buf);
-
+			printf_s(buf);*/
+			infoStr = "(OpenVR) SteamVR Quit Aborted UserPrompt" + to_string(vr::VREvent_QuitAborted_UserPrompt);
+			isStrGiven = true;
 			return false;
 		}
 		break;
 
 		case (vr::VREvent_QuitAcknowledged) :
 		{
-			char buf[1024];
+			/*char buf[1024];
 			sprintf_s(buf, sizeof(buf), "(OpenVR) SteamVR Quit Acknowledged (%d)\n", vr::VREvent_QuitAcknowledged);
-			printf_s(buf);
-
+			printf_s(buf);*/
+			infoStr = "(OpenVR) SteamVR Quit Acknowledged" + to_string(vr::VREvent_QuitAcknowledged);
+			isStrGiven = true;
 			return false;
 		}
 		break;
@@ -216,17 +240,21 @@ bool ViveInputClass::ProcessVREvent(const vr::VREvent_t & event, int filterOutIn
 		case (vr::VREvent_TrackedDeviceRoleChanged) :
 		{
 
-			char buf[1024];
+			/*char buf[1024];
 			sprintf_s(buf, sizeof(buf), "(OpenVR) TrackedDeviceRoleChanged: %d\n", event.trackedDeviceIndex);
-			printf_s(buf);
+			printf_s(buf);*/
+			infoStr = "(OpenVR) TrackedDeviceRoleChanged: " + to_string(event.trackedDeviceIndex);
+			isStrGiven = true;
 		}
 		break;
 
 		case (vr::VREvent_TrackedDeviceUserInteractionStarted) :
 		{
-			char buf[1024];
+			/*char buf[1024];
 			sprintf_s(buf, sizeof(buf), "(OpenVR) TrackedDeviceUserInteractionStarted: %d\n", event.trackedDeviceIndex);
-			printf_s(buf);
+			printf_s(buf);*/
+			infoStr = "(OpenVR) TrackedDeviceUserInteractionStarted: " + to_string(event.trackedDeviceIndex);
+			isStrGiven = true;
 		}
 		break;
 
@@ -235,63 +263,78 @@ bool ViveInputClass::ProcessVREvent(const vr::VREvent_t & event, int filterOutIn
 			char buf[1024];
 			switch (event.eventType) {
 			case vr::EVREventType::VREvent_ButtonTouch:
-				sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Touch Device: %d\n", event.trackedDeviceIndex);
-				printf_s(buf);
+				/*sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Touch Device: %d\n", event.trackedDeviceIndex);
+				printf_s(buf);*/
+				infoStr = "(OpenVR) Event: Touch Device: "+ to_string(event.trackedDeviceIndex);
 				break;
 			case vr::EVREventType::VREvent_ButtonUntouch:
-				sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Untouch Device: %d\n", event.trackedDeviceIndex);
-				printf_s(buf);
+				/*sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Untouch Device: %d\n", event.trackedDeviceIndex);
+				printf_s(buf);*/
+				infoStr = "(OpenVR) Event: Untouch Device: "+ to_string(event.trackedDeviceIndex);
 				break;
 			case vr::EVREventType::VREvent_ButtonPress:
-				sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Press Device: %d\n", event.trackedDeviceIndex);
-				printf_s(buf);
+				/*sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Press Device: %d\n", event.trackedDeviceIndex);
+				printf_s(buf);*/
+				infoStr = "(OpenVR) Event: Press Device: "+ to_string(event.trackedDeviceIndex);
 				break;
 			case vr::EVREventType::VREvent_ButtonUnpress:
-				sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Release Device: %d\n", event.trackedDeviceIndex);
-				printf_s(buf);
+				/*sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Release Device: %d\n", event.trackedDeviceIndex);
+				printf_s(buf);*/
+				infoStr = "(OpenVR) Event: Release Device: " + to_string(event.trackedDeviceIndex);
 				break;
 			case vr::EVREventType::VREvent_EnterStandbyMode:
-				sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Enter StandbyMode: %d\n", event.trackedDeviceIndex);
-				printf_s(buf);
+				/*sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Enter StandbyMode: %d\n", event.trackedDeviceIndex);
+				printf_s(buf);*/
+				infoStr = "(OpenVR) Event: Enter StandbyMode: " + to_string(event.trackedDeviceIndex);
 				break;
 			case vr::EVREventType::VREvent_LeaveStandbyMode:
-				sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Leave StandbyMode: %d\n", event.trackedDeviceIndex);
-				printf_s(buf);
+				/*sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Leave StandbyMode: %d\n", event.trackedDeviceIndex);
+				printf_s(buf);*/
+				infoStr = "(OpenVR) Event: Leave StandbyMode: " + to_string(event.trackedDeviceIndex);
 				break;
 			case vr::EVREventType::VREvent_PropertyChanged:
-				sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Property Changed Device: %d\n", event.trackedDeviceIndex);
-				printf_s(buf);
+				/*sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Property Changed Device: %d\n", event.trackedDeviceIndex);
+				printf_s(buf);*/
+				infoStr = "(OpenVR) Event: Property Changed Device: " + to_string(event.trackedDeviceIndex);
 				break;
 			case vr::EVREventType::VREvent_SceneApplicationChanged:
-				sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Scene Application Changed\n");
-				printf_s(buf);
+				/*sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Scene Application Changed\n");
+				printf_s(buf);*/
+				infoStr = "(OpenVR) Event: Scene Application Changed";
 				break;
 			case vr::EVREventType::VREvent_SceneFocusChanged:
-				sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Scene Focus Changed\n");
-				printf_s(buf);
+				/*sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Scene Focus Changed\n");
+				printf_s(buf);*/
+				infoStr = "(OpenVR) Event: Scene Focus Changed";
 				break;
 			case vr::EVREventType::VREvent_TrackedDeviceUserInteractionStarted:
-				sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Tracked Device User Interaction Started Device: %d\n", event.trackedDeviceIndex);
-				printf_s(buf);
+				/*sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Tracked Device User Interaction Started Device: %d\n", event.trackedDeviceIndex);
+				printf_s(buf);*/
+				infoStr = "(OpenVR) Event: Tracked Device User Interaction Started Device: " + to_string(event.trackedDeviceIndex);
 				break;
 			case vr::EVREventType::VREvent_TrackedDeviceUserInteractionEnded:
-				sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Tracked Device User Interaction Ended Device: %d\n", event.trackedDeviceIndex);
-				printf_s(buf);
+				/*sprintf_s(buf, sizeof(buf), "(OpenVR) Event: Tracked Device User Interaction Ended Device: %d\n", event.trackedDeviceIndex);
+				printf_s(buf);*/
+				infoStr = "(OpenVR)Event : Tracked Device User Interaction Ended Device : " + to_string(event.trackedDeviceIndex);
 				break;
 			case vr::EVREventType::VREvent_ProcessDisconnected:
-				sprintf_s(buf, sizeof(buf), "(OpenVR) Event: A process was disconnected\n");
-				printf_s(buf);
+				/*sprintf_s(buf, sizeof(buf), "(OpenVR) Event: A process was disconnected\n");
+				printf_s(buf);*/
+				infoStr = "(OpenVR) Event: A process was disconnected";
 				break;
 			case vr::EVREventType::VREvent_ProcessConnected:
-				sprintf_s(buf, sizeof(buf), "(OpenVR) Event: A process was connected\n");
-				printf_s(buf);
+				/*sprintf_s(buf, sizeof(buf), "(OpenVR) Event: A process was connected\n");
+				printf_s(buf);*/
+				infoStr = "(OpenVR) Event: A process was connected";
 				break;
 
 			default:
-				sprintf_s(buf, sizeof(buf), "(OpenVR) Unmanaged Event: %d Device: %d\n", event.eventType, event.trackedDeviceIndex);
-				printf_s(buf);
+				/*sprintf_s(buf, sizeof(buf), "(OpenVR) Unmanaged Event: %d Device: %d\n", event.eventType, event.trackedDeviceIndex);
+				printf_s(buf);*/
+				infoStr = "(OpenVR) Unmanaged Event: " + to_string(event.eventType) + " Device: " + to_string(event.trackedDeviceIndex);
 				break;
 			}
+			isStrGiven = true;
 		}
 		break;
 	}
@@ -422,8 +465,10 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 		// Get what type of device it is and work with its data
 		vr::ETrackedDeviceClass trackedDeviceClass = vr::VRSystem()->GetTrackedDeviceClass(unDevice);
 
-		sprintf_s(buf, sizeof(buf), "\nClass%d\n", trackedDeviceClass);
-		printf_s(buf);
+		/*sprintf_s(buf, sizeof(buf), "\nClass%d\n", trackedDeviceClass);
+		printf_s(buf);*/
+		infoStr = "\nClass" + to_string(trackedDeviceClass) + "\n";
+		isStrGiven = true;
 
 		switch (trackedDeviceClass) {
 		case vr::ETrackedDeviceClass::TrackedDeviceClass_HMD:
@@ -459,8 +504,10 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 				isStrGiven = true;
 				break;
 			case vr::ETrackingResult::TrackingResult_Calibrating_InProgress:
-				sprintf_s(buf, sizeof(buf), "Calibrating in progress\n");
-				printf_s(buf);
+				/*sprintf_s(buf, sizeof(buf), "Calibrating in progress\n");
+				printf_s(buf);*/
+				infoStr = "Calibrating in progress";
+				isStrGiven = true;
 				break;
 			case vr::ETrackingResult::TrackingResult_Calibrating_OutOfRange:
 				
@@ -468,24 +515,28 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 				isStrGiven = true;
 				break;
 			case vr::ETrackingResult::TrackingResult_Running_OK:
-				sprintf_s(buf, sizeof(buf), "Running OK\n");
-				printf_s(buf);
+				/*sprintf_s(buf, sizeof(buf), "Running OK\n");
+				printf_s(buf);*/
+				infoStr = "Running OK";
+				isStrGiven = true;
 				break;
 			case vr::ETrackingResult::TrackingResult_Running_OutOfRange:
 				
-				infoStr = "WARNING: Running Out of Range";
+				infoStr = "! ! ! ! ! !WARNING: Running Out of Range! ! ! ! ! !";
 				isStrGiven = true;
 				break;
 			default:
-				sprintf_s(buf, sizeof(buf), "Default\n");
-				printf_s(buf);
+				/*sprintf_s(buf, sizeof(buf), "Default\n");
+				printf_s(buf);*/
+				infoStr = "Default";
+				isStrGiven = false;
 				break;
 			}
 
 			if (bPoseValid)
 			{
-				sprintf_s(buf, sizeof(buf), "Valid pose\n");
-				printf_s(buf);
+				infoStr = "Valid pose";
+				isStrGiven = true;
 			}
 
 			else
@@ -516,9 +567,7 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 				// invalid hand...
 				
 				infoStr = "Invalid hand";
-				
 				isStrGiven = true;
-
 
 				/*
 				sprintf_s(buf, sizeof(buf), "\nInvalid role id: %d\nx: %.2f y: %.2f z: %.2f\n", unDevice, position.v[0], position.v[1], position.v[2]);
@@ -549,44 +598,49 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 
 				switch (eTrackingResult) {
 				case vr::ETrackingResult::TrackingResult_Uninitialized:
-					
 					infoStr = "Invalid tracking result";
 					isStrGiven = true;
 					break;
 				case vr::ETrackingResult::TrackingResult_Calibrating_InProgress:
-					sprintf_s(buf, sizeof(buf), "Calibrating in progress\n");
-					printf_s(buf);
+					/*sprintf_s(buf, sizeof(buf), "Calibrating in progress\n");
+					printf_s(buf);*/
+					infoStr = "Calibrating in progress";
+					isStrGiven = true;
 					break;
 				case vr::ETrackingResult::TrackingResult_Calibrating_OutOfRange:
-					
 					infoStr = "Calibrating Out of range";
 					isStrGiven = true;
 					break;
 				case vr::ETrackingResult::TrackingResult_Running_OK:
-					sprintf_s(buf, sizeof(buf), "Running OK\n");
-					printf_s(buf);
+					/*sprintf_s(buf, sizeof(buf), "Running OK\n");
+					printf_s(buf);*/
+					infoStr = "Running OK";
+					isStrGiven = true;
 					break;
 				case vr::ETrackingResult::TrackingResult_Running_OutOfRange:
 					
-					infoStr = "WARNING: Running Out of Range";
+					infoStr = "! ! ! ! ! !WARNING: Running Out of Range! ! ! ! ! !";
 					isStrGiven = true;
 
 					break;
 				default:
-					sprintf_s(buf, sizeof(buf), "Default\n");
-					printf_s(buf);
+					/*sprintf_s(buf, sizeof(buf), "Default\n");
+					printf_s(buf);*/
+					infoStr = "Default";
+					isStrGiven = true;
 					break;
 				}
 
 				if (bPoseValid)
 				{
-					sprintf_s(buf, sizeof(buf), "Valid pose\n");
-					printf_s(buf);
+					/*sprintf_s(buf, sizeof(buf), "Valid pose\n");
+					printf_s(buf);*/
+					infoStr = "Valid pose";
+					isStrGiven = true;
 				}
 					
 				else
 				{
-					
 					infoStr = "Invalid pose";
 					isStrGiven = true;
 				}
@@ -610,53 +664,56 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 
 				switch (eTrackingResult) {
 				case vr::ETrackingResult::TrackingResult_Uninitialized:
-					
 					infoStr = "Invalid tracking result";
 					isStrGiven = true;
 					break;
 				case vr::ETrackingResult::TrackingResult_Calibrating_InProgress:
-					sprintf_s(buf, sizeof(buf), "Calibrating in progress\n");
-					printf_s(buf);
+					/*sprintf_s(buf, sizeof(buf), "Calibrating in progress\n");
+					printf_s(buf);*/
+					infoStr = "Calibrating in progress";
+					isStrGiven = true;
 					break;
 				case vr::ETrackingResult::TrackingResult_Calibrating_OutOfRange:
-					
 					infoStr = "Calibrating Out of range";
 					isStrGiven = true;
 					break;
 				case vr::ETrackingResult::TrackingResult_Running_OK:
-					sprintf_s(buf, sizeof(buf), "Running OK\n");
-					printf_s(buf);
+					/*sprintf_s(buf, sizeof(buf), "Running OK\n");
+					printf_s(buf);*/
+					infoStr = "Running OK";
+					isStrGiven = true;
 					break;
 				case vr::ETrackingResult::TrackingResult_Running_OutOfRange:
-					
-					infoStr = "WARNING: Running Out of Range";
+
+					infoStr = "! ! ! ! ! !WARNING: Running Out of Range! ! ! ! ! !";
 					isStrGiven = true;
 
 					break;
 				default:
-					sprintf_s(buf, sizeof(buf), "Default\n");
-					printf_s(buf);
+					/*sprintf_s(buf, sizeof(buf), "Default\n");
+					printf_s(buf);*/
+					infoStr = "Default";
+					isStrGiven = true;
 					break;
 				}
 
 				if (bPoseValid)
 				{
-					sprintf_s(buf, sizeof(buf), "Valid pose\n");
-					printf_s(buf);
+					/*sprintf_s(buf, sizeof(buf), "Valid pose\n");
+					printf_s(buf);*/
+					infoStr = "Valid pose";
+					isStrGiven = true;
 				}
 
 				else
 				{
-					
 					infoStr = "Invalid pose";
 					isStrGiven = true;
 				}
-
 				break;
 
 			default:
 				// incomplete code, only here for switch reference
-				
 				infoStr = "Not supported";
 				isStrGiven = true;
 				break;
