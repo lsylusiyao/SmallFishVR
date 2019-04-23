@@ -38,6 +38,7 @@ namespace SmallFishVR
         public double[] RightHandData { set; get; } = new double[8]; //右手显示数据（和零点的偏移）
         public double[] HandData { set; get; } = null; //真正用的时候的数据（和零点的偏移）
         public double[] HMDData { set; get; } = new double[6]; //头盔显示数据（和零点的偏移）
+        public double[] TriggerData { set; get; } = new double[2]; //触发器的真实数据（不需要零点）
 
         /// <summary>
         /// 委托更新SerialPort数据的图形界面
@@ -384,6 +385,7 @@ namespace SmallFishVR
                 data.HMDDataOrigin = bridge.GetHMD();
                 data.LeftHandDataOrigin = bridge.GetLeftHand();
                 data.RightHandDataOrigin = bridge.GetRightHand();
+                TriggerData = bridge.GetTrigger();
                 for (int i = 0; i < LeftHandData.Length; i++)
                 {
                     if (i < 6) HMDData[i] = data.HMDDataOrigin[i] - data.HMDZero[i];
@@ -393,6 +395,7 @@ namespace SmallFishVR
                 NotifyPropertyChanged(nameof(HMDData));
                 NotifyPropertyChanged(nameof(LeftHandData));
                 NotifyPropertyChanged(nameof(RightHandData));
+                NotifyPropertyChanged(nameof(TriggerData));
                 Thread.Sleep(10);
                 if (IsVRSave2FileChecked)
                 {
@@ -536,6 +539,7 @@ namespace SmallFishVR
                     {
                         spSend.SetColorCycle(i, HandData[COLOR] > 0 ? '-' : '+');
                     }
+                    // if(TriggerData[i] == 1) spSend.SetColorCycle(i, '+'); //trigger更新颜色方法，备用
 
                     #endregion
 

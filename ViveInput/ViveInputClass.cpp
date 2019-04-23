@@ -561,6 +561,11 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 			eTrackingResult = trackedDevicePose.eTrackingResult;
 			bPoseValid = trackedDevicePose.bPoseIsValid;
 
+			// Trigger:
+			trigger[0] = controllerState.rAxis[1].x; // left ?
+			trigger[1] = controllerState.rAxis[3].x; // right ?
+
+			vr::ButtonMaskFromId(vr::k_EButton_Grip);
 			//char buf[1024];
 			switch (vr::VRSystem()->GetControllerRoleForTrackedDeviceIndex(unDevice)) {
 			case vr::TrackedControllerRole_Invalid:
@@ -593,8 +598,15 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 				vr::VRSystem()->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_LeftHand);
 				temp = QuaternionToEulerAngle(quaternion);
 				for (int i = 0; i < 3; i++) { leftHand[i] = position.v[i]; leftHand[i + 3] = temp.v[i]; }
+				
 				leftHand[6] = controllerState.rAxis[0].x;
 				leftHand[7] = controllerState.rAxis[0].y;
+
+				if (trigger[0] > 0.8) //Consider trigger is pressed
+				{
+					vr::VRSystem()->TriggerHapticPulse(unDevice, vr::ButtonMaskFromId(vr::k_EButton_Axis0), 1000);
+					trigger[0] = 1;
+				}
 
 				switch (eTrackingResult) {
 				case vr::ETrackingResult::TrackingResult_Uninitialized:
@@ -651,8 +663,16 @@ void ViveInputClass::ParseTrackingFrame(int filterIndex) {
 				vr::VRSystem()->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_RightHand);
 				temp = QuaternionToEulerAngle(quaternion);
 				for (int i = 0; i < 3; i++) { rightHand[i] = position.v[i]; rightHand[i + 3] = temp.v[i]; }
+				
 				rightHand[6] = controllerState.rAxis[0].x;
 				rightHand[7] = controllerState.rAxis[0].y;
+
+				if (trigger[1] > 0.8) //Consider trigger is pressed
+				{
+					vr::VRSystem()->TriggerHapticPulse(unDevice, vr::ButtonMaskFromId(vr::k_EButton_Axis0), 1000);
+					trigger[1] = 1;
+				}
+
 				/*sprintf_s(buf, sizeof(buf), "\nRightController i: %d index: %d\nx: %.2f y: %.2f z: %.2f\n", unDevice, vr::VRSystem()->GetTrackedDeviceIndexForControllerRole(vr::TrackedControllerRole_LeftHand), position.v[0], position.v[1], position.v[2]);
 				printf_s(buf);
 

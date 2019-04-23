@@ -48,6 +48,7 @@ public:
 	double* GetHMD() { return HMD; }
 	double* GetLeftHand() { return leftHand; }
 	double* GetRightHand() { return rightHand; }
+	double* GetTrigger() { return trigger; }
 
 private:
 	//向CLR传的数据
@@ -66,6 +67,7 @@ private:
 	double HMD[6];
 	double leftHand[8];
 	double rightHand[8];
+	double trigger[2];
 
 };
 

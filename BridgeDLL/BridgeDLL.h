@@ -52,6 +52,14 @@ namespace BridgeDll {
 			}
 			return rightHand;
 		}
+		array<double>^ GetTrigger()
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				trigger[i] = p->GetTrigger()[i];
+			}
+			return trigger;
+		}
 
 	private:
 		bool keepVRworking = false; //想停止直接置为false就行
@@ -59,6 +67,7 @@ namespace BridgeDll {
 		array<double>^ HMD = gcnew array<double>(6);
 		array<double>^ leftHand = gcnew array<double>(8);
 		array<double>^ rightHand = gcnew array<double>(8);
+		array<double>^ trigger = gcnew array<double>(2);
 
 
 	};

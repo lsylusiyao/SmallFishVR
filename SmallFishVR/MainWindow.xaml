@@ -114,6 +114,9 @@
             <TextBlock HorizontalAlignment="Left" Height="18" Margin="92,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="148" TextAlignment="Center" FontSize="14"><Run FontWeight="Bold" Text="VR数据显示"/></TextBlock>
             <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="{Binding ActualHeight, ElementName=VRGrid, Mode=OneWay}" Margin="0" VerticalAlignment="Top" Width="{Binding ActualWidth, ElementName=VRGrid, Mode=OneWay}" d:IsLocked="True"/>
             <Button x:Name="setDataZeroButton" Content="设置零点" HorizontalAlignment="Left" Margin="69,252,0,0" VerticalAlignment="Top" Width="69" Height="53" Click="SetDataZeroButton_Click" IsEnabled="False"/>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="触发器" VerticalAlignment="Top" Margin="5,312,0,0" Height="16" Width="40"/>
+            <TextBox HorizontalAlignment="Left" Height="23" Margin="143,311,0,0" TextWrapping="Wrap" Text="{Binding TriggerData[0],Mode=OneWay,StringFormat={}{0:F5}}" VerticalAlignment="Top" Width="70"/>
+            <TextBox HorizontalAlignment="Left" Height="23" Margin="222,311,0,0" TextWrapping="Wrap" Text="{Binding TriggerData[1],Mode=OneWay,StringFormat={}{0:F5}}" VerticalAlignment="Top" Width="70"/>
 
         </Grid>
         <Button x:Name="exitButton" Content="退出程序" Margin="0,0,131,11.5" RenderTransformOrigin="0.758,0.817" HorizontalAlignment="Right" Width="66" Height="32" VerticalAlignment="Bottom" Click="ExitButton_Click"/>
