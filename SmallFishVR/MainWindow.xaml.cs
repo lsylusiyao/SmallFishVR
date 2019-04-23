@@ -25,7 +25,7 @@ namespace SmallFishVR
         public string TempStr { get; set; } //委托临时使用的，提交给界面更新数据
         public bool IsVRSave2FileChecked { get; set; } = false; //是否把VR数据存储成文件
         public bool IsLeftHandFishChecked { get; set; } = true; //是否开启左手柄控制鱼
-        public bool IsRightHandFishChecked { get; set; } = true; //是否开启右手柄控制鱼
+        public bool IsRightHandFishChecked { get; set; } = false; //是否开启右手柄控制鱼
 
         private bool isVRControlStart = false; //VR控制是否开启
 
@@ -99,7 +99,7 @@ namespace SmallFishVR
             stopBitsBox.SelectedIndex = 0;
             TempStr = string.Empty;
             data.LeftHandFishIP = "192.168.4.2";
-            data.LeftHandFishPort = 1001;
+            data.LeftHandFishPort = 1002;
             data.RightHandFishIP = "192.168.4.2";
             data.RightHandFishPort = 1002;
         }
@@ -151,6 +151,17 @@ namespace SmallFishVR
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ExitButton_Click(object sender, RoutedEventArgs e) => Close();
+
+        /// <summary>
+        /// 清空SPDataBox VRDataBox的内容
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            SPDataBox.Document.Blocks.Clear();
+            VRDataBox.Document.Blocks.Clear();
+        }
 
         #endregion
 
@@ -280,15 +291,7 @@ namespace SmallFishVR
             }
         }
 
-        /// <summary>
-        /// 清空SPDataBox的内容
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ClearButton_Click(object sender, RoutedEventArgs e)
-        {
-            SPDataBox.Document.Blocks.Clear();
-        }
+        
 
         /// <summary>
         /// 自动调节滚动位置到末尾
@@ -493,7 +496,7 @@ namespace SmallFishVR
             */
            
             int[] divisionPoint = new int[] { 15, 25, 35, 47 }; //Stop-1-2-3-4的分界角度点
-            bool isChangedColor = false; //颜色改变完了的话，就不重复发送了，直到手柄恢复到0位置
+            // bool isChangedColor = false; //颜色改变完了的话，就不重复发送了，直到手柄恢复到0位置
             bool keepWhileFlag = true; //保持循环控制，在停止的时候变成false来直接结束循环
 
 
@@ -505,7 +508,7 @@ namespace SmallFishVR
 
             while (keepWhileFlag)
             {
-                Thread.Sleep(800); //这里不能太短了，测试发现VR的数据响应较慢，原因未知，再加上鱼本身反应速度不快，就这样吧
+                Thread.Sleep(1600); //这里不能太短了，测试发现VR的数据响应较慢，原因未知，再加上鱼本身反应速度不快，就这样吧
                 
                 //对于两个机器鱼的适配
                 for (int i = 0; i < 2; i++)
@@ -529,12 +532,11 @@ namespace SmallFishVR
 
                     #region 设置颜色部分
 
-                    if (HandData[COLOR] < divisionPoint[1] && HandData[COLOR] > -divisionPoint[1]) { isChangedColor = false; }
-                    else
+                    if (HandData[COLOR] >= divisionPoint[1] || HandData[COLOR] <= -divisionPoint[1])
                     {
-                        spSend.SetColorCycle(i, HandData[COLOR] > 0 ? '-' : '+', isChangedColor);
-                        isChangedColor = true; //每次转手柄，颜色只改变一次，直到恢复到初始位置
+                        spSend.SetColorCycle(i, HandData[COLOR] > 0 ? '-' : '+');
                     }
+
                     #endregion
 
                     #region 设置速度，手柄向前为负

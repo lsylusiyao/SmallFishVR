@@ -69,8 +69,10 @@ namespace SmallFishVR
         {
             Forward = 0x00,
             Stop = 0x01,
-            Right = 0x02,
-            Left = 0x03
+            //Right = 0x02,
+            //Left = 0x03 //感觉这里是反了的，因此换过来
+            Left = 0x02,
+            Right = 0x03
         }
 
         /// <summary>
