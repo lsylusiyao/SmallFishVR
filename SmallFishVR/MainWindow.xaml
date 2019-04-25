@@ -37,7 +37,7 @@
             <Button x:Name="openClosePortButton" Content="打开端口" HorizontalAlignment="Left" Margin="45.5,7,0,0" VerticalAlignment="Top" Width="67" IsEnabled="True" Click="OpenClosePortButton_Click" Height="26" Grid.Row="1" Grid.Column="1"/>
             <Button x:Name="checkStateButton" Content="查询机器鱼状态" HorizontalAlignment="Left" Margin="45.5,46,0,0" VerticalAlignment="Top" Width="127" Click="CheckStateButton_Click" IsEnabled="False" Height="26" Grid.Row="1" Grid.Column="1"/>
             <Button x:Name="ReCountCOMButton" Content="重新查询端口" HorizontalAlignment="Left" Margin="127.5,7,0,0" VerticalAlignment="Top" Width="81" Height="26" Click="ReCountCOMButton_Click" Grid.Row="1" Grid.Column="1"/>
-            <Button x:Name="startStopVRControlButton" Content="开启VR控制" HorizontalAlignment="Left" Margin="80,46,0,0" VerticalAlignment="Top" Width="76" Click="StartStopVRControlButton_Click" Height="26" Grid.Row="1" Grid.ColumnSpan="2"/>
+            <Button x:Name="startStopVRControlButton" Content="开启VR控制" HorizontalAlignment="Left" Margin="80,46,0,0" VerticalAlignment="Top" Width="76" Click="StartStopVRControlButton_Click" Height="26" Grid.Row="1" Grid.ColumnSpan="2" IsEnabled="False"/>
 
         </Grid>
         <Grid Margin="22,206,662,39.5">

@@ -379,7 +379,8 @@ namespace SmallFishVR
         /// </summary>
         private void ListenVRThread()
         {
-            
+            startStopVRControlButton.IsEnabled = true;
+            setDataZeroButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); //相当于手动点一下置零
             while (VRThread.IsAlive)
             {
                 data.HMDDataOrigin = bridge.GetHMD();
@@ -640,6 +641,138 @@ namespace SmallFishVR
 
             }
         }
+
+        /// <summary>
+        /// VR控制机器鱼的后台数据解析和发送指令的线程，使用检测绝对位置的办法
+        /// </summary>
+        private void VRControlFishThreadFunc2()
+        {
+            /*
+            * Also:
+            * Open VR Convention (same as OpenGL)
+            * right-handed system
+            * +y is up，逆时针切换为正(-)，顺时针为负(+)
+            * +x is to the right，手柄向后为正，向前为负
+            * -z is going away from you ，左转为正，右转为负
+            */
+
+            int[] divisionPoint = new int[] { 15, 25, 35, 47 }; //Stop-1-2-3-4的分界距离点
+            // bool isChangedColor = false; //颜色改变完了的话，就不重复发送了，直到手柄恢复到0位置
+            bool keepWhileFlag = true; //保持循环控制，在停止的时候变成false来直接结束循环
+            bool isStop = false;
+
+
+            const int COLOR = 3; //数据正常
+            //const int SPEED = 5; //速度分析使用
+            const int LR = 2; //左右
+            const int FB = 1; //前后
+            //SendData2Fish.Speed tempSpeed = SendData2Fish.Speed.Low; //由前后角度出来的速度
+
+            while (keepWhileFlag)
+            {
+                Thread.Sleep(1600); //这里不能太短了，测试发现VR的数据响应较慢，原因未知，再加上鱼本身反应速度不快，就这样吧
+
+                //对于两个机器鱼的适配
+                for (int i = 0; i < 2; i++)
+                {
+                    if (!IsLeftHandFishChecked && !IsRightHandFishChecked)
+                    {
+                        MessageBox.Show("没有选择手柄控制，请至少选择一个", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        keepWhileFlag = false;
+                        break;
+                    }
+                    if (i == 0)
+                    {
+                        if (IsLeftHandFishChecked) HandData = LeftHandData;
+                        else continue;
+                    }
+                    if (i == 1)
+                    {
+                        if (IsRightHandFishChecked) HandData = RightHandData;
+                        else continue;
+                    }
+
+                    #region 设置颜色部分
+
+                    if (HandData[COLOR] >= 15 || HandData[COLOR] <= -15)
+                    {
+                        spSend.SetColorCycle(i, HandData[COLOR] > 0 ? '-' : '+');
+                    }
+
+                    #endregion
+
+                    if (HandData[FB] < divisionPoint[0] && HandData[FB] > -divisionPoint[0] &&
+                        HandData[LR] < divisionPoint[0] && HandData[LR] > -divisionPoint[0]) //在一开始的范围内就认为停止
+                    {
+                        spSend.SetMove(i, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
+                        //isSent = false;
+                        isStop = false;
+                    } //这里速度随便给
+                    else
+                    {
+                        if (HandData[FB] > divisionPoint[0]) //左右任意，只要前后足够靠后，就认为停止
+                        {
+                            spSend.SetMove(i, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
+                            isStop = true;
+                            continue;
+                        }
+
+                        #region 左右转发送数据
+
+                        //只有左右方向恢复，鱼才会前进运动
+                        if (HandData[LR] <= divisionPoint[1] || HandData[LR] >= -divisionPoint[1])
+                        {
+                            spSend.SetMove(i,
+                              HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
+                              SendData2Fish.Speed.VeryLow, isStop);
+                            //isSent = true;
+                        }
+                        else if (HandData[LR] <= divisionPoint[2] || HandData[LR] >= -divisionPoint[2])
+                        {
+                            spSend.SetMove(i,
+                              HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
+                              SendData2Fish.Speed.Low, isStop);
+                            continue;
+                            //isSent = true;
+                        }
+                        else if (HandData[LR] <= divisionPoint[3] || HandData[LR] >= -divisionPoint[3])
+                        {
+                            spSend.SetMove(i,
+                              HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
+                              SendData2Fish.Speed.Medium, isStop);
+                            continue;
+                            //isSent = true;
+                        }
+                        else
+                        {
+                            spSend.SetMove(i,
+                              HandData[LR] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
+                              SendData2Fish.Speed.High, isStop);
+                            continue;
+                            //isSent = true;
+                        }
+                        #endregion
+
+                        #region 前进发送数据
+
+                        if (HandData[FB] > -divisionPoint[0] && HandData[FB] < 0)
+                        {
+                            //这条其实不写也行，反正应该到不了这个区域
+                            spSend.SetMove(i, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
+                        }
+                        else if (HandData[FB] > -divisionPoint[1])
+                        { spSend.SetMove(i, SendData2Fish.Direction.Forward, SendData2Fish.Speed.Low); }
+                        else if (HandData[FB] > -divisionPoint[2])
+                        { spSend.SetMove(i, SendData2Fish.Direction.Forward, SendData2Fish.Speed.Medium); }
+                        else { spSend.SetMove(i, SendData2Fish.Direction.Forward, SendData2Fish.Speed.High); }
+
+                        #endregion
+                    }
+                }
+
+
+            }
+        }
         #endregion
 
         #region 手动控制机器鱼功能区（左手柄）
@@ -781,12 +914,7 @@ namespace SmallFishVR
         private void TurnRightButton2_Click(object sender, RoutedEventArgs e) 
             => spSend.SetMove(1, SendData2Fish.Direction.Right, (SendData2Fish.Speed)speedSlider.Value);
 
-
-
-
-
-
-
+        
         #endregion
 
         
