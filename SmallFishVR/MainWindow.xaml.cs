@@ -386,7 +386,7 @@ namespace SmallFishVR
                 data.HMDDataOrigin = bridge.GetHMD();
                 data.LeftHandDataOrigin = bridge.GetLeftHand();
                 data.RightHandDataOrigin = bridge.GetRightHand();
-                TriggerData = bridge.GetTrigger();
+                //TriggerData = bridge.GetTrigger();
                 for (int i = 0; i < LeftHandData.Length; i++)
                 {
                     if (i < 6) HMDData[i] = data.HMDDataOrigin[i] - data.HMDZero[i];
@@ -396,7 +396,7 @@ namespace SmallFishVR
                 NotifyPropertyChanged(nameof(HMDData));
                 NotifyPropertyChanged(nameof(LeftHandData));
                 NotifyPropertyChanged(nameof(RightHandData));
-                NotifyPropertyChanged(nameof(TriggerData));
+                //NotifyPropertyChanged(nameof(TriggerData));
                 Thread.Sleep(10);
                 if (IsVRSave2FileChecked)
                 {
@@ -654,18 +654,19 @@ namespace SmallFishVR
             * +y is up，逆时针切换为正(-)，顺时针为负(+)
             * +x is to the right，手柄向后为正，向前为负
             * -z is going away from you ，左转为正，右转为负
+            * 数据单位是cm
             */
 
-            int[] divisionPoint = new int[] { 15, 25, 35, 47 }; //Stop-1-2-3-4的分界距离点
+            int[] divisionPoint = new int[] { 8, 13, 18, 25 }; //Stop-1-2-3-4的分界距离点
             // bool isChangedColor = false; //颜色改变完了的话，就不重复发送了，直到手柄恢复到0位置
             bool keepWhileFlag = true; //保持循环控制，在停止的时候变成false来直接结束循环
-            bool isStop = false;
+            bool isStop = false; //已经停止的flag，用于发送数据
 
 
-            const int COLOR = 3; //数据正常
-            //const int SPEED = 5; //速度分析使用
-            const int LR = 2; //左右
-            const int FB = 1; //前后
+            const int COLOR1 = 3; //旋转控制方法
+            const int COLOR2 = 1; //上下移动控制方法
+            const int LR = 0; //左右
+            const int FB = 2; //前后
             //SendData2Fish.Speed tempSpeed = SendData2Fish.Speed.Low; //由前后角度出来的速度
 
             while (keepWhileFlag)
@@ -694,10 +695,15 @@ namespace SmallFishVR
 
                     #region 设置颜色部分
 
-                    if (HandData[COLOR] >= 15 || HandData[COLOR] <= -15)
+                    if (HandData[COLOR1] >= 15 || HandData[COLOR1] <= -15)
                     {
-                        spSend.SetColorCycle(i, HandData[COLOR] > 0 ? '-' : '+');
-                    }
+                        spSend.SetColorCycle(i, HandData[COLOR1] > 0 ? '-' : '+');
+                    } //旋转控制
+
+                    if(HandData[COLOR2] >= divisionPoint[0] || HandData[COLOR2] <= -divisionPoint[0])
+                    {
+                        spSend.SetColorCycle(i,HandData[COLOR2] > 0 ? '-' : '+');
+                    } //上下控制
 
                     #endregion
 
@@ -710,7 +716,7 @@ namespace SmallFishVR
                     } //这里速度随便给
                     else
                     {
-                        if (HandData[FB] > divisionPoint[0]) //左右任意，只要前后足够靠后，就认为停止
+                        if (HandData[FB] > -divisionPoint[0]) //左右任意，只要前后足够靠后，就认为停止
                         {
                             spSend.SetMove(i, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
                             isStop = true;
