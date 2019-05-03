@@ -35,6 +35,7 @@ namespace SmallFishVR
         Thread VRThread; //VR线程
         Thread listenVRThread; //监听VR数据线程，在有信息传来的时候也会报错
         Thread VRControlFishThread; //VR控制鱼的运动方向的控制
+        Thread runFishThread; //按住按键时启动的运动线程
 
         public double[] LeftHandData { set; get; } = new double[8]; //左手显示数据（和零点的偏移）
         public double[] RightHandData { set; get; } = new double[8]; //右手显示数据（和零点的偏移）
@@ -375,7 +376,7 @@ namespace SmallFishVR
 
             while (keepWhileFlag)
             {
-                Thread.Sleep(500); //这里不能太短了，测试发现VR的数据响应较慢，原因未知，再加上鱼本身反应速度不快，就这样吧
+                Thread.Sleep(200);
                 
                 //对于两个机器鱼的适配，不想改了
                 for (int i = 0; i < 2; i++)
@@ -736,9 +737,54 @@ namespace SmallFishVR
         private void TurnRightButton_Click(object sender, RoutedEventArgs e) 
             => BLESend.SetMove(0, SendData2Fish.Direction.Right, (SendData2Fish.Speed)speedSlider.Value);
 
+        private void TurnForwardButton_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            runFishThread = new Thread(() => {
+                while (true)
+                {
+                    Dispatcher.Invoke(() =>
+                    { BLESend.SetMove(0, SendData2Fish.Direction.Forward, (SendData2Fish.Speed)speedSlider.Value); });
+                    Thread.Sleep(100);
+                }
+            });
+            runFishThread.Start();
+        }
+
+        private void TurnForwardButton_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e) => runFishThread?.Abort();
+
+        private void TurnLeftButton_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            runFishThread = new Thread(() => {
+                while (true)
+                {
+                    Dispatcher.Invoke(() =>
+                    { BLESend.SetMove(0, SendData2Fish.Direction.Left, (SendData2Fish.Speed)speedSlider.Value); });
+                    Thread.Sleep(100);
+                }
+            });
+            runFishThread.Start();
+        }
+
+        private void TurnLeftButton_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e) => runFishThread?.Abort();
+
+        private void TurnRightButton_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            runFishThread = new Thread(() => {
+                while (true)
+                {
+                    Dispatcher.Invoke(() =>
+                    { BLESend.SetMove(0, SendData2Fish.Direction.Right, (SendData2Fish.Speed)speedSlider.Value); });
+                    Thread.Sleep(100);
+                }
+            });
+            runFishThread.Start();
+        }
+
+        private void TurnRightButton_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e) => runFishThread?.Abort();
+
         #endregion
 
-        
+
     }
 
 }

@@ -22,7 +22,7 @@
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="名称" DisplayMemberBinding="{Binding Name}" Width="70"></GridViewColumn>
-                    <GridViewColumn Header="地址" DisplayMemberBinding="{Binding Address}" Width="140"></GridViewColumn>
+                    <GridViewColumn Header="地址" DisplayMemberBinding="{Binding Address}" Width="130"></GridViewColumn>
                     <GridViewColumn Header="已连接" DisplayMemberBinding="{Binding IsConnected}" Width="50"></GridViewColumn>
                     <GridViewColumn Header="可连接" DisplayMemberBinding="{Binding IsConnectable}" Width="50"></GridViewColumn>
                 </GridView>
@@ -95,19 +95,19 @@
         <RichTextBox x:Name="VRDataBox" HorizontalAlignment="Left" Height="350" Margin="362,49.5,0,0" VerticalAlignment="Top" Width="303" TextChanged="VRDataBox_TextChanged" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True">
             <FlowDocument/>
         </RichTextBox>
-        <Grid Margin="24.5,104,677.5,277.5">
+        <Grid Margin="24,104,660.6,277.4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Button x:Name="connectFishButton" Content="连接鱼" HorizontalAlignment="Left" Margin="114.273,27.5,0,0" VerticalAlignment="Top" Width="85" Height="26" IsEnabled="False" Click="ConnectFishButton_Click"/>
             <Button x:Name="switchColor2Button" Content="颜色切换2(E)" HorizontalAlignment="Left" Margin="223.273,27.5,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="SwitchColor2Button_Click"/>
             <Button x:Name="switchColor1Button" Content="颜色切换1(Q)" HorizontalAlignment="Left" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="SwitchColor1Button_Click" Margin="9.025,27.5,0,0"/>
-            <Button x:Name="turnForwardButton" Content="前进(W)" HorizontalAlignment="Left" Margin="114.273,67.5,0,0" VerticalAlignment="Top" Width="85" Height="26" IsEnabled="False" Click="TurnForwardButton_Click"/>
-            <Button x:Name="turnRightButton" Content="右转(D)" HorizontalAlignment="Left" Margin="223.273,67.5,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="TurnRightButton_Click"/>
-            <Button x:Name="turnLeftButton" Content="左转(A)" HorizontalAlignment="Left" Margin="9.025,67.5,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="TurnLeftButton_Click"/>
-            <Slider x:Name="speedSlider" HorizontalAlignment="Left" Margin="56.025,112.5,0,0" VerticalAlignment="Top" Width="142" Maximum="3" SmallChange="1" Value="1" IsEnabled="False"/>
-            <TextBlock HorizontalAlignment="Left" Margin="9.025,112.5,0,0" TextWrapping="Wrap" Text="速度" VerticalAlignment="Top" FontSize="14"/>
-            <CheckBox x:Name="rightHandFishCheckBox" Content="右手柄机器鱼" HorizontalAlignment="Left" Margin="203.273,115.5,0,0" VerticalAlignment="Top" FontSize="14" IsChecked="{Binding IsRightHandFishChecked, Mode=TwoWay}"/>
+            <Button x:Name="turnForwardButton" Content="前进(W)" HorizontalAlignment="Left" Margin="114.273,67.5,0,0" VerticalAlignment="Top" Width="85" Height="26" IsEnabled="False" Click="TurnForwardButton_Click" PreviewMouseLeftButtonDown="TurnForwardButton_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="TurnForwardButton_PreviewMouseLeftButtonUp"/>
+            <Button x:Name="turnRightButton" Content="右转(D)" HorizontalAlignment="Left" Margin="223.273,67.5,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="TurnRightButton_Click" PreviewMouseLeftButtonDown="TurnRightButton_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="TurnRightButton_PreviewMouseLeftButtonUp"/>
+            <Button x:Name="turnLeftButton" Content="左转(A)" HorizontalAlignment="Left" Margin="9.025,67.5,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="TurnLeftButton_Click" PreviewMouseLeftButtonDown="TurnLeftButton_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="TurnLeftButton_PreviewMouseLeftButtonUp"/>
+            <Slider x:Name="speedSlider" HorizontalAlignment="Left" Margin="56,117,0,0" VerticalAlignment="Top" Width="142" Maximum="3" SmallChange="1" Value="1" IsEnabled="False"/>
+            <TextBlock HorizontalAlignment="Left" Margin="9,117,0,0" TextWrapping="Wrap" Text="速度" VerticalAlignment="Top" FontSize="14"/>
+            <CheckBox x:Name="rightHandFishCheckBox" Content="右手柄机器鱼" HorizontalAlignment="Left" Margin="203,119,0,0" VerticalAlignment="Top" FontSize="14" IsChecked="{Binding IsRightHandFishChecked, Mode=TwoWay}"/>
             <TextBlock HorizontalAlignment="Left" Margin="100.248,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14"><Run FontWeight="Bold" Text="连接及手动控制框"/></TextBlock>
         </Grid>
 

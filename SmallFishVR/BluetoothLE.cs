@@ -208,9 +208,16 @@ namespace SmallFishVR
         /// </summary>
         public async void StopAll()
         {
-            StopBleDeviceWatcher();
-            await ClearBluetoothLEDeviceAsync();
+            try
+            {
+                StopBleDeviceWatcher();
+                bool temp = await ClearBluetoothLEDeviceAsync();
+            }
+            catch (Exception e) when (e.GetType() == typeof(ObjectDisposedException)) { }
+            
         }
+
+        #region 监听部分
 
         /// <summary>
         /// 开始监听周围的配没配对的所有设备
@@ -359,7 +366,10 @@ namespace SmallFishVR
             });
         }
 
+        #endregion
         // TODO：配对部分直接手动完成，不在这里写了
+
+        #region 连接和收发数据部分
 
         /// <summary>
         /// 清空当前连接状态和监听状态
@@ -416,6 +426,11 @@ namespace SmallFishVR
             catch (Exception ex) when (ex.HResult == E_DEVICE_NOT_AVAILABLE)
             {
                 Update("蓝牙设备未开启");
+                return false;
+            }
+            catch(Exception ex) when(ex.GetType() == typeof(NullReferenceException))
+            {
+                Update("没有成功选择列表里的选项");
                 return false;
             }
 
@@ -508,5 +523,7 @@ namespace SmallFishVR
             }
             WriteCharacteristic(data);
         }
+
+        #endregion
     }
 }
