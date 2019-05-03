@@ -1,8 +1,6 @@
 ﻿using BridgeDll;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.IO.Ports;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -737,6 +735,11 @@ namespace SmallFishVR
         private void TurnRightButton_Click(object sender, RoutedEventArgs e) 
             => BLESend.SetMove(0, SendData2Fish.Direction.Right, (SendData2Fish.Speed)speedSlider.Value);
 
+        /// <summary>
+        /// 按下前进按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TurnForwardButton_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             runFishThread = new Thread(() => {
@@ -750,8 +753,19 @@ namespace SmallFishVR
             runFishThread.Start();
         }
 
+        /// <summary>
+        /// 松开按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TurnForwardButton_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e) => runFishThread?.Abort();
 
+
+        /// <summary>
+        /// 按下左转按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TurnLeftButton_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             runFishThread = new Thread(() => {
@@ -765,8 +779,18 @@ namespace SmallFishVR
             runFishThread.Start();
         }
 
+        /// <summary>
+        /// 松开按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TurnLeftButton_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e) => runFishThread?.Abort();
 
+        /// <summary>
+        /// 按下右转按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TurnRightButton_PreviewMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             runFishThread = new Thread(() => {
@@ -780,6 +804,11 @@ namespace SmallFishVR
             runFishThread.Start();
         }
 
+        /// <summary>
+        /// 松开按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TurnRightButton_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e) => runFishThread?.Abort();
 
         #endregion
