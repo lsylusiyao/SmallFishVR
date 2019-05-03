@@ -21,15 +21,17 @@ namespace SmallFishVR
         #region 定义和辅助功能区
         private BridgeClass bridge; //新建一个VR类（从CLR）
         DataStore data; //新建数据存储对象
-        SendData2Fish spSend = new SendData2Fish(); //新建继承的带处理数据的串口对象
+        SendData2Fish BLESend = new SendData2Fish(
+            serviceGuid: "0000fff0-0000-1000-8000-00805f9b34fb",
+                writeGuid: "0000fff1-0000-1000-8000-00805f9b34fb",
+                readGuid: "0000fff4-0000-1000-8000-00805f9b34fb"); //新建继承的带处理数据的蓝牙连接对象
         public string TempStr { get; set; } //委托临时使用的，提交给界面更新数据
         public bool IsVRSave2FileChecked { get; set; } = false; //是否把VR数据存储成文件
-        public bool IsLeftHandFishChecked { get; set; } = true; //是否开启左手柄控制鱼
-        public bool IsRightHandFishChecked { get; set; } = false; //是否开启右手柄控制鱼
+        public bool IsLeftHandFishChecked { get; set; } = false; //是否开启左手柄控制鱼
+        public bool IsRightHandFishChecked { get; set; } = true; //是否开启右手柄控制鱼
 
         private bool isVRControlStart = false; //VR控制是否开启
 
-        Thread listenSPDataThread; //监听串口数据的线程
         Thread VRThread; //VR线程
         Thread listenVRThread; //监听VR数据线程，在有信息传来的时候也会报错
         Thread VRControlFishThread; //VR控制鱼的运动方向的控制
@@ -44,9 +46,9 @@ namespace SmallFishVR
         /// 委托更新SerialPort数据的图形界面
         /// </summary>
         /// <param name="msg">要添加到RichTextBox中的信息</param>
-        private void UpdateSPBox(string msg) => Dispatcher.Invoke((ThreadStart)delegate ()
+        private void UpdateBLEBox(string msg) => Dispatcher.Invoke((ThreadStart)delegate ()
         {
-            SPDataBox.AppendText(string.Format("{0}\r\n", msg));
+            BLEDataBox.AppendText(string.Format("{0}\r\n", msg));
         });
 
         /// <summary>
@@ -72,6 +74,7 @@ namespace SmallFishVR
         {
             InitializeComponent();
             data = new DataStore();
+            BLESend.UpdateBoxEvent += UpdateBLEBox;
             Bindings();
             DefaultSettings();
         }
@@ -81,28 +84,19 @@ namespace SmallFishVR
         /// </summary>
         void Bindings()
         {
-            setPortGrid.DataContext = data;
             VRGrid.DataContext = this;
-            setIPPortGrid.DataContext = data;
             VRSave2FileCheckBox.DataContext = this;
-            leftHandFishCheckBox.DataContext = this;
             rightHandFishCheckBox.DataContext = this;
+            BLEDevicesListView.DataContext = BLESend.DevicesDisplay;
         }
 
         /// <summary>
-        /// 缺省设置，默认选择的Index，暂时写在这里
+        /// 缺省设置，暂时写在这里
         /// </summary>
         void DefaultSettings()
         {
-            baudRateBox.SelectedIndex = 3;
-            parityBox.SelectedIndex = 0;
-            dataBitsBox.SelectedIndex = 3;
-            stopBitsBox.SelectedIndex = 0;
             TempStr = string.Empty;
-            data.LeftHandFishIP = "192.168.4.2";
-            data.LeftHandFishPort = 1002;
-            data.RightHandFishIP = "192.168.4.2";
-            data.RightHandFishPort = 1002;
+            
         }
 
         /// <summary>
@@ -112,40 +106,13 @@ namespace SmallFishVR
         /// <param name="e"></param>
         private void Window_Closed(object sender, EventArgs e)
         {
-            if (spSend.IsOpen) spSend.Close();
-            if (listenSPDataThread != null && listenSPDataThread.IsAlive) listenSPDataThread.Abort();
             if (VRThread != null && VRThread.IsAlive) VRThread.Abort();
             if (listenVRThread != null && listenVRThread.IsAlive) listenVRThread.Abort();
             if (VRControlFishThread != null && VRControlFishThread.IsAlive) VRControlFishThread.Abort();
+            BLESend.StopAll();
         }
 
-        /// <summary>
-        /// 将获取到的数据解析成为真正的数据，并准备存放到SerialPort对象中
-        /// </summary>
-        public void Switch2RealInfo()
-        {
-            data.Real.portName = data.SpList[portBox.SelectedIndex];
-            data.Real.baudRate = data.BaudRate[baudRateBox.SelectedIndex];
-            data.Real.dataBits = data.DataBits[dataBitsBox.SelectedIndex];
-            switch (stopBitsBox.SelectedIndex)
-            {
-                case 0:
-                    data.Real.stopBits = StopBits.One;
-                    break;
-                case 1:
-                    data.Real.stopBits = StopBits.OnePointFive;
-                    break;
-                case 2:
-                    data.Real.stopBits = StopBits.Two;
-                    break;
-                default:
-                    MessageBox.Show("Error：参数不正确!", "Error");
-                    break;
-            }
-            if (parityBox.SelectedIndex >= 0) { data.Real.parity = (Parity)parityBox.SelectedIndex; }
-            else { MessageBox.Show("Error：参数不正确!", "Error"); }
-        }
-
+        
         /// <summary>
         /// 手动创建一个关闭按钮
         /// </summary>
@@ -154,157 +121,53 @@ namespace SmallFishVR
         private void ExitButton_Click(object sender, RoutedEventArgs e) => Close();
 
         /// <summary>
-        /// 清空SPDataBox VRDataBox的内容
+        /// 清空BLEDataBox VRDataBox的内容
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
-            SPDataBox.Document.Blocks.Clear();
+            BLEDataBox.Document.Blocks.Clear();
             VRDataBox.Document.Blocks.Clear();
         }
 
         #endregion
 
-        #region 串口功能区
-        /// <summary>
-        /// 重新统计串口名称列表的按钮
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ReCountCOMButton_Click(object sender, RoutedEventArgs e)
+        #region 蓝牙相关功能区
+
+        private void ListenBLEButton_Click(object sender, RoutedEventArgs e)
         {
-            data.SpList = new List<string>(SerialPort.GetPortNames());
-            MessageBox.Show("重新检查完毕", "端口列表");
-        }
-
-        /// <summary>
-        /// 切换开启关闭串口的按钮
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OpenClosePortButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
+            if (listenBLEButton.Content as string == "开始监听蓝牙")
             {
-                Switch2RealInfo();
-                if (!spSend.IsOpen)
-                {
-                    Switch2RealInfo();
-                    spSend.PortName = data.Real.portName;
-                    spSend.BaudRate = data.Real.baudRate;
-                    spSend.StopBits = data.Real.stopBits;
-                    spSend.DataBits = data.Real.dataBits;
-                    spSend.Parity = data.Real.parity;
-                    spSend.DtrEnable = true;
-                    spSend.RtsEnable = true;
-                    spSend.ReadTimeout = 1000; //miliseconds
-
-                    spSend.Close(); //为了防止之前端口打开，因此先关闭
-
-                    spSend.DataReceived += new SerialDataReceivedEventHandler(Sp_DataReceived); //收到数据的时候激活这个事件
-                    
-                    listenSPDataThread = new Thread(()=> //一个线程，用来将数据实时发送给委托的
-                    {
-                        while(true)
-                        {
-                            if (TempStr.Length > 0)
-                            {
-                                UpdateSPBox(TempStr);
-                                lock (this) {TempStr = string.Empty; }
-                            }
-                            Thread.Sleep(15);
-                        }
-                    });
-                    spSend.Open();
-                    listenSPDataThread.Start();
-                    listenSPDataThread.IsBackground = true;
-                    openClosePortButton.Content = "关闭端口"; //更改显示文字
-                    portStateText.Text = "已打开"; //更改下方文字
-                    connectFishButton.IsEnabled = true;
-                    connectFishButton2.IsEnabled = true;
-                    checkStateButton.IsEnabled = true;
-                    
-                }
-                else
-                {
-                    spSend.Close();
-                    listenSPDataThread.Abort();
-                    openClosePortButton.Content = "打开端口";
-                    portStateText.Text = "未打开";
-                    connectFishButton.IsEnabled = false;
-                    connectFishButton2.IsEnabled = false;
-                    checkStateButton.IsEnabled = false;
-                    turnForwardButton.IsEnabled = false;
-                    turnLeftButton.IsEnabled = false;
-                    turnRightButton.IsEnabled = false;
-                    switchColor1Button.IsEnabled = false;
-                    switchColor2Button.IsEnabled = false;
-                }
+                var choice = MessageBox.Show($"配对过程需要手动完成，pin为0000，如未配对请手动配对。" +
+                    $"{Environment.NewLine} \"是\"将会继续，\"否\"会返回。", "提醒", MessageBoxButton.YesNo);
+                if (choice == MessageBoxResult.No) return;
+                connectFishButton.IsEnabled = true;
+                BLEDevicesListView.Visibility = Visibility.Visible;
+                BLEDataBox.Visibility = Visibility.Hidden;
+                listenBLEButton.Content = "停止监听蓝牙";
+                BLESend.StartBleDeviceWatcher();
             }
-            catch (System.Exception ex)
+            else
             {
-                MessageBox.Show("Error:" + ex.Message, "Error",MessageBoxButton.OK,MessageBoxImage.Error);
-                return;
-            }
-
-        }
-        /// <summary>
-        /// 接收到数据时的事件，将文本保存到临时string中
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            try
-            {
-                lock (this)
-                {
-                    TempStr = spSend.ReadLine();
-                    //spSend.DiscardInBuffer();
-                }
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show(ex.Message, "出错提示",MessageBoxButton.OK, MessageBoxImage.Error);
+                listenBLEButton.Content = "开始监听蓝牙";
+                BLEDevicesListView.Visibility = Visibility.Hidden;
+                BLEDataBox.Visibility = Visibility.Visible;
+                connectFishButton.IsEnabled = false;
+                BLESend.StopBleDeviceWatcher();
             }
             
-
         }
-
-        /// <summary>
-        /// 检查连接IP和状态的，由人看返回值决定
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CheckStateButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                spSend.SetInit(SendData2Fish.Function.GetIPs);
-                Thread.Sleep(100);
-                spSend.SetInit(SendData2Fish.Function.CheckStatus);
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show("Error:" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-        }
-
-        
 
         /// <summary>
         /// 自动调节滚动位置到末尾
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SPDataBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            SPDataBox.ScrollToEnd();
-        }
+        private void BLEDataBox_TextChanged(object sender, TextChangedEventArgs e) => BLEDataBox.ScrollToEnd();
         #endregion
 
+        
         #region VR功能区，包括VR控制机器鱼的线程
 
         /// <summary>
@@ -512,9 +375,9 @@ namespace SmallFishVR
 
             while (keepWhileFlag)
             {
-                Thread.Sleep(1600); //这里不能太短了，测试发现VR的数据响应较慢，原因未知，再加上鱼本身反应速度不快，就这样吧
+                Thread.Sleep(500); //这里不能太短了，测试发现VR的数据响应较慢，原因未知，再加上鱼本身反应速度不快，就这样吧
                 
-                //对于两个机器鱼的适配
+                //对于两个机器鱼的适配，不想改了
                 for (int i = 0; i < 2; i++)
                 {
                     if (!IsLeftHandFishChecked && !IsRightHandFishChecked)
@@ -538,14 +401,14 @@ namespace SmallFishVR
 
                     if (HandData[COLOR] >= divisionPoint[1] || HandData[COLOR] <= -divisionPoint[1])
                     {
-                        spSend.SetColorCycle(i, HandData[COLOR] > 0 ? '-' : '+');
+                        BLESend.SetColorCycle(i, HandData[COLOR] > 0 ? '-' : '+');
                     }
                     // if(TriggerData[i] == 1) spSend.SetColorCycle(i, '+'); //trigger更新颜色方法，备用
 
                     #endregion
 
                     #region 设置速度，手柄向前为负
-                    if (HandData[SPEED] >= -divisionPoint[0]) spSend.SetMove(i, SendData2Fish.Direction.Stop);
+                    if (HandData[SPEED] >= -divisionPoint[0]) BLESend.SetMove(i, SendData2Fish.Direction.Stop);
                     else if (HandData[SPEED] >= -divisionPoint[1]) tempSpeed = SendData2Fish.Speed.VeryLow;
                     else if (HandData[SPEED] >= -divisionPoint[2]) tempSpeed = SendData2Fish.Speed.Low;
                     else if (HandData[SPEED] >= -divisionPoint[3]) tempSpeed = SendData2Fish.Speed.Medium;
@@ -554,16 +417,16 @@ namespace SmallFishVR
 
                     #region 设置前后左右靠触摸板控制
                     if (Math.Abs(HandData[LR]) < 10 && Math.Abs(HandData[FB]) < 10) //停止
-                        spSend.SetMove(i, SendData2Fish.Direction.Stop);
+                        BLESend.SetMove(i, SendData2Fish.Direction.Stop);
                     else if(Math.Abs(HandData[LR]) >= Math.Abs(HandData[FB])) //控制左右转
                     {
-                        if (HandData[LR] > 0) spSend.SetMove(i, SendData2Fish.Direction.Right, tempSpeed);
-                        else spSend.SetMove(i, SendData2Fish.Direction.Left, tempSpeed);
+                        if (HandData[LR] > 0) BLESend.SetMove(i, SendData2Fish.Direction.Right, tempSpeed);
+                        else BLESend.SetMove(i, SendData2Fish.Direction.Left, tempSpeed);
                     }
                     else //控制向前运动
                     {
-                        if (HandData[FB] > 0) spSend.SetMove(i, SendData2Fish.Direction.Forward, tempSpeed);
-                        else spSend.SetMove(i, SendData2Fish.Direction.Stop);
+                        if (HandData[FB] > 0) BLESend.SetMove(i, SendData2Fish.Direction.Forward, tempSpeed);
+                        else BLESend.SetMove(i, SendData2Fish.Direction.Stop);
                     }
                     #endregion
 
@@ -697,12 +560,12 @@ namespace SmallFishVR
 
                     if (HandData[COLOR1] >= 15 || HandData[COLOR1] <= -15)
                     {
-                        spSend.SetColorCycle(i, HandData[COLOR1] > 0 ? '-' : '+');
+                        BLESend.SetColorCycle(i, HandData[COLOR1] > 0 ? '-' : '+');
                     } //旋转控制
 
                     if(HandData[COLOR2] >= divisionPoint[0] || HandData[COLOR2] <= -divisionPoint[0])
                     {
-                        spSend.SetColorCycle(i,HandData[COLOR2] > 0 ? '-' : '+');
+                        BLESend.SetColorCycle(i,HandData[COLOR2] > 0 ? '-' : '+');
                     } //上下控制
 
                     #endregion
@@ -710,7 +573,7 @@ namespace SmallFishVR
                     if (HandData[FB] < divisionPoint[0] && HandData[FB] > -divisionPoint[0] &&
                         HandData[LR] < divisionPoint[0] && HandData[LR] > -divisionPoint[0]) //在一开始的范围内就认为停止
                     {
-                        spSend.SetMove(i, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
+                        BLESend.SetMove(i, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
                         //isSent = false;
                         isStop = false;
                     } //这里速度随便给
@@ -718,7 +581,7 @@ namespace SmallFishVR
                     {
                         if (HandData[FB] > -divisionPoint[0]) //左右任意，只要前后足够靠后，就认为停止
                         {
-                            spSend.SetMove(i, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
+                            BLESend.SetMove(i, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
                             isStop = true;
                             continue;
                         }
@@ -728,14 +591,14 @@ namespace SmallFishVR
                         //只有左右方向恢复，鱼才会前进运动
                         if (HandData[LR] <= divisionPoint[1] || HandData[LR] >= -divisionPoint[1])
                         {
-                            spSend.SetMove(i,
+                            BLESend.SetMove(i,
                               HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
                               SendData2Fish.Speed.VeryLow, isStop);
                             //isSent = true;
                         }
                         else if (HandData[LR] <= divisionPoint[2] || HandData[LR] >= -divisionPoint[2])
                         {
-                            spSend.SetMove(i,
+                            BLESend.SetMove(i,
                               HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
                               SendData2Fish.Speed.Low, isStop);
                             continue;
@@ -743,7 +606,7 @@ namespace SmallFishVR
                         }
                         else if (HandData[LR] <= divisionPoint[3] || HandData[LR] >= -divisionPoint[3])
                         {
-                            spSend.SetMove(i,
+                            BLESend.SetMove(i,
                               HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
                               SendData2Fish.Speed.Medium, isStop);
                             continue;
@@ -751,7 +614,7 @@ namespace SmallFishVR
                         }
                         else
                         {
-                            spSend.SetMove(i,
+                            BLESend.SetMove(i,
                               HandData[LR] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
                               SendData2Fish.Speed.High, isStop);
                             continue;
@@ -764,13 +627,13 @@ namespace SmallFishVR
                         if (HandData[FB] > -divisionPoint[0] && HandData[FB] < 0)
                         {
                             //这条其实不写也行，反正应该到不了这个区域
-                            spSend.SetMove(i, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
+                            BLESend.SetMove(i, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
                         }
                         else if (HandData[FB] > -divisionPoint[1])
-                        { spSend.SetMove(i, SendData2Fish.Direction.Forward, SendData2Fish.Speed.Low); }
+                        { BLESend.SetMove(i, SendData2Fish.Direction.Forward, SendData2Fish.Speed.Low); }
                         else if (HandData[FB] > -divisionPoint[2])
-                        { spSend.SetMove(i, SendData2Fish.Direction.Forward, SendData2Fish.Speed.Medium); }
-                        else { spSend.SetMove(i, SendData2Fish.Direction.Forward, SendData2Fish.Speed.High); }
+                        { BLESend.SetMove(i, SendData2Fish.Direction.Forward, SendData2Fish.Speed.Medium); }
+                        else { BLESend.SetMove(i, SendData2Fish.Direction.Forward, SendData2Fish.Speed.High); }
 
                         #endregion
                     }
@@ -781,75 +644,6 @@ namespace SmallFishVR
         }
         #endregion
 
-        #region 手动控制机器鱼功能区（左手柄）
-
-        /// <summary>
-        /// 连接鱼
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ConnectFishButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                spSend.SetInit(SendData2Fish.Function.SetMux, SendData2Fish.MuxType.Multi); //还没写Single的
-                spSend.SetNetwork(0, SendData2Fish.NetType.TCP, data.LeftHandFishIP, data.LeftHandFishPort);
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show("Error:" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            //更改文字，开启各种控件
-            connectStateText.Text = "已连接";
-            speedSlider.IsEnabled = true;
-            switchColor1Button.IsEnabled = true;
-            switchColor2Button.IsEnabled = true;
-            turnForwardButton.IsEnabled = true;
-            turnLeftButton.IsEnabled = true;
-            turnRightButton.IsEnabled = true;
-            //startStopVRControlButton.IsEnabled = startStopVRButton.Content as string == "停止监听VR"; //说明监听VR已经开始了
-        }
-
-        /// <summary>
-        /// 逆时针方向（-）设置鱼颜色
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SwitchColor1Button_Click(object sender, RoutedEventArgs e) => spSend.SetColorCycle(0, '-');
-
-        /// <summary>
-        /// 顺时针方向（+）设置鱼颜色
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SwitchColor2Button_Click(object sender, RoutedEventArgs e) => spSend.SetColorCycle(0, '+');
-
-        /// <summary>
-        /// 左转按钮
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TurnLeftButton_Click(object sender, RoutedEventArgs e) 
-            => spSend.SetMove(0, SendData2Fish.Direction.Left, (SendData2Fish.Speed)speedSlider.Value);
-
-        /// <summary>
-        /// 前进按钮
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TurnForwardButton_Click(object sender, RoutedEventArgs e) 
-            => spSend.SetMove(0, SendData2Fish.Direction.Forward, (SendData2Fish.Speed)speedSlider.Value);
-
-        /// <summary>
-        /// 右转按钮
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TurnRightButton_Click(object sender, RoutedEventArgs e) 
-            => spSend.SetMove(0, SendData2Fish.Direction.Right, (SendData2Fish.Speed)speedSlider.Value);
-        #endregion
-
         #region 手动控制机器鱼功能区（右手柄）
 
         /// <summary>
@@ -857,27 +651,51 @@ namespace SmallFishVR
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ConnectFishButton2_Click(object sender, RoutedEventArgs e)
+        private async void ConnectFishButton_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (connectFishButton.Content as string == "连接鱼")
             {
-                spSend.SetInit(SendData2Fish.Function.SetMux, SendData2Fish.MuxType.Multi); //还没写Single的
-                spSend.SetNetwork(1, SendData2Fish.NetType.TCP, data.RightHandFishIP, data.RightHandFishPort);
+                connectFishButton.IsEnabled = false;
+                if (listenBLEButton.Content as string != "开始监听蓝牙")
+                    listenBLEButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+
+                if (!await BLESend.Connect(BLEDevicesListView.SelectedItem))
+                {
+                    MessageBox.Show("连接失败", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    connectFishButton.IsEnabled = true;
+                    return;
+                }
+                else
+                {
+                    MessageBox.Show("连接成功");
+                    connectFishButton.Content = "断开连接";
+
+                }
+                //更改文字，开启各种控件
+                connectStateText.Text = "已连接";
+                connectFishButton.IsEnabled = true;
+                speedSlider.IsEnabled = true;
+                switchColor1Button.IsEnabled = true;
+                switchColor2Button.IsEnabled = true;
+                turnForwardButton.IsEnabled = true;
+                turnLeftButton.IsEnabled = true;
+                turnRightButton.IsEnabled = true;
             }
-            catch (System.Exception ex)
+            else
             {
-                MessageBox.Show("Error:" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                BLESend.StopAll();
+                //更改文字，开启各种控件
+                connectFishButton.Content = "连接鱼";
+                connectStateText.Text = "未连接";
+                speedSlider.IsEnabled = false;
+                switchColor1Button.IsEnabled = false;
+                switchColor2Button.IsEnabled = false;
+                turnForwardButton.IsEnabled = false;
+                turnLeftButton.IsEnabled = false;
+                turnRightButton.IsEnabled = false;
             }
-            //更改文字，开启各种控件
-            connectStateText.Text = "已连接";
-            speedSlider.IsEnabled = true;
-            switchColor1Button2.IsEnabled = true;
-            switchColor2Button2.IsEnabled = true;
-            turnForwardButton2.IsEnabled = true;
-            turnLeftButton2.IsEnabled = true;
-            turnRightButton2.IsEnabled = true;
-            //startStopVRControlButton.IsEnabled = startStopVRButton2.Content as string == "停止监听VR"; //说明监听VR已经开始了
+
+            
         }
 
         /// <summary>
@@ -885,42 +703,39 @@ namespace SmallFishVR
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SwitchColor1Button2_Click(object sender, RoutedEventArgs e) 
-            => spSend.SetColorCycle(1, '-');
+        private void SwitchColor1Button_Click(object sender, RoutedEventArgs e) => BLESend.SetColorCycle(0, '-');
 
         /// <summary>
         /// 顺时针方向（+）设置鱼颜色
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SwitchColor2Button2_Click(object sender, RoutedEventArgs e) 
-            => spSend.SetColorCycle(1, '+');
+        private void SwitchColor2Button_Click(object sender, RoutedEventArgs e) => BLESend.SetColorCycle(0, '+');
 
         /// <summary>
         /// 左转按钮
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TurnLeftButton2_Click(object sender, RoutedEventArgs e) 
-            => spSend.SetMove(1, SendData2Fish.Direction.Left, (SendData2Fish.Speed)speedSlider.Value);
+        private void TurnLeftButton_Click(object sender, RoutedEventArgs e) 
+            => BLESend.SetMove(0, SendData2Fish.Direction.Left, (SendData2Fish.Speed)speedSlider.Value);
 
         /// <summary>
         /// 前进按钮
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TurnForwardButton2_Click(object sender, RoutedEventArgs e) 
-            => spSend.SetMove(1, SendData2Fish.Direction.Forward, (SendData2Fish.Speed)speedSlider.Value);
+        private void TurnForwardButton_Click(object sender, RoutedEventArgs e) 
+            => BLESend.SetMove(0, SendData2Fish.Direction.Forward, (SendData2Fish.Speed)speedSlider.Value);
 
         /// <summary>
         /// 右转按钮
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TurnRightButton2_Click(object sender, RoutedEventArgs e) 
-            => spSend.SetMove(1, SendData2Fish.Direction.Right, (SendData2Fish.Speed)speedSlider.Value);
+        private void TurnRightButton_Click(object sender, RoutedEventArgs e) 
+            => BLESend.SetMove(0, SendData2Fish.Direction.Right, (SendData2Fish.Speed)speedSlider.Value);
 
-        
         #endregion
 
         

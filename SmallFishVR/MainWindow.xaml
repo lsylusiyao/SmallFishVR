@@ -14,64 +14,21 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <TextBlock Margin="0,0,10,5.5" TextWrapping="Wrap" FontSize="16" Height="44" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="100"><Run Text="by lsylusiyao"/><LineBreak/><Run Text="V 1.0"/></TextBlock>
-        <Grid x:Name="setPortGrid" Margin="10,62,0,0" HorizontalAlignment="Left" Width="378" Height="139" VerticalAlignment="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="150*"/>
-                <ColumnDefinition Width="229*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="43*"/>
-                <RowDefinition Height="55*"/>
-            </Grid.RowDefinitions>
-            <TextBlock HorizontalAlignment="Left" Margin="14,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="端口选择"/><Run Text="："/></TextBlock>
-            <ComboBox x:Name="portBox" HorizontalAlignment="Left" Margin="80,0,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding SpList}" Grid.ColumnSpan="2"/>
-            <TextBlock HorizontalAlignment="Left" Margin="14,37,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="波特率"/><Run Text="："/></TextBlock>
-            <ComboBox x:Name="baudRateBox" HorizontalAlignment="Left" Margin="80,37,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding BaudRate}" Grid.ColumnSpan="2"/>
-            <TextBlock HorizontalAlignment="Left" Margin="45.5,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Column="1"><Run Text="数据位数"/><Run Text="："/></TextBlock>
-            <ComboBox x:Name="dataBitsBox" HorizontalAlignment="Left" Margin="110.5,0,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding DataBits}" Grid.Column="1"/>
-            <TextBlock HorizontalAlignment="Left" Margin="14,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.344,2.787" Grid.Row="1"><Run Text="校验"/><Run Text="方式"/><Run Text="："/></TextBlock>
-            <ComboBox x:Name="parityBox" HorizontalAlignment="Left" Margin="80,12,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding Parity}" Grid.Row="1" Grid.ColumnSpan="2"/>
-
-            <TextBlock HorizontalAlignment="Left" Margin="45.5,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Column="1"><Run Text="停止"/><Run Text="位数"/><Run Text="："/></TextBlock>
-            <ComboBox x:Name="stopBitsBox" HorizontalAlignment="Left" Margin="110.5,37,0,0" VerticalAlignment="Top" Width="98" ItemsSource="{Binding StopBits}" Grid.Column="1"/>
-            <Button x:Name="openClosePortButton" Content="打开端口" HorizontalAlignment="Left" Margin="45.5,7,0,0" VerticalAlignment="Top" Width="67" IsEnabled="True" Click="OpenClosePortButton_Click" Height="26" Grid.Row="1" Grid.Column="1"/>
-            <Button x:Name="checkStateButton" Content="查询机器鱼状态" HorizontalAlignment="Left" Margin="45.5,46,0,0" VerticalAlignment="Top" Width="127" Click="CheckStateButton_Click" IsEnabled="False" Height="26" Grid.Row="1" Grid.Column="1"/>
-            <Button x:Name="ReCountCOMButton" Content="重新查询端口" HorizontalAlignment="Left" Margin="127.5,7,0,0" VerticalAlignment="Top" Width="81" Height="26" Click="ReCountCOMButton_Click" Grid.Row="1" Grid.Column="1"/>
-            <Button x:Name="startStopVRControlButton" Content="开启VR控制" HorizontalAlignment="Left" Margin="80,46,0,0" VerticalAlignment="Top" Width="76" Click="StartStopVRControlButton_Click" Height="26" Grid.Row="1" Grid.ColumnSpan="2" IsEnabled="False"/>
-
-        </Grid>
-        <Grid Margin="22,206,662,39.5">
-            <Grid Margin="8,30,10,139">
-                <Button x:Name="connectFishButton" Content="连接鱼" HorizontalAlignment="Left" Margin="105,0,0,0" VerticalAlignment="Top" Width="85" Height="26" IsEnabled="False" Click="ConnectFishButton_Click"/>
-                <Button x:Name="switchColor2Button" Content="颜色切换2(E)" HorizontalAlignment="Left" Margin="214,0,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="SwitchColor2Button_Click"/>
-                <Button x:Name="switchColor1Button" Content="颜色切换1(Q)" HorizontalAlignment="Left" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="SwitchColor1Button_Click"/>
-                <Button x:Name="turnForwardButton" Content="前进(W)" HorizontalAlignment="Left" Margin="105,40,0,0" VerticalAlignment="Top" Width="85" Height="26" IsEnabled="False" Click="TurnForwardButton_Click"/>
-                <Button x:Name="turnRightButton" Content="右转(D)" HorizontalAlignment="Left" Margin="214,40,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="TurnRightButton_Click"/>
-                <Button x:Name="turnLeftButton" Content="左转(A)" HorizontalAlignment="Left" Margin="0,40,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="TurnLeftButton_Click"/>
-                <Slider x:Name="speedSlider" HorizontalAlignment="Left" Margin="47,85,0,0" VerticalAlignment="Top" Width="142" Maximum="3" SmallChange="1" Value="1" IsEnabled="False"/>
-                <TextBlock HorizontalAlignment="Left" Margin="0,85,0,0" TextWrapping="Wrap" Text="速度" VerticalAlignment="Top" FontSize="14"/>
-                <CheckBox x:Name="leftHandFishCheckBox" Content="左手柄机器鱼" HorizontalAlignment="Left" Margin="194,88,0,0" VerticalAlignment="Top" FontSize="14" IsChecked="{Binding IsLeftHandFishChecked,Mode=TwoWay}"/>
-            </Grid>
-            <TextBlock HorizontalAlignment="Left" Margin="102,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14"><Run FontWeight="Bold" Text="连接及手动控制框"/></TextBlock>
-            <Grid Margin="10,153,8,17">
-                <Button x:Name="connectFishButton2" Content="连接鱼" HorizontalAlignment="Left" Margin="105,0,0,0" VerticalAlignment="Top" Width="85" Height="26" IsEnabled="False" Click="ConnectFishButton2_Click"/>
-                <Button x:Name="switchColor2Button2" Content="颜色切换2(E)" HorizontalAlignment="Left" Margin="214,0,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="SwitchColor2Button2_Click"/>
-                <Button x:Name="switchColor1Button2" Content="颜色切换1(Q)" HorizontalAlignment="Left" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="SwitchColor1Button2_Click"/>
-                <Button x:Name="turnForwardButton2" Content="前进(W)" HorizontalAlignment="Left" Margin="105,40,0,0" VerticalAlignment="Top" Width="85" Height="26" IsEnabled="False" Click="TurnForwardButton2_Click"/>
-                <Button x:Name="turnRightButton2" Content="右转(D)" HorizontalAlignment="Left" Margin="214,40,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="TurnRightButton2_Click"/>
-                <Button x:Name="turnLeftButton2" Content="左转(A)" HorizontalAlignment="Left" Margin="0,40,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="TurnLeftButton2_Click"/>
-                <Slider x:Name="speedSlider2" HorizontalAlignment="Left" Margin="47,85,0,0" VerticalAlignment="Top" Width="143" Maximum="3" SmallChange="1" Value="1" IsEnabled="False"/>
-                <TextBlock HorizontalAlignment="Left" Margin="0,85,0,0" TextWrapping="Wrap" Text="速度" VerticalAlignment="Top" FontSize="14"/>
-                <CheckBox x:Name="rightHandFishCheckBox" Content="右手柄机器鱼" HorizontalAlignment="Left" Margin="190,86,0,0" VerticalAlignment="Top" FontSize="14" IsChecked="{Binding IsRightHandFishChecked,Mode=TwoWay}"/>
-            </Grid>
-        </Grid>
         <TextBlock HorizontalAlignment="Left" Margin="10,0,0,10.5" TextWrapping="Wrap" Width="60" Height="13" VerticalAlignment="Bottom"><Run FontWeight="Bold" Text="VR状态："/></TextBlock>
         <TextBlock x:Name="VRStateText" HorizontalAlignment="Left" Height="15" Margin="67,0,0,8.5" TextWrapping="Wrap" Text="未连接" VerticalAlignment="Bottom" Width="47"/>
-        <TextBlock HorizontalAlignment="Left" Height="13" Margin="120,0,0,10.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="60"><Run FontWeight="Bold" Text="串口状态："/></TextBlock>
-        <TextBlock x:Name="portStateText" HorizontalAlignment="Left" Height="15" Margin="182,0,0,8.5" TextWrapping="Wrap" Text="未打开" VerticalAlignment="Bottom" Width="48"/>
-        <TextBlock HorizontalAlignment="Left" Height="13" Margin="230,0,0,10.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="60"><Run FontWeight="Bold" Text="连接状态："/></TextBlock>
-        <TextBlock x:Name="connectStateText" HorizontalAlignment="Left" Height="15" Margin="292,0,0,8.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="48"><Run Text="未"/><Run Text="连接"/></TextBlock>
-        <Grid x:Name="VRGrid" Margin="701,42,0,0" Height="344" VerticalAlignment="Top" HorizontalAlignment="Left" Width="300">
+        <TextBlock HorizontalAlignment="Left" Height="13" Margin="113.5,0,0,10.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="60"><Run FontWeight="Bold" Text="连接状态："/></TextBlock>
+        <TextBlock x:Name="connectStateText" HorizontalAlignment="Left" Height="15" Margin="175.5,0,0,8.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="48"><Run Text="未"/><Run Text="连接"/></TextBlock>
+        <ListView x:Name="BLEDevicesListView" HorizontalAlignment="Left" Height="218" Margin="24,281,0,0" VerticalAlignment="Top" Width="317.5" ItemsSource="{Binding Devices, Mode=OneWay}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="名称" DisplayMemberBinding="{Binding Name}" Width="70"></GridViewColumn>
+                    <GridViewColumn Header="地址" DisplayMemberBinding="{Binding Address}" Width="140"></GridViewColumn>
+                    <GridViewColumn Header="已连接" DisplayMemberBinding="{Binding IsConnected}" Width="50"></GridViewColumn>
+                    <GridViewColumn Header="可连接" DisplayMemberBinding="{Binding IsConnectable}" Width="50"></GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Grid x:Name="VRGrid" Margin="701,49.5,0,0" Height="350" VerticalAlignment="Top" HorizontalAlignment="Left" Width="300">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
@@ -114,36 +71,45 @@
             <TextBlock HorizontalAlignment="Left" Height="18" Margin="92,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="148" TextAlignment="Center" FontSize="14"><Run FontWeight="Bold" Text="VR数据显示"/></TextBlock>
             <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="{Binding ActualHeight, ElementName=VRGrid, Mode=OneWay}" Margin="0" VerticalAlignment="Top" Width="{Binding ActualWidth, ElementName=VRGrid, Mode=OneWay}" d:IsLocked="True"/>
             <Button x:Name="setDataZeroButton" Content="设置零点" HorizontalAlignment="Left" Margin="69,252,0,0" VerticalAlignment="Top" Width="69" Height="53" Click="SetDataZeroButton_Click" IsEnabled="False"/>
-            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="触发器" VerticalAlignment="Top" Margin="5,312,0,0" Height="16" Width="40"/>
-            <TextBox HorizontalAlignment="Left" Height="23" Margin="143,311,0,0" TextWrapping="Wrap" Text="{Binding TriggerData[0],Mode=OneWay,StringFormat={}{0:F5}}" VerticalAlignment="Top" Width="70"/>
-            <TextBox HorizontalAlignment="Left" Height="23" Margin="222,311,0,0" TextWrapping="Wrap" Text="{Binding TriggerData[1],Mode=OneWay,StringFormat={}{0:F5}}" VerticalAlignment="Top" Width="70"/>
+            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="触发器" VerticalAlignment="Top" Margin="5,312,0,0" Height="16" Width="40" Visibility="Collapsed"/>
+            <TextBox HorizontalAlignment="Left" Height="23" Margin="143,311,0,0" TextWrapping="Wrap" Text="{Binding TriggerData[0],Mode=OneWay,StringFormat={}{0:F5}}" VerticalAlignment="Top" Width="70" Visibility="Collapsed"/>
+            <TextBox HorizontalAlignment="Left" Height="23" Margin="222,311,0,0" TextWrapping="Wrap" Text="{Binding TriggerData[1],Mode=OneWay,StringFormat={}{0:F5}}" VerticalAlignment="Top" Width="70" Visibility="Collapsed"/>
 
         </Grid>
         <Button x:Name="exitButton" Content="退出程序" Margin="0,0,131,11.5" RenderTransformOrigin="0.758,0.817" HorizontalAlignment="Right" Width="66" Height="32" VerticalAlignment="Bottom" Click="ExitButton_Click"/>
-        <RichTextBox x:Name="SPDataBox" Height="213" Margin="393,42,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="303" TextChanged="SPDataBox_TextChanged" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
-        <TextBlock Margin="496,15,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="26" FontSize="14" HorizontalAlignment="Left" Width="90"><Run FontWeight="Bold" Text="串口数据显示"/></TextBlock>
-        <Button x:Name="clearButton" Content="清空输出" HorizontalAlignment="Left" Margin="621,400,0,0" VerticalAlignment="Top" Width="75" Click="ClearButton_Click" RenderTransformOrigin="0.224,1.219"/>
-        <TextBlock HorizontalAlignment="Left" Height="13" Margin="340,0,0,10.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="60"><Run FontWeight="Bold" Text="控制"/><Run FontWeight="Bold" Text="状态："/></TextBlock>
-        <TextBlock x:Name="VRControlStateBox" HorizontalAlignment="Left" Height="15" Margin="400,0,0,8.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="58" Text="VR未控制"/>
-        <Button x:Name="InitVRButton" Content="初始化VR" HorizontalAlignment="Left" Margin="24,26,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="InitVRButton_Click"/>
-        <Button x:Name="startStopVRButton" Content="开始监听VR" HorizontalAlignment="Left" Margin="207,26,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="StartStopVRButton_Click" IsEnabled="False"/>
-        <Grid x:Name="setIPPortGrid" Margin="393,424,0,0" Height="78" VerticalAlignment="Top" HorizontalAlignment="Left" Width="290">
-            <TextBox HorizontalAlignment="Left" Height="22" Margin="92,20,0,0" TextWrapping="Wrap" Text="{Binding LeftHandFishIP,Mode=TwoWay}" VerticalAlignment="Top" Width="120"/>
-            <TextBox HorizontalAlignment="Left" Height="22" Margin="92,46,0,0" TextWrapping="Wrap" Text="{Binding RightHandFishIP,Mode=TwoWay}" VerticalAlignment="Top" Width="120"/>
-            <TextBox HorizontalAlignment="Left" Height="22" Margin="218,20,0,0" TextWrapping="Wrap" Text="{Binding LeftHandFishPort,Mode=TwoWay}" VerticalAlignment="Top" Width="54"/>
-            <TextBox HorizontalAlignment="Left" Height="22" Margin="218,46,0,0" TextWrapping="Wrap" Text="{Binding RightHandFishPort,Mode=TwoWay}" VerticalAlignment="Top" Width="54"/>
-            <TextBlock HorizontalAlignment="Left" Margin="126,0,0,0" TextWrapping="Wrap" Text="IP" VerticalAlignment="Top" FontSize="14"/>
-            <TextBlock HorizontalAlignment="Left" Margin="232,0,0,0" TextWrapping="Wrap" Text="端口" VerticalAlignment="Top" RenderTransformOrigin="1.292,0.525" FontSize="14"/>
-            <TextBlock Margin="0,24,190,0" TextWrapping="Wrap" Text="左手柄机器鱼" VerticalAlignment="Top" FontSize="14"/>
-            <TextBlock Margin="0,48,190,-4" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14"><Run Text="右"/><Run Text="手柄机器鱼"/></TextBlock>
+        <RichTextBox x:Name="BLEDataBox" Height="218" Margin="24.5,281,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="317" TextChanged="BLEDataBox_TextChanged" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" Visibility="Hidden"/>
+        <TextBlock Margin="142,260,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="21" FontSize="14" HorizontalAlignment="Left" Width="90"><Run FontWeight="Bold" Text="蓝牙"/><Run FontWeight="Bold" Text="数据显示"/></TextBlock>
+        <Button x:Name="clearButton" Content="清空输出" HorizontalAlignment="Left" Margin="362,415.5,0,0" VerticalAlignment="Top" Width="75" Click="ClearButton_Click" RenderTransformOrigin="0.224,1.219"/>
+        <TextBlock HorizontalAlignment="Left" Height="13" Margin="223.5,0,0,10.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="60"><Run FontWeight="Bold" Text="控制"/><Run FontWeight="Bold" Text="状态："/></TextBlock>
+        <TextBlock x:Name="VRControlStateBox" HorizontalAlignment="Left" Height="15" Margin="283.5,0,0,8.5" TextWrapping="Wrap" VerticalAlignment="Bottom" Width="58" Text="VR未控制"/>
+        <Grid Margin="24,26,677,433.5">
+            <Button x:Name="InitVRButton" Content="初始化VR" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Height="26" Click="InitVRButton_Click" Margin="10,0,0,0"/>
+            <Button x:Name="startStopVRButton" Content="开始监听VR" HorizontalAlignment="Left" Margin="218,0,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="StartStopVRButton_Click" IsEnabled="False"/>
+            <CheckBox x:Name="VRSave2FileCheckBox" Content="VR存储到文件" HorizontalAlignment="Left" Margin="218,37.38,0,0" VerticalAlignment="Top" IsChecked="{Binding IsVRSave2FileChecked, Mode=OneWayToSource}" RenderTransformOrigin="-0.073,2.914"/>
+            <Button x:Name="showVRDevicesButton" Content="查看VR设备" HorizontalAlignment="Left" Margin="114,0,0,0" VerticalAlignment="Top" Width="84" Height="26" Click="ShowVRDevicesButton_Click" IsEnabled="False" RenderTransformOrigin="0.744,0.635"/>
+            <Button x:Name="startStopVRControlButton" Content="开启VR控制" HorizontalAlignment="Left" Margin="114,31,0,0" VerticalAlignment="Top" Width="84" Click="StartStopVRControlButton_Click" Height="26" IsEnabled="False"/>
+            <Button x:Name="listenBLEButton" Content="开始监听蓝牙" HorizontalAlignment="Left" Height="26" Margin="10,31,0,0" VerticalAlignment="Top" Width="80" Click="ListenBLEButton_Click"/>
 
         </Grid>
-        <CheckBox x:Name="VRSave2FileCheckBox" Content="VR存储到文件" HorizontalAlignment="Left" Margin="292,31,0,0" VerticalAlignment="Top" IsChecked="{Binding IsVRSave2FileChecked,Mode=OneWayToSource}"/>
-        <Button x:Name="showVRDevicesButton" Content="查看VR设备" HorizontalAlignment="Left" Margin="114,26,0,0" VerticalAlignment="Top" Width="84" Height="26" Click="ShowVRDevicesButton_Click" IsEnabled="False"/>
-        <TextBlock Margin="496,260,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="26" FontSize="14" HorizontalAlignment="Left" Width="90"><Run FontWeight="Bold" Text="VR返回"/><Run FontWeight="Bold" Text="数据"/></TextBlock>
-        <RichTextBox x:Name="VRDataBox" HorizontalAlignment="Left" Height="100" Margin="393,286,0,0" VerticalAlignment="Top" Width="303" TextChanged="VRDataBox_TextChanged" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True">
+        <TextBlock Margin="463.5,26,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="18.5" FontSize="14" HorizontalAlignment="Left" Width="90"><Run FontWeight="Bold" Text="VR返回"/><Run FontWeight="Bold" Text="数据"/></TextBlock>
+        <RichTextBox x:Name="VRDataBox" HorizontalAlignment="Left" Height="350" Margin="362,49.5,0,0" VerticalAlignment="Top" Width="303" TextChanged="VRDataBox_TextChanged" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True">
             <FlowDocument/>
         </RichTextBox>
+        <Grid Margin="24.5,104,677.5,277.5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="connectFishButton" Content="连接鱼" HorizontalAlignment="Left" Margin="114.273,27.5,0,0" VerticalAlignment="Top" Width="85" Height="26" IsEnabled="False" Click="ConnectFishButton_Click"/>
+            <Button x:Name="switchColor2Button" Content="颜色切换2(E)" HorizontalAlignment="Left" Margin="223.273,27.5,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="SwitchColor2Button_Click"/>
+            <Button x:Name="switchColor1Button" Content="颜色切换1(Q)" HorizontalAlignment="Left" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="SwitchColor1Button_Click" Margin="9.025,27.5,0,0"/>
+            <Button x:Name="turnForwardButton" Content="前进(W)" HorizontalAlignment="Left" Margin="114.273,67.5,0,0" VerticalAlignment="Top" Width="85" Height="26" IsEnabled="False" Click="TurnForwardButton_Click"/>
+            <Button x:Name="turnRightButton" Content="右转(D)" HorizontalAlignment="Left" Margin="223.273,67.5,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="TurnRightButton_Click"/>
+            <Button x:Name="turnLeftButton" Content="左转(A)" HorizontalAlignment="Left" Margin="9.025,67.5,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="TurnLeftButton_Click"/>
+            <Slider x:Name="speedSlider" HorizontalAlignment="Left" Margin="56.025,112.5,0,0" VerticalAlignment="Top" Width="142" Maximum="3" SmallChange="1" Value="1" IsEnabled="False"/>
+            <TextBlock HorizontalAlignment="Left" Margin="9.025,112.5,0,0" TextWrapping="Wrap" Text="速度" VerticalAlignment="Top" FontSize="14"/>
+            <CheckBox x:Name="rightHandFishCheckBox" Content="右手柄机器鱼" HorizontalAlignment="Left" Margin="203.273,115.5,0,0" VerticalAlignment="Top" FontSize="14" IsChecked="{Binding IsRightHandFishChecked, Mode=TwoWay}"/>
+            <TextBlock HorizontalAlignment="Left" Margin="100.248,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14"><Run FontWeight="Bold" Text="连接及手动控制框"/></TextBlock>
+        </Grid>
 
     </Grid>
 </Window>

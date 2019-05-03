@@ -10,7 +10,7 @@ namespace SmallFishVR
     /// 将发送给鱼的数据再次封装，成为简单易懂的数据
     /// TODO：没有写单连接的，因此一定要用多连接……
     /// </summary>
-    public class SendData2Fish : SerialPort
+    public class SendData2Fish : BluetoothLE
     {
         /// <summary>
         /// 发送的数据的头部，是固定内容
@@ -21,30 +21,7 @@ namespace SmallFishVR
         /// 当前颜色
         /// </summary>
         private Color colorNow = Color.Blue;
-
-        /// <summary>
-        /// 功能的枚举
-        /// </summary>
-        public enum Function
-        {
-            GetIPs, CheckStatus, SetMux
-        }
-
-        /// <summary>
-        /// 单通信还是多通信，None是占位置用的
-        /// </summary>
-        public enum MuxType
-        {
-            Single, Multi, None
-        }
-
-        /// <summary>
-        /// 网络类型枚举
-        /// </summary>
-        public enum NetType
-        {
-            TCP, UDP
-        }
+        
 
         /// <summary>
         /// 颜色枚举
@@ -75,41 +52,7 @@ namespace SmallFishVR
             Right = 0x03
         }
 
-        /// <summary>
-        /// 初始化设置，可以查看IP，并且设置连接类型
-        /// </summary>
-        /// <param name="function">功能</param>
-        /// <param name="muxType">单/多连接</param>
-        public void SetInit(Function function, MuxType muxType = MuxType.None)
-        {
-           switch(function)
-            {
-                case Function.GetIPs: WriteLine("AT+CWLIF\r\n"); break; //查看接入设备的IP
-                case Function.CheckStatus: WriteLine("AT+CIPSTATUS\r\n"); break;
-                case Function.SetMux:
-                    if (muxType == MuxType.None) throw new Exception("程序编写错误");
-                    else WriteLine("AT+CIPMUX=" + Convert.ToString((int)muxType) + "\r\n"); //设置单连接还是多连接
-                    break;
-                default: throw new Exception("程序编写错误");
-            }
-            Thread.Sleep(10);
-        }
-
-        /// <summary>
-        /// 设置网络信息，TCP or UDP，IP，端口等
-        /// </summary>
-        /// <param name="which">选择哪一个鱼</param>
-        /// <param name="netType">网络连接类型</param>
-        /// <param name="IP">IP地址</param>
-        /// <param name="port">端口</param>
-        public void SetNetwork(int which, NetType netType, string IP, int port)
-        {
-            string cmd = "AT+CIPSTART=" + which.ToString() + ",\"";
-            cmd += netType.ToString();
-            cmd += "\",\"" + IP + "\"," + port.ToString() + "\r\n";
-            WriteLine(cmd);
-            Thread.Sleep(10);
-        }
+        public SendData2Fish(string serviceGuid, string writeGuid, string readGuid) : base(serviceGuid, writeGuid, readGuid) { }
 
         /// <summary>
         /// 设置颜色（发送数据）
@@ -120,8 +63,6 @@ namespace SmallFishVR
         {
             byte[] byteBuffer = new byte[7];
             baseCmd.CopyTo(byteBuffer, 0);
-            string cmd = "AT+CIPSEND=" + which.ToString() + ",7\r\n";
-            WriteLine(cmd);
             Thread.Sleep(40);
             byteBuffer[4] = 0x05;
             byteBuffer[5] = Convert.ToByte(color);
@@ -172,7 +113,6 @@ namespace SmallFishVR
         {
             if(!isSentFlag)
             {
-                WriteLine("AT+CIPSEND=" + which.ToString() + ",8\r\n");
                 Thread.Sleep(40);
                 byte[] byteBuffer = new byte[8];
                 baseCmd.CopyTo(byteBuffer, 0);
@@ -192,7 +132,6 @@ namespace SmallFishVR
         /// <param name="which">选择哪一个鱼</param>
         public void Reset(int which)
         {
-            WriteLine("AT+CIPSEND=" + which.ToString() + ",6\r\n");
             Thread.Sleep(40);
             byte[] byteBuffer = new byte[6];
             baseCmd.CopyTo(byteBuffer, 0);
