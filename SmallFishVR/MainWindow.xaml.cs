@@ -361,7 +361,7 @@ namespace SmallFishVR
             * -z is going away from you ，左转为正，右转为负
             */
            
-            int[] divisionPoint = new int[] { 15, 25, 35, 47 }; //Stop-1-2-3-4的分界角度点
+            int[] divisionPoint = new int[] { 15, 25, 40, 55 }; //Stop-1-2-3-4的分界角度点
             // bool isChangedColor = false; //颜色改变完了的话，就不重复发送了，直到手柄恢复到0位置
             bool keepWhileFlag = true; //保持循环控制，在停止的时候变成false来直接结束循环
 
