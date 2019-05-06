@@ -374,7 +374,7 @@ namespace SmallFishVR
 
             while (keepWhileFlag)
             {
-                Thread.Sleep(200);
+                Thread.Sleep(250);
                 
                 //对于两个机器鱼的适配，不想改了
                 for (int i = 0; i < 2; i++)
@@ -519,7 +519,7 @@ namespace SmallFishVR
             * 数据单位是cm
             */
 
-            int[] divisionPoint = new int[] { 8, 13, 18, 25 }; //Stop-1-2-3-4的分界距离点
+            int[] divisionPoint = new int[] { 8, 16, 24, 30 }; //Stop-1-2-3-4的分界距离点
             // bool isChangedColor = false; //颜色改变完了的话，就不重复发送了，直到手柄恢复到0位置
             bool keepWhileFlag = true; //保持循环控制，在停止的时候变成false来直接结束循环
             bool isStop = false; //已经停止的flag，用于发送数据
@@ -533,7 +533,7 @@ namespace SmallFishVR
 
             while (keepWhileFlag)
             {
-                Thread.Sleep(1600); //这里不能太短了，测试发现VR的数据响应较慢，原因未知，再加上鱼本身反应速度不快，就这样吧
+                Thread.Sleep(250); //这里不能太短了，测试发现VR的数据响应较慢，原因未知，再加上鱼本身反应速度不快，就这样吧
 
                 //对于两个机器鱼的适配
                 for (int i = 0; i < 2; i++)
