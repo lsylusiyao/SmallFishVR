@@ -87,7 +87,7 @@
             <Button x:Name="startStopVRButton" Content="开始监听VR" HorizontalAlignment="Left" Margin="218,0,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="StartStopVRButton_Click" IsEnabled="False"/>
             <CheckBox x:Name="VRSave2FileCheckBox" Content="VR存储到文件" HorizontalAlignment="Left" Margin="218,37.38,0,0" VerticalAlignment="Top" IsChecked="{Binding IsVRSave2FileChecked, Mode=OneWayToSource}" RenderTransformOrigin="-0.073,2.914"/>
             <Button x:Name="showVRDevicesButton" Content="查看VR设备" HorizontalAlignment="Left" Margin="114,0,0,0" VerticalAlignment="Top" Width="84" Height="26" Click="ShowVRDevicesButton_Click" IsEnabled="False" RenderTransformOrigin="0.744,0.635"/>
-            <Button x:Name="startStopVRControlButton" Content="开启VR控制" HorizontalAlignment="Left" Margin="114,31,0,0" VerticalAlignment="Top" Width="84" Click="StartStopVRControlButton_Click" Height="26" IsEnabled="True"/>
+            <Button x:Name="startStopVRControlButton" Content="开启VR控制" HorizontalAlignment="Left" Margin="114,31,0,0" VerticalAlignment="Top" Width="84" Click="StartStopVRControlButton_Click" Height="26" IsEnabled="False"/>
             <Button x:Name="listenBLEButton" Content="开始监听蓝牙" HorizontalAlignment="Left" Height="26" Margin="10,31,0,0" VerticalAlignment="Top" Width="80" Click="ListenBLEButton_Click"/>
 
         </Grid>
