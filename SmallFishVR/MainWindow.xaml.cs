@@ -220,6 +220,8 @@ namespace SmallFishVR
                 listenVRThread.Start();
                 startStopVRButton.Content = "停止监听VR";
                 VRStateText.Text = "已连接";
+                startStopVRControlButton.IsEnabled = true;
+                setDataZeroButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); //相当于手动点一下置零
                 MessageBox.Show("监听VR已经开始", "提示");
             }
             else
@@ -241,8 +243,7 @@ namespace SmallFishVR
         /// </summary>
         private void ListenVRThread()
         {
-            //startStopVRControlButton.IsEnabled = true;
-            //setDataZeroButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); //相当于手动点一下置零
+            
             while (VRThread.IsAlive)
             {
                 data.HMDDataOrigin = bridge.GetHMD();
