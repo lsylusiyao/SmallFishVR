@@ -457,7 +457,7 @@ namespace SmallFishVR
                         // readCharacteristic.ValueChanged += ReadCharacteristic_ValueChanged;
                     }
                     else
-                    { Update("读特征查询失败"); return false; }
+                    { Update("读特征查询失败"); /*return false;*/ }
 
                     //写特征处理
                     GattCharacteristicsResult writeCharacteristicsResult = await deviceService.GetCharacteristicsForUuidAsync(writeGuid);

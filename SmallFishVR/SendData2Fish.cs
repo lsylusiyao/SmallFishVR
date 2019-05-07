@@ -113,7 +113,6 @@ namespace SmallFishVR
         {
             if(!isSentFlag)
             {
-                Thread.Sleep(40);
                 byte[] byteBuffer = new byte[8];
                 baseCmd.CopyTo(byteBuffer, 0);
                 byteBuffer[4] = 0x00;
@@ -121,7 +120,6 @@ namespace SmallFishVR
                 byteBuffer[6] = (byte)speed;
                 byteBuffer[7] = 0xFF;
                 Write(byteBuffer, 0, 8);
-                Thread.Sleep(10);
             }
             
         }

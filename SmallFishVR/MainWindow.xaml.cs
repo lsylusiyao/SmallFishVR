@@ -241,8 +241,8 @@ namespace SmallFishVR
         /// </summary>
         private void ListenVRThread()
         {
-            startStopVRControlButton.IsEnabled = true;
-            setDataZeroButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); //相当于手动点一下置零
+            //startStopVRControlButton.IsEnabled = true;
+            //setDataZeroButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); //相当于手动点一下置零
             while (VRThread.IsAlive)
             {
                 data.HMDDataOrigin = bridge.GetHMD();
