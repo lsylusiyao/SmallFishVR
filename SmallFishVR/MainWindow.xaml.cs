@@ -29,6 +29,7 @@ namespace SmallFishVR
         public bool IsRightHandFishChecked { get; set; } = true; //是否开启右手柄控制鱼
 
         private bool isVRControlStart = false; //VR控制是否开启
+        string isControlling = string.Empty; //是否在收集的数据前面加入文字
 
         Thread VRThread; //VR线程
         Thread listenVRThread; //监听VR数据线程，在有信息传来的时候也会报错
@@ -108,6 +109,9 @@ namespace SmallFishVR
             if (VRThread != null && VRThread.IsAlive) VRThread.Abort();
             if (listenVRThread != null && listenVRThread.IsAlive) listenVRThread.Abort();
             if (VRControlFishThread != null && VRControlFishThread.IsAlive) VRControlFishThread.Abort();
+            DirectoryInfo dI = new DirectoryInfo("../../data/"); //删除所有空的数据txt，省得考虑各种是否创建的问题了
+            foreach(FileInfo file in dI.GetFiles("VRDataOn*.txt"))
+                if (file.Length == 0) file.Delete();
             BLESend.StopAll();
         }
 
@@ -243,48 +247,47 @@ namespace SmallFishVR
         /// </summary>
         private void ListenVRThread()
         {
-            
+            FileStream fs = new FileStream($"../../data/VRDataOn{DateTime.Now.ToString("yyyy-MM-dd_hh_mm")}.txt", 
+                FileMode.Append, FileAccess.Write);
+            StreamWriter w = new StreamWriter(fs);
             while (VRThread.IsAlive)
             {
-                data.HMDDataOrigin = bridge.GetHMD();
+                data.HMDDataOrigin = bridge.GetHMD(); //各种拿到数据
                 data.LeftHandDataOrigin = bridge.GetLeftHand();
                 data.RightHandDataOrigin = bridge.GetRightHand();
                 //TriggerData = bridge.GetTrigger();
                 for (int i = 0; i < LeftHandData.Length; i++)
                 {
-                    if (i < 6) HMDData[i] = data.HMDDataOrigin[i] - data.HMDZero[i];
+                    if (i < 6) HMDData[i] = data.HMDDataOrigin[i] - data.HMDZero[i]; //与零点相减，获得偏差量
                     LeftHandData[i] = data.LeftHandDataOrigin[i] - data.LeftHandZero[i];
                     RightHandData[i] = data.RightHandDataOrigin[i] - data.RightHandZero[i];
                 }
-                NotifyPropertyChanged(nameof(HMDData));
+                NotifyPropertyChanged(nameof(HMDData)); //更新图形界面用
                 NotifyPropertyChanged(nameof(LeftHandData));
                 NotifyPropertyChanged(nameof(RightHandData));
                 //NotifyPropertyChanged(nameof(TriggerData));
                 Thread.Sleep(10);
-                if (IsVRSave2FileChecked)
+                if (IsVRSave2FileChecked) //存储数据
                 {
-                    FileStream fs = new FileStream("../VRData.txt", FileMode.Append, FileAccess.Write);
-                    StreamWriter w = new StreamWriter(fs);
-                    w.WriteLine("HMD: ");
+                    w.WriteLine($"{isControlling}HMD:"); //如果是在控制状态，就加入Controlling这个字符串，方便后续数据处理
                     foreach (var a in HMDData)
                     {
-                        w.Write(a.ToString() + ", ");
+                        w.Write($"{a}, ");
                     }
-                    w.WriteLine("\nLeftHand: ");
+                    w.WriteLine($"\n{isControlling}LeftHand:");
                     foreach (var a in LeftHandData)
                     {
-                        w.Write(a.ToString() + ", ");
+                        w.Write($"{a}, ");
                     }
-                    w.WriteLine("\nRightHand: ");
+                    w.WriteLine($"\n{isControlling}RightHand:");
                     foreach (var a in RightHandData)
                     {
-                        w.Write(a.ToString() + ", ");
+                        w.Write($"{a}, ");
                     }
                     w.WriteLine("\n");
-                    w.Close();
+                    
                 }
-
-
+                
                 if (bridge.GetIsStrGiven())
                 {
                     UpdateVRBox(bridge.GetInfoStr());
@@ -296,6 +299,7 @@ namespace SmallFishVR
                 }
                 Thread.Sleep(15);
             }
+            w.Close();
         }
 
         /// <summary>
@@ -320,6 +324,7 @@ namespace SmallFishVR
         {
             if (!isVRControlStart)
             {
+                isControlling = "Controlling";
                 VRControlFishThread = new Thread(VRControlFishThreadFunc);
                 VRControlFishThread.Start();
                 isVRControlStart = true;
@@ -330,6 +335,7 @@ namespace SmallFishVR
             }
             else
             {
+                isControlling = string.Empty;
                 VRControlFishThread.Abort();
                 isVRControlStart = false;
                 startStopVRControlButton.Content = "开始VR控制";
