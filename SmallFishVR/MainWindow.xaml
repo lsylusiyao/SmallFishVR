@@ -110,6 +110,8 @@
             <CheckBox x:Name="rightHandFishCheckBox" Content="右手柄机器鱼" HorizontalAlignment="Left" Margin="203,119,0,0" VerticalAlignment="Top" FontSize="14" IsChecked="{Binding IsRightHandFishChecked, Mode=TwoWay}"/>
             <TextBlock HorizontalAlignment="Left" Margin="100.248,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14"><Run FontWeight="Bold" Text="连接及手动控制框"/></TextBlock>
         </Grid>
+        <Button x:Name="goCircleButton" Content="鱼走圈" HorizontalAlignment="Left" Margin="362,452,0,0" VerticalAlignment="Top" Width="76" Click="GoCircleButton_Click"/>
+        <Button x:Name="goSButton" Content="鱼走S" HorizontalAlignment="Left" Margin="362,485,0,0" VerticalAlignment="Top" Width="76" Click="GoSButton_Click"/>
 
     </Grid>
 </Window>

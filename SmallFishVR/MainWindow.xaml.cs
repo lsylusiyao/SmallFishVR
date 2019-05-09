@@ -819,7 +819,51 @@ namespace SmallFishVR
 
         #endregion
 
+        private void GoCircleThread()
+        {
+            var startTime = DateTime.Now;
+            var endTime = DateTime.Now;
+            endTime.AddMilliseconds(5000);
+            while(DateTime.Now <= endTime)
+            {
+                BLESend.SetMove(0, SendData2Fish.Direction.Right, SendData2Fish.Speed.Medium);
+                Thread.Sleep(100);
+            }
+        }
 
+        private void GoSThread()
+        {
+            var startTime = DateTime.Now;
+            var seprateTime1 = DateTime.Now;
+            seprateTime1.AddMilliseconds(3000);
+            var seprateTime2 = seprateTime1; //copy
+            seprateTime2.AddMilliseconds(3000);
+            
+            while(DateTime.Now <= seprateTime1)
+            {
+                BLESend.SetMove(0, SendData2Fish.Direction.Right, SendData2Fish.Speed.Medium);
+                Thread.Sleep(100);
+            }
+            while (DateTime.Now <= seprateTime2)
+            {
+                BLESend.SetMove(0, SendData2Fish.Direction.Left, SendData2Fish.Speed.Medium);
+                Thread.Sleep(100);
+            }
+        }
+
+        private void GoCircleButton_Click(object sender, RoutedEventArgs e)
+        {
+            var a = new Thread(GoCircleThread);
+            a.Start();
+            MessageBox.Show("转圈圈开始");
+        }
+
+        private void GoSButton_Click(object sender, RoutedEventArgs e)
+        {
+            var a = new Thread(GoSThread);
+            a.Start();
+            MessageBox.Show("走S开始");
+        }
     }
 
 }
