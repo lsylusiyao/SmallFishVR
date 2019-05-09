@@ -169,7 +169,6 @@ namespace SmallFishVR
         /// <param name="e"></param>
         private void BLEDataBox_TextChanged(object sender, TextChangedEventArgs e) => BLEDataBox.ScrollToEnd();
         #endregion
-
         
         #region VR功能区，包括VR控制机器鱼的线程
 
