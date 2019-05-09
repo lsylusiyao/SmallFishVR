@@ -63,7 +63,6 @@ namespace SmallFishVR
         {
             byte[] byteBuffer = new byte[7];
             baseCmd.CopyTo(byteBuffer, 0);
-            Thread.Sleep(40);
             byteBuffer[4] = 0x05;
             byteBuffer[5] = Convert.ToByte(color);
             byteBuffer[6] = 0xFF;
@@ -130,7 +129,6 @@ namespace SmallFishVR
         /// <param name="which">选择哪一个鱼</param>
         public void Reset(int which)
         {
-            Thread.Sleep(40);
             byte[] byteBuffer = new byte[6];
             baseCmd.CopyTo(byteBuffer, 0);
             byteBuffer[4] = 0x04;
