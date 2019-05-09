@@ -112,6 +112,7 @@ namespace SmallFishVR
         {
             if(!isSentFlag)
             {
+                if (direction == Direction.Stop) return; //可能这个鱼发送stop不好用，只能停止发送了
                 byte[] byteBuffer = new byte[8];
                 baseCmd.CopyTo(byteBuffer, 0);
                 byteBuffer[4] = 0x00;
