@@ -112,6 +112,10 @@
         </Grid>
         <Button x:Name="goCircleButton" Content="鱼走圈" HorizontalAlignment="Left" Margin="362,452,0,0" VerticalAlignment="Top" Width="76" Click="GoCircleButton_Click"/>
         <Button x:Name="goSButton" Content="鱼走S" HorizontalAlignment="Left" Margin="362,485,0,0" VerticalAlignment="Top" Width="76" Click="GoSButton_Click"/>
+        <TextBlock HorizontalAlignment="Left" Margin="468,432,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="保持"/><Run Text=" 毫秒"/></TextBlock>
+        <TextBox x:Name="goCircleTimeBox" HorizontalAlignment="Left" Height="19" Margin="464,452,0,0" TextWrapping="Wrap" Text="{Binding goCircleTime,Mode=TwoWay}" VerticalAlignment="Top" Width="66" RenderTransformOrigin="0.378,0.587"/>
+        <TextBox x:Name="goSTimeBox0" HorizontalAlignment="Left" Height="19" Margin="464,485,0,0" TextWrapping="Wrap" Text="{Binding goSTime[0],Mode=TwoWay}" VerticalAlignment="Top" Width="66" RenderTransformOrigin="0.378,0.587"/>
+        <TextBox x:Name="goSTimeBox1" HorizontalAlignment="Left" Height="19" Margin="535,486,0,0" TextWrapping="Wrap" Text="{Binding goSTime[1],Mode=TwoWay}" VerticalAlignment="Top" Width="66" RenderTransformOrigin="0.378,0.587"/>
 
     </Grid>
 </Window>
