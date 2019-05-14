@@ -819,6 +819,8 @@ namespace SmallFishVR
 
         #endregion
 
+        #region 尝试自动化功能区
+
         private void GoCircleThread()
         {
             var startTime = DateTime.Now;
@@ -865,5 +867,5 @@ namespace SmallFishVR
             MessageBox.Show("走S开始");
         }
     }
-
+    #endregion
 }
