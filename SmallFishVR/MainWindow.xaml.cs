@@ -42,6 +42,11 @@ namespace SmallFishVR
         public double[] HMDData { set; get; } = new double[6]; //头盔显示数据（和零点的偏移）
         public double[] TriggerData { set; get; } = new double[2]; //触发器的真实数据（不需要零点）
 
+        public double GoCircleTime { set; get; } = 5000;
+        public double[] GoSTime { set; get; } = new double[3] { 3000, 3000 ,3000};
+        public bool IsLeft { set; get; } = true;
+        public bool IsFirstRight { set; get; } = true;
+
         /// <summary>
         /// 委托更新SerialPort数据的图形界面
         /// </summary>
@@ -88,6 +93,11 @@ namespace SmallFishVR
             VRSave2FileCheckBox.DataContext = this;
             rightHandFishCheckBox.DataContext = this;
             BLEDevicesListView.DataContext = BLESend.DevicesDisplay;
+            goCircleTimeBox.DataContext = this;
+            goSTimeBox0.DataContext = this;
+            goSTimeBox1.DataContext = this;
+            leftCheckBox.DataContext = this;
+            rightFirstCheckBox.DataContext = this;
         }
 
         /// <summary>
@@ -825,10 +835,10 @@ namespace SmallFishVR
         {
             var startTime = DateTime.Now;
             var endTime = DateTime.Now;
-            endTime.AddMilliseconds(5000);
+            endTime.AddMilliseconds(GoCircleTime);
             while(DateTime.Now <= endTime)
             {
-                BLESend.SetMove(0, SendData2Fish.Direction.Right, SendData2Fish.Speed.Medium);
+                BLESend.SetMove(0, IsLeft ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right, SendData2Fish.Speed.Medium);
                 Thread.Sleep(100);
             }
         }
@@ -837,18 +847,25 @@ namespace SmallFishVR
         {
             var startTime = DateTime.Now;
             var seprateTime1 = DateTime.Now;
-            seprateTime1.AddMilliseconds(3000);
+            seprateTime1.AddMilliseconds(GoSTime[0]);
             var seprateTime2 = seprateTime1; //copy
-            seprateTime2.AddMilliseconds(3000);
-            
-            while(DateTime.Now <= seprateTime1)
+            seprateTime2.AddMilliseconds(GoSTime[1] + 1);
+            var seprateTime3 = seprateTime1; //copy
+            seprateTime3.AddMilliseconds(GoSTime[1] + GoSTime[2] + 2);
+
+            while (DateTime.Now <= seprateTime1)
             {
-                BLESend.SetMove(0, SendData2Fish.Direction.Right, SendData2Fish.Speed.Medium);
+                BLESend.SetMove(0, IsFirstRight ? SendData2Fish.Direction.Right : SendData2Fish.Direction.Left, SendData2Fish.Speed.Medium);
                 Thread.Sleep(100);
             }
             while (DateTime.Now <= seprateTime2)
             {
-                BLESend.SetMove(0, SendData2Fish.Direction.Left, SendData2Fish.Speed.Medium);
+                BLESend.SetMove(0, IsFirstRight ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right, SendData2Fish.Speed.Medium);
+                Thread.Sleep(100);
+            }
+            while(DateTime.Now <= seprateTime3)
+            {
+                BLESend.SetMove(0, SendData2Fish.Direction.Forward, SendData2Fish.Speed.Medium);
                 Thread.Sleep(100);
             }
         }
