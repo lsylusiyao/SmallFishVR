@@ -96,6 +96,7 @@ namespace SmallFishVR
             goCircleTimeBox.DataContext = this;
             goSTimeBox0.DataContext = this;
             goSTimeBox1.DataContext = this;
+            goSTimeBox2.DataContext = this;
             leftCheckBox.DataContext = this;
             rightFirstCheckBox.DataContext = this;
         }
@@ -120,9 +121,14 @@ namespace SmallFishVR
             if (listenVRThread != null && listenVRThread.IsAlive) listenVRThread.Abort();
             if (VRControlFishThread != null && VRControlFishThread.IsAlive) VRControlFishThread.Abort();
             DirectoryInfo dI = new DirectoryInfo("../../data/"); //删除所有空的数据txt，省得考虑各种是否创建的问题了
-            foreach(FileInfo file in dI.GetFiles("VRDataOn*.txt"))
-                if (file.Length == 0) file.Delete();
-            BLESend.StopAll();
+            try
+            {
+                foreach (FileInfo file in dI.GetFiles("VRDataOn*.txt"))
+                    if (file.Length == 0) file.Delete();
+                BLESend.StopAll();
+            }
+            catch (Exception) { }
+            
         }
 
         
