@@ -113,9 +113,12 @@
         <Button x:Name="goCircleButton" Content="鱼走圈" HorizontalAlignment="Left" Margin="362,452,0,0" VerticalAlignment="Top" Width="76" Click="GoCircleButton_Click"/>
         <Button x:Name="goSButton" Content="鱼走S" HorizontalAlignment="Left" Margin="362,485,0,0" VerticalAlignment="Top" Width="76" Click="GoSButton_Click"/>
         <TextBlock HorizontalAlignment="Left" Margin="468,432,0,0" TextWrapping="Wrap" VerticalAlignment="Top"><Run Text="保持"/><Run Text=" 毫秒"/></TextBlock>
-        <TextBox x:Name="goCircleTimeBox" HorizontalAlignment="Left" Height="19" Margin="464,452,0,0" TextWrapping="Wrap" Text="{Binding goCircleTime,Mode=TwoWay}" VerticalAlignment="Top" Width="66" RenderTransformOrigin="0.378,0.587"/>
-        <TextBox x:Name="goSTimeBox0" HorizontalAlignment="Left" Height="19" Margin="464,485,0,0" TextWrapping="Wrap" Text="{Binding goSTime[0],Mode=TwoWay}" VerticalAlignment="Top" Width="66" RenderTransformOrigin="0.378,0.587"/>
-        <TextBox x:Name="goSTimeBox1" HorizontalAlignment="Left" Height="19" Margin="535,486,0,0" TextWrapping="Wrap" Text="{Binding goSTime[1],Mode=TwoWay}" VerticalAlignment="Top" Width="66" RenderTransformOrigin="0.378,0.587"/>
+        <TextBox x:Name="goCircleTimeBox" HorizontalAlignment="Left" Height="19" Margin="464,452,0,0" TextWrapping="Wrap" Text="{Binding GoCircleTime,Mode=TwoWay}" VerticalAlignment="Top" Width="66" RenderTransformOrigin="0.378,0.587"/>
+        <TextBox x:Name="goSTimeBox0" HorizontalAlignment="Left" Height="19" Margin="464,485,0,0" TextWrapping="Wrap" Text="{Binding GoSTime[0],Mode=TwoWay}" VerticalAlignment="Top" Width="66" RenderTransformOrigin="0.378,0.587"/>
+        <TextBox x:Name="goSTimeBox1" HorizontalAlignment="Left" Height="19" Margin="535,486,0,0" TextWrapping="Wrap" Text="{Binding GoSTime[1],Mode=TwoWay}" VerticalAlignment="Top" Width="66" RenderTransformOrigin="0.378,0.587"/>
+        <TextBox x:Name="goSTimeBox2" HorizontalAlignment="Left" Height="19" Margin="606,486,0,0" TextWrapping="Wrap" Text="{Binding GoSTime[2], Mode=TwoWay}" VerticalAlignment="Top" Width="66" RenderTransformOrigin="0.378,0.587"/>
+        <CheckBox x:Name="leftCheckBox" Content="左？" HorizontalAlignment="Left" Margin="544,432,0,0" VerticalAlignment="Top" IsChecked="{Binding IsLeft,Mode=TwoWay}"/>
+        <CheckBox x:Name="rightFirstCheckBox" Content="先右后左？" HorizontalAlignment="Left" Margin="596,460,0,0" VerticalAlignment="Top" IsChecked="{Binding IsFirstRight,Mode=TwoWay}"/>
 
     </Grid>
 </Window>
