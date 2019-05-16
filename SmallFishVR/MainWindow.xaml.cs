@@ -35,6 +35,9 @@ namespace SmallFishVR
         Thread listenVRThread; //监听VR数据线程，在有信息传来的时候也会报错
         Thread VRControlFishThread; //VR控制鱼的运动方向的控制
         Thread runFishThread; //按住按键时启动的运动线程
+        Thread autoFishThread;
+        CancellationTokenSource autoFishCTS = new CancellationTokenSource();
+        
 
         public double[] LeftHandData { set; get; } = new double[8]; //左手显示数据（和零点的偏移）
         public double[] RightHandData { set; get; } = new double[8]; //右手显示数据（和零点的偏移）
@@ -42,10 +45,12 @@ namespace SmallFishVR
         public double[] HMDData { set; get; } = new double[6]; //头盔显示数据（和零点的偏移）
         public double[] TriggerData { set; get; } = new double[2]; //触发器的真实数据（不需要零点）
 
-        public double GoCircleTime { set; get; } = 5000;
-        public double[] GoSTime { set; get; } = new double[3] { 3000, 3000 ,3000};
+        public int GoCircleTime { set; get; } = 5;
+        public int[] GoSTime { set; get; } = new int[3] { 3, 3 ,3};
         public bool IsLeft { set; get; } = true;
-        public bool IsFirstRight { set; get; } = true;
+        public bool IsFirstRight { set; get; } = false;
+        public bool IsHighSpeed { set; get; } = true;
+        public bool IsStraightFinally { set; get; } = false;
 
         /// <summary>
         /// 委托更新SerialPort数据的图形界面
@@ -93,11 +98,7 @@ namespace SmallFishVR
             VRSave2FileCheckBox.DataContext = this;
             rightHandFishCheckBox.DataContext = this;
             BLEDevicesListView.DataContext = BLESend.DevicesDisplay;
-            goCircleTimeBox.DataContext = this;
-            goSTimeBox0.DataContext = this;
-            goSTimeBox1.DataContext = this;
-            leftCheckBox.DataContext = this;
-            rightFirstCheckBox.DataContext = this;
+            autoFishGrid.DataContext = this;
         }
 
         /// <summary>
@@ -120,9 +121,14 @@ namespace SmallFishVR
             if (listenVRThread != null && listenVRThread.IsAlive) listenVRThread.Abort();
             if (VRControlFishThread != null && VRControlFishThread.IsAlive) VRControlFishThread.Abort();
             DirectoryInfo dI = new DirectoryInfo("../../data/"); //删除所有空的数据txt，省得考虑各种是否创建的问题了
-            foreach(FileInfo file in dI.GetFiles("VRDataOn*.txt"))
-                if (file.Length == 0) file.Delete();
-            BLESend.StopAll();
+            try
+            {
+                foreach (FileInfo file in dI.GetFiles("VRDataOn*.txt"))
+                    if (file.Length == 0) file.Delete();
+                BLESend.StopAll();
+            }
+            catch (Exception) { }
+            
         }
 
         
@@ -234,7 +240,6 @@ namespace SmallFishVR
                 startStopVRButton.Content = "停止监听VR";
                 VRStateText.Text = "已连接";
                 startStopVRControlButton.IsEnabled = true;
-                setDataZeroButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); //相当于手动点一下置零
                 MessageBox.Show("监听VR已经开始", "提示");
             }
             else
@@ -378,7 +383,7 @@ namespace SmallFishVR
             */
            
             int[] divisionPoint = new int[] { 15, 25, 40, 55 }; //Stop-1-2-3-4的分界角度点
-            // bool isChangedColor = false; //颜色改变完了的话，就不重复发送了，直到手柄恢复到0位置
+            bool isChangedColor = false; //颜色改变完了的话，就不重复发送了，直到手柄恢复到0位置
             bool keepWhileFlag = true; //保持循环控制，在停止的时候变成false来直接结束循环
 
 
@@ -390,7 +395,7 @@ namespace SmallFishVR
 
             while (keepWhileFlag)
             {
-                Thread.Sleep(250);
+                Thread.Sleep(150);
                 
                 //对于两个机器鱼的适配，不想改了
                 for (int i = 0; i < 2; i++)
@@ -416,14 +421,16 @@ namespace SmallFishVR
 
                     if (HandData[COLOR] >= divisionPoint[1] || HandData[COLOR] <= -divisionPoint[1])
                     {
-                        BLESend.SetColorCycle(i, HandData[COLOR] > 0 ? '-' : '+');
+                        BLESend.SetColorCycle(i, HandData[COLOR] > 0 ? '-' : '+', isChangedColor);
+                        isChangedColor = true;
                     }
+                    else isChangedColor = false;
                     // if(TriggerData[i] == 1) spSend.SetColorCycle(i, '+'); //trigger更新颜色方法，备用
 
                     #endregion
 
                     #region 设置速度，手柄向前为负
-                    if (HandData[SPEED] >= -divisionPoint[0]) BLESend.SetMove(i, SendData2Fish.Direction.Stop);
+                    if (HandData[SPEED] >= -divisionPoint[0]) { BLESend.SetMove(i, SendData2Fish.Direction.Stop); continue; } //
                     else if (HandData[SPEED] >= -divisionPoint[1]) tempSpeed = SendData2Fish.Speed.VeryLow;
                     else if (HandData[SPEED] >= -divisionPoint[2]) tempSpeed = SendData2Fish.Speed.Low;
                     else if (HandData[SPEED] >= -divisionPoint[3]) tempSpeed = SendData2Fish.Speed.Medium;
@@ -829,14 +836,16 @@ namespace SmallFishVR
 
         #endregion
 
+        #region 尝试自动化功能区
+
         private void GoCircleThread()
         {
             var startTime = DateTime.Now;
-            var endTime = DateTime.Now;
-            endTime.AddMilliseconds(GoCircleTime);
+            var endTime = DateTime.Now.AddSeconds(GoCircleTime);
             while(DateTime.Now <= endTime)
             {
-                BLESend.SetMove(0, IsLeft ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right, SendData2Fish.Speed.Medium);
+                BLESend.SetMove(0, IsLeft ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
+                    IsHighSpeed ? SendData2Fish.Speed.High : SendData2Fish.Speed.Medium);
                 Thread.Sleep(100);
             }
         }
@@ -844,43 +853,44 @@ namespace SmallFishVR
         private void GoSThread()
         {
             var startTime = DateTime.Now;
-            var seprateTime1 = DateTime.Now;
-            seprateTime1.AddMilliseconds(GoSTime[0]);
-            var seprateTime2 = seprateTime1; //copy
-            seprateTime2.AddMilliseconds(GoSTime[1] + 1);
-            var seprateTime3 = seprateTime1; //copy
-            seprateTime3.AddMilliseconds(GoSTime[1] + GoSTime[2] + 2);
+            var seprateTime1 = DateTime.Now.AddSeconds(GoSTime[0]);
+            var seprateTime2 = seprateTime1.AddSeconds(GoSTime[1] + 1);
+            var seprateTime3 = seprateTime1.AddSeconds(GoSTime[1] + GoSTime[2] + 2);
 
             while (DateTime.Now <= seprateTime1)
             {
-                BLESend.SetMove(0, IsFirstRight ? SendData2Fish.Direction.Right : SendData2Fish.Direction.Left, SendData2Fish.Speed.Medium);
+                BLESend.SetMove(0, IsFirstRight ? SendData2Fish.Direction.Right : SendData2Fish.Direction.Left,
+                    IsFirstRight ? SendData2Fish.Speed.High : SendData2Fish.Speed.Low);
                 Thread.Sleep(100);
             }
             while (DateTime.Now <= seprateTime2)
             {
-                BLESend.SetMove(0, IsFirstRight ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right, SendData2Fish.Speed.Medium);
+                BLESend.SetMove(0, IsFirstRight ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right, 
+                    SendData2Fish.Speed.High);
                 Thread.Sleep(100);
             }
             while(DateTime.Now <= seprateTime3)
             {
-                BLESend.SetMove(0, SendData2Fish.Direction.Forward, SendData2Fish.Speed.Medium);
+                BLESend.SetMove(0, IsStraightFinally? SendData2Fish.Direction.Forward 
+                    : IsFirstRight? SendData2Fish.Direction.Right : SendData2Fish.Direction.Left, 
+                    IsStraightFinally? SendData2Fish.Speed.Medium : SendData2Fish.Speed.High);
                 Thread.Sleep(100);
             }
         }
 
         private void GoCircleButton_Click(object sender, RoutedEventArgs e)
         {
-            var a = new Thread(GoCircleThread);
-            a.Start();
+            autoFishThread = new Thread(GoCircleThread);
+            autoFishThread.Start();
             MessageBox.Show("转圈圈开始");
         }
 
         private void GoSButton_Click(object sender, RoutedEventArgs e)
         {
-            var a = new Thread(GoSThread);
-            a.Start();
+            autoFishThread = new Thread(GoSThread);
+            autoFishThread.Start();
             MessageBox.Show("走S开始");
         }
     }
-
+    #endregion
 }
