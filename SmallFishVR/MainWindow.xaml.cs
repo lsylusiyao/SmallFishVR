@@ -240,7 +240,6 @@ namespace SmallFishVR
                 startStopVRButton.Content = "停止监听VR";
                 VRStateText.Text = "已连接";
                 startStopVRControlButton.IsEnabled = true;
-                setDataZeroButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent)); //相当于手动点一下置零
                 MessageBox.Show("监听VR已经开始", "提示");
             }
             else
@@ -396,7 +395,7 @@ namespace SmallFishVR
 
             while (keepWhileFlag)
             {
-                Thread.Sleep(250);
+                Thread.Sleep(150);
                 
                 //对于两个机器鱼的适配，不想改了
                 for (int i = 0; i < 2; i++)
@@ -431,7 +430,7 @@ namespace SmallFishVR
                     #endregion
 
                     #region 设置速度，手柄向前为负
-                    if (HandData[SPEED] >= -divisionPoint[0]) BLESend.SetMove(i, SendData2Fish.Direction.Stop);
+                    if (HandData[SPEED] >= -divisionPoint[0]) { BLESend.SetMove(i, SendData2Fish.Direction.Stop); continue; } //
                     else if (HandData[SPEED] >= -divisionPoint[1]) tempSpeed = SendData2Fish.Speed.VeryLow;
                     else if (HandData[SPEED] >= -divisionPoint[2]) tempSpeed = SendData2Fish.Speed.Low;
                     else if (HandData[SPEED] >= -divisionPoint[3]) tempSpeed = SendData2Fish.Speed.Medium;
