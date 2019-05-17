@@ -5,11 +5,11 @@ function result = ShowDirSpeed(path)
 
     data = load(path);
     divisionPoint = [15,25,40,55];
-    dataColor = data(:,4);
-    dataSpeed = data(:,6);
+    dataColor = data(:,1);
+    dataSpeed = data(:,3);
     dataDirection = ones(length(dataSpeed),1);
-    dataLR = data(:,7);
-    dataFB = data(:,8);
+    dataLR = data(:,4);
+    dataFB = data(:,5);
     t = (1:length(data)) .* 25;
         
     %% 数据转换部分
@@ -36,28 +36,28 @@ function result = ShowDirSpeed(path)
     
     %% 过滤前的图像部分
     figure;
-    plot(t, data(:,4)); %dataColor
+    plot(t, data(:,1)); %dataColor
     xlabel('时间 / ms');
     ylabel('角度');
     title('颜色通道原始数据');
     grid on;
 
     subplot(1,3,1);
-    plot(t, data(:,6)); %dataSpeed
+    plot(t, data(:,3)); %dataSpeed
     xlabel('时间 / ms');
     ylabel('角度');
     title('速度通道原始数据');
     grid on;
 
     subplot(1,3,2);
-    plot(t, data(:,7)); %dataLR
+    plot(t, data(:,4)); %dataLR
     xlabel('时间 / ms');
     ylabel('横坐标');
     title('触摸盘的横坐标原始数据');
     grid on;
 
     subplot(1,3,3);
-    plot(t, data(:,8)); %dataFB
+    plot(t, data(:,5)); %dataFB
     xlabel('时间 / ms');
     ylabel('纵坐标');
     title('触摸盘纵坐标原始数据');
