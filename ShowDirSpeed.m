@@ -1,6 +1,8 @@
 function result = ShowDirSpeed(path)
 % 将VR手柄数据解析为0123之类的函数
 
+    close all;
+
     %% 数据提取部分
 
     data = load(path);
@@ -34,63 +36,74 @@ function result = ShowDirSpeed(path)
     % 把direction里面是0的部分对应的dataSpeed变成0，因为没有意义
     dataSpeed(dataDirection == 0) = 0;
     
+    % 再把方向中所有的0变成前面的方向，让方向图像变的好看，运动只由速度图像限制
+    for j = 1:length(dataDirection) - 1
+        tempDirection = dataDirection(j);
+        if(dataDirection(j + 1) == 0) 
+            dataDirection(j + 1) = tempDirection;
+        end
+    end
+
+
     %% 过滤前的图像部分
     figure;
-    plot(t, data(:,1)); %dataColor
+    plot(t, data(:,1),'k','linewidth',1); %dataColor
     xlabel('时间 / ms');
     ylabel('角度');
     title('颜色通道原始数据');
-    axis tight;
+    axis([-Inf Inf min(data(:,1)) - 1 max(data(:,1)) + 1]);
     grid on;
 
+    figure;
     subplot(1,3,1);
-    plot(t, data(:,3)); %dataSpeed
+    plot(t, data(:,3),'k','linewidth',1); %dataSpeed
     xlabel('时间 / ms');
     ylabel('角度');
     title('速度通道原始数据');
-    axis tight;
+    axis([-Inf Inf min(data(:,3)) - 1 max(data(:,3)) + 1]);
     grid on;
 
     subplot(1,3,2);
-    plot(t, data(:,4)); %dataLR
+    plot(t, data(:,4),'k','linewidth',1); %dataLR
     xlabel('时间 / ms');
     ylabel('横坐标');
     title('触摸盘的横坐标原始数据');
-    axis tight;
+    axis([-Inf Inf min(data(:,4)) - 1 max(data(:,4)) + 1]);
     grid on;
 
     subplot(1,3,3);
-    plot(t, data(:,5)); %dataFB
+    plot(t, data(:,5),'k','linewidth',1); %dataFB
     xlabel('时间 / ms');
     ylabel('纵坐标');
     title('触摸盘纵坐标原始数据');
-    axis tight;
+    axis([-Inf Inf min(data(:,5)) - 1 max(data(:,5)) + 1]);
     grid on;
 
     %% 过滤后的图像部分
 
     figure;
-    plot(t, dataColor);
+    plot(t, dataColor,'k','linewidth',1);
     xlabel('时间 / ms');
     ylabel('颜色切换方向');
     title('颜色切换图像');
-    axis tight;
+    axis([-Inf Inf min(dataColor) - 1 max(dataColor) + 1]);
     grid on;
     
+    figure;
     subplot(1,2,1);
-    plot(t, dataSpeed);
+    plot(t, dataSpeed,'k','linewidth',1);
     xlabel('时间 / ms');
     ylabel('速度档位');
     title('速度切换图像');
-    axis tight;
+    axis([-Inf Inf min(dataSpeed) - 1 max(dataSpeed) + 1]);
     grid on;
     
     subplot(1,2,2);
-    plot(t, dataDirection);
+    plot(t, dataDirection,'k','linewidth',1);
     xlabel('时间 / ms');
     ylabel('方向切换档位');
     title('方向切换图像');
-    axis tight;
+    axis([-Inf Inf min(dataDirection) - 1 max(dataDirection) + 1]);
     grid on;
     
     result = true;
