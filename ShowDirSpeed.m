@@ -50,7 +50,7 @@ function result = ShowDirSpeed(path)
     plot(t, data(:,1),'k','linewidth',1); %dataColor
     xlabel('时间 / ms');
     ylabel('角度');
-    title('颜色通道原始数据');
+    title('颜色通道原始数据', 'FontSize', 18);
     axis([-Inf Inf min(data(:,1)) - 1 max(data(:,1)) + 1]);
     grid on;
 
@@ -59,7 +59,7 @@ function result = ShowDirSpeed(path)
     plot(t, data(:,3),'k','linewidth',1); %dataSpeed
     xlabel('时间 / ms');
     ylabel('角度');
-    title('速度通道原始数据');
+    title('速度通道原始数据', 'FontSize', 18);
     axis([-Inf Inf min(data(:,3)) - 1 max(data(:,3)) + 1]);
     grid on;
 
@@ -67,7 +67,7 @@ function result = ShowDirSpeed(path)
     plot(t, data(:,4),'k','linewidth',1); %dataLR
     xlabel('时间 / ms');
     ylabel('横坐标');
-    title('触摸盘的横坐标原始数据');
+    title('触摸盘的横坐标原始数据', 'FontSize', 18);
     axis([-Inf Inf min(data(:,4)) - 1 max(data(:,4)) + 1]);
     grid on;
 
@@ -75,7 +75,7 @@ function result = ShowDirSpeed(path)
     plot(t, data(:,5),'k','linewidth',1); %dataFB
     xlabel('时间 / ms');
     ylabel('纵坐标');
-    title('触摸盘纵坐标原始数据');
+    title('触摸盘纵坐标原始数据', 'FontSize', 18);
     axis([-Inf Inf min(data(:,5)) - 1 max(data(:,5)) + 1]);
     grid on;
 
@@ -85,7 +85,7 @@ function result = ShowDirSpeed(path)
     plot(t, dataColor,'k','linewidth',1);
     xlabel('时间 / ms');
     ylabel('颜色切换方向');
-    title('颜色切换图像');
+    title('颜色切换图像', 'FontSize', 18);
     axis([-Inf Inf min(dataColor) - 1 max(dataColor) + 1]);
     grid on;
     
@@ -94,7 +94,7 @@ function result = ShowDirSpeed(path)
     plot(t, dataSpeed,'k','linewidth',1);
     xlabel('时间 / ms');
     ylabel('速度档位');
-    title('速度切换图像');
+    title('速度切换图像', 'FontSize', 18);
     axis([-Inf Inf min(dataSpeed) - 1 max(dataSpeed) + 1]);
     grid on;
     
@@ -102,7 +102,7 @@ function result = ShowDirSpeed(path)
     plot(t, dataDirection,'k','linewidth',1);
     xlabel('时间 / ms');
     ylabel('方向切换档位');
-    title('方向切换图像');
+    title('方向切换图像', 'FontSize', 18);
     axis([-Inf Inf min(dataDirection) - 1 max(dataDirection) + 1]);
     grid on;
     
