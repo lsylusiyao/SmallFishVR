@@ -40,6 +40,7 @@ function result = ShowDirSpeed(path)
     xlabel('时间 / ms');
     ylabel('角度');
     title('颜色通道原始数据');
+    axis tight;
     grid on;
 
     subplot(1,3,1);
@@ -47,6 +48,7 @@ function result = ShowDirSpeed(path)
     xlabel('时间 / ms');
     ylabel('角度');
     title('速度通道原始数据');
+    axis tight;
     grid on;
 
     subplot(1,3,2);
@@ -54,6 +56,7 @@ function result = ShowDirSpeed(path)
     xlabel('时间 / ms');
     ylabel('横坐标');
     title('触摸盘的横坐标原始数据');
+    axis tight;
     grid on;
 
     subplot(1,3,3);
@@ -61,6 +64,7 @@ function result = ShowDirSpeed(path)
     xlabel('时间 / ms');
     ylabel('纵坐标');
     title('触摸盘纵坐标原始数据');
+    axis tight;
     grid on;
 
     %% 过滤后的图像部分
@@ -70,6 +74,7 @@ function result = ShowDirSpeed(path)
     xlabel('时间 / ms');
     ylabel('颜色切换方向');
     title('颜色切换图像');
+    axis tight;
     grid on;
     
     subplot(1,2,1);
@@ -77,6 +82,7 @@ function result = ShowDirSpeed(path)
     xlabel('时间 / ms');
     ylabel('速度档位');
     title('速度切换图像');
+    axis tight;
     grid on;
     
     subplot(1,2,2);
@@ -84,6 +90,7 @@ function result = ShowDirSpeed(path)
     xlabel('时间 / ms');
     ylabel('方向切换档位');
     title('方向切换图像');
+    axis tight;
     grid on;
     
     result = true;
