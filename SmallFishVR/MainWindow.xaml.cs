@@ -35,8 +35,7 @@ namespace SmallFishVR
         Thread listenVRThread; //监听VR数据线程，在有信息传来的时候也会报错
         Thread VRControlFishThread; //VR控制鱼的运动方向的控制
         Thread runFishThread; //按住按键时启动的运动线程
-        Thread autoFishThread;
-        CancellationTokenSource autoFishCTS = new CancellationTokenSource();
+        Thread autoFishThread; //尝试让鱼走自动化的线程
         
 
         public double[] LeftHandData { set; get; } = new double[8]; //左手显示数据（和零点的偏移）
@@ -45,12 +44,12 @@ namespace SmallFishVR
         public double[] HMDData { set; get; } = new double[6]; //头盔显示数据（和零点的偏移）
         public double[] TriggerData { set; get; } = new double[2]; //触发器的真实数据（不需要零点）
 
-        public int GoCircleTime { set; get; } = 5;
-        public int[] GoSTime { set; get; } = new int[3] { 3, 3 ,3};
-        public bool IsLeft { set; get; } = true;
-        public bool IsFirstRight { set; get; } = false;
-        public bool IsHighSpeed { set; get; } = true;
-        public bool IsStraightFinally { set; get; } = false;
+        public int GoCircleTime { set; get; } = 5; //转圈时间，秒
+        public int[] GoSTime { set; get; } = new int[3] { 3, 3 ,3}; //走8形的时候每一阶段的时间，秒
+        public bool IsLeft { set; get; } = true; //转圈的时候是左转吗？
+        public bool IsFirstRight { set; get; } = false; //走8形的时候是先右转吗？
+        public bool IsHighSpeed { set; get; } = true; //转圈的时候是用高速吗？（不是的话就是用中速）
+        public bool IsStraightFinally { set; get; } = false; //走8形的时候最后是走一次直线吗？（不是的话就是走一个完整8）
 
         /// <summary>
         /// 委托更新SerialPort数据的图形界面
@@ -838,6 +837,9 @@ namespace SmallFishVR
 
         #region 尝试自动化功能区
 
+        /// <summary>
+        /// 走圈的线程
+        /// </summary>
         private void GoCircleThread()
         {
             var startTime = DateTime.Now;
@@ -850,6 +852,9 @@ namespace SmallFishVR
             }
         }
 
+        /// <summary>
+        /// 走S或者8字形的线程
+        /// </summary>
         private void GoSThread()
         {
             var startTime = DateTime.Now;
@@ -878,6 +883,11 @@ namespace SmallFishVR
             }
         }
 
+        /// <summary>
+        /// 走圈按钮点击函数
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GoCircleButton_Click(object sender, RoutedEventArgs e)
         {
             autoFishThread = new Thread(GoCircleThread);
@@ -885,6 +895,11 @@ namespace SmallFishVR
             MessageBox.Show("转圈圈开始");
         }
 
+        /// <summary>
+        /// 走S按钮点击函数
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GoSButton_Click(object sender, RoutedEventArgs e)
         {
             autoFishThread = new Thread(GoSThread);
