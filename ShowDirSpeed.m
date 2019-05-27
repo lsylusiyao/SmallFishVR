@@ -47,7 +47,9 @@ function result = ShowDirSpeed(path)
 
     %% 过滤前的图像部分
     figure;
-    plot(t, data(:,1),'k','linewidth',1); %dataColor
+    p = plot(t, data(:,1),'k','linewidth', 1.5); %dataColor
+    p.Parent.XAxis.FontSize = 16; %更改X轴数据字号
+    p.Parent.YAxis.FontSize = 16; %更改y轴数据字号
     xlabel('时间 / ms');
     ylabel('角度');
     title('颜色通道原始数据', 'FontSize', 18);
@@ -56,7 +58,9 @@ function result = ShowDirSpeed(path)
 
     figure;
     subplot(1,3,1);
-    plot(t, data(:,3),'k','linewidth',1); %dataSpeed
+    p = plot(t, data(:,3),'k','linewidth', 1.5); %dataSpeed
+    p.Parent.XAxis.FontSize = 16; %更改X轴数据字号
+    p.Parent.YAxis.FontSize = 16; %更改y轴数据字号
     xlabel('时间 / ms');
     ylabel('角度');
     title('速度通道原始数据', 'FontSize', 18);
@@ -64,7 +68,9 @@ function result = ShowDirSpeed(path)
     grid on;
 
     subplot(1,3,2);
-    plot(t, data(:,4),'k','linewidth',1); %dataLR
+    p = plot(t, data(:,4),'k','linewidth', 1.5); %dataLR
+    p.Parent.XAxis.FontSize = 16; %更改X轴数据字号
+    p.Parent.YAxis.FontSize = 16; %更改y轴数据字号
     xlabel('时间 / ms');
     ylabel('横坐标');
     title('触摸盘的横坐标原始数据', 'FontSize', 18);
@@ -72,7 +78,9 @@ function result = ShowDirSpeed(path)
     grid on;
 
     subplot(1,3,3);
-    plot(t, data(:,5),'k','linewidth',1); %dataFB
+    p = plot(t, data(:,5),'k','linewidth', 1.5); %dataFB
+    p.Parent.XAxis.FontSize = 16; %更改X轴数据字号
+    p.Parent.YAxis.FontSize = 16; %更改y轴数据字号
     xlabel('时间 / ms');
     ylabel('纵坐标');
     title('触摸盘纵坐标原始数据', 'FontSize', 18);
@@ -82,7 +90,9 @@ function result = ShowDirSpeed(path)
     %% 过滤后的图像部分
 
     figure;
-    plot(t, dataColor,'k','linewidth',1);
+    p = plot(t, dataColor,'k','linewidth', 1.5);
+    p.Parent.XAxis.FontSize = 16; %更改X轴数据字号
+    p.Parent.YAxis.FontSize = 16; %更改y轴数据字号
     xlabel('时间 / ms');
     ylabel('颜色切换方向');
     title('颜色切换图像', 'FontSize', 18);
@@ -91,7 +101,9 @@ function result = ShowDirSpeed(path)
     
     figure;
     subplot(1,2,1);
-    plot(t, dataSpeed,'k','linewidth',1);
+    p = plot(t, dataSpeed,'k','linewidth', 1.5);
+    p.Parent.XAxis.FontSize = 16; %更改X轴数据字号
+    p.Parent.YAxis.FontSize = 16; %更改y轴数据字号
     xlabel('时间 / ms');
     ylabel('速度档位');
     title('速度切换图像', 'FontSize', 18);
@@ -99,7 +111,9 @@ function result = ShowDirSpeed(path)
     grid on;
     
     subplot(1,2,2);
-    plot(t, dataDirection,'k','linewidth',1);
+    p = plot(t, dataDirection,'k','linewidth', 1.5);
+    p.Parent.XAxis.FontSize = 16; %更改X轴数据字号
+    p.Parent.YAxis.FontSize = 16; %更改y轴数据字号
     xlabel('时间 / ms');
     ylabel('方向切换档位');
     title('方向切换图像', 'FontSize', 18);
