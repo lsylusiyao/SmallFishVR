@@ -23,12 +23,13 @@ namespace SmallFishVR
             serviceGuid: "0000fff0-0000-1000-8000-00805f9b34fb",
                 writeGuid: "0000fff1-0000-1000-8000-00805f9b34fb",
                 readGuid: "0000fff4-0000-1000-8000-00805f9b34fb"); //新建继承的带处理数据的蓝牙连接对象
-        public string TempStr { get; set; } //委托临时使用的，提交给界面更新数据
+        public string TempStr { get; set; } = string.Empty; //委托临时使用的，提交给界面更新数据
         public bool IsVRSave2FileChecked { get; set; } = false; //是否把VR数据存储成文件
         public bool IsLeftHandFishChecked { get; set; } = false; //是否开启左手柄控制鱼（目前单条鱼，因此不需要）
         public bool IsRightHandFishChecked { get; set; } = true; //是否开启右手柄控制鱼（目前单条鱼，因此不需要）
 
         private bool isVRControlStart = false; //VR控制是否开启
+        private string savePath = "../../data"; //存储数据的目录，写在默认设置中，可以更改
         string isControlling = string.Empty; //是否在收集的数据前面加入文字
 
         Thread VRThread; //VR线程
@@ -85,7 +86,6 @@ namespace SmallFishVR
             data = new DataStore();
             BLESend.UpdateBoxEvent += UpdateBLEBox; //接收事件
             Bindings();
-            DefaultSettings();
         }
 
         /// <summary>
@@ -101,15 +101,6 @@ namespace SmallFishVR
         }
 
         /// <summary>
-        /// 缺省设置，暂时写在这里
-        /// </summary>
-        void DefaultSettings()
-        {
-            TempStr = string.Empty;
-            
-        }
-
-        /// <summary>
         /// 重写关闭事件，关闭的时候自动关串口
         /// </summary>
         /// <param name="sender"></param>
@@ -121,7 +112,7 @@ namespace SmallFishVR
             if (VRControlFishThread != null && VRControlFishThread.IsAlive) VRControlFishThread.Abort();
 
             //删除所有空的数据txt，省得考虑各种是否创建的问题了
-            DirectoryInfo dI = new DirectoryInfo("../../data/"); 
+            DirectoryInfo dI = new DirectoryInfo($"{savePath}/"); 
             try
             {
                 foreach (FileInfo file in dI.GetFiles("VRDataOn*.txt"))
@@ -262,7 +253,7 @@ namespace SmallFishVR
         /// </summary>
         private void ListenVRThread()
         {
-            FileStream fs = new FileStream($"../../data/VRDataOn{DateTime.Now.ToString("yyyy-MM-dd_hh_mm")}.txt", 
+            FileStream fs = new FileStream($"{savePath}/VRDataOn{DateTime.Now.ToString("yyyy-MM-dd_hh_mm")}.txt", 
                 FileMode.Append, FileAccess.Write);
             StreamWriter w = new StreamWriter(fs);
             while (VRThread.IsAlive)
