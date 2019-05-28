@@ -1,5 +1,7 @@
 # SmallFishVR 使用VR控制机器鱼
 
+项目地址：[github](https://github.com/lsylusiyao/SmallFishVR)
+
 ## 包含：
 
 - VR连接和获取数据部分`ViveInput`（C++）
