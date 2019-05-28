@@ -1,5 +1,4 @@
-﻿using System.IO.Ports;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SmallFishVR
 {
@@ -8,23 +7,7 @@ namespace SmallFishVR
     /// </summary>
     public class DataStore
     {
-        /// <summary>
-        /// 用来存储真正的串口需要的数据，本质是数据转换
-        /// </summary>
-        public struct RealPortInfo
-        {
-            public string portName;
-            public int baudRate;
-            public int dataBits;
-            public StopBits stopBits;
-            public Parity parity;
-        };
-
-        /// <summary>
-        /// 获得的本机所有SerialPort名称
-        /// </summary>
-        public List<string> SpList { get; set; } = new List<string>(SerialPort.GetPortNames());
-
+        
         /// <summary>
         /// 波特率
         /// </summary>
@@ -75,11 +58,7 @@ namespace SmallFishVR
         /// </summary>
         public double[] RightHandDataOrigin { set; get; }
 
-        /// <summary>
-        /// 定义结构的对象
-        /// </summary>
-        public RealPortInfo Real;
-
+        
         /// <summary>
         /// 左手柄右手柄鱼的IP和端口
         /// </summary>

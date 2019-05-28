@@ -57,9 +57,8 @@ namespace SmallFishVR
         /// <summary>
         /// 设置颜色（发送数据）
         /// </summary>
-        /// <param name="which">选择哪一个鱼</param>
         /// <param name="color">颜色</param>
-        public void SetColor(int which, Color color)
+        public void SetColor(Color color)
         {
             byte[] byteBuffer = new byte[7];
             baseCmd.CopyTo(byteBuffer, 0);
@@ -74,10 +73,9 @@ namespace SmallFishVR
         /// <summary>
         /// 设置颜色的循环轮回（调用SetColor）
         /// </summary>
-        /// <param name="which">选择哪一个鱼</param>
         /// <param name="dir">只能写'+'或者'-'，否则会报错，'+'为颜色序号增加，'-'为减少，列表见枚举</param>
         /// <param name="isChangedColor">限制是否执行这个函数，true表示不再执行</param>
-        public void SetColorCycle(int which, char dir, bool isChangedColor = false)
+        public void SetColorCycle(char dir, bool isChangedColor = false)
         {            
             if(!isChangedColor)
             {
@@ -96,7 +94,7 @@ namespace SmallFishVR
                     default:
                         throw new Exception("程序编写错误");
                 }
-                SetColor(which, tempColor);
+                SetColor(tempColor);
             }
 
         }
@@ -104,11 +102,10 @@ namespace SmallFishVR
         /// <summary>
         /// 设置运动方向和速度（包括停止）
         /// </summary>
-        /// <param name="which">选择哪一个鱼</param>
         /// <param name="direction">方向</param>
         /// <param name="speed">速度</param>
         /// <param name="isSentFlag">限制是否执行这个函数，true表示不再执行</param>
-        public void SetMove(int which, Direction direction, Speed speed = Speed.VeryLow, bool isSentFlag = false)
+        public void SetMove(Direction direction, Speed speed = Speed.VeryLow, bool isSentFlag = false)
         {
             if(!isSentFlag)
             {
@@ -127,8 +124,7 @@ namespace SmallFishVR
         /// <summary>
         /// 重启鱼
         /// </summary>
-        /// <param name="which">选择哪一个鱼</param>
-        public void Reset(int which)
+        public void Reset()
         {
             byte[] byteBuffer = new byte[6];
             baseCmd.CopyTo(byteBuffer, 0);

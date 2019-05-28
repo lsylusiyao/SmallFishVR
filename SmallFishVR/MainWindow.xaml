@@ -107,7 +107,7 @@
             <Button x:Name="turnLeftButton" Content="左转(A)" HorizontalAlignment="Left" Margin="9.025,67.5,0,0" VerticalAlignment="Top" Width="86" Height="26" IsEnabled="False" Click="TurnLeftButton_Click" PreviewMouseLeftButtonDown="TurnLeftButton_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="TurnLeftButton_PreviewMouseLeftButtonUp"/>
             <Slider x:Name="speedSlider" HorizontalAlignment="Left" Margin="56,117,0,0" VerticalAlignment="Top" Width="142" Maximum="3" SmallChange="1" Value="1" IsEnabled="False"/>
             <TextBlock HorizontalAlignment="Left" Margin="9,117,0,0" TextWrapping="Wrap" Text="速度" VerticalAlignment="Top" FontSize="14"/>
-            <CheckBox x:Name="rightHandFishCheckBox" Content="右手柄机器鱼" HorizontalAlignment="Left" Margin="203,119,0,0" VerticalAlignment="Top" FontSize="14" IsChecked="{Binding IsRightHandFishChecked, Mode=TwoWay}"/>
+            <CheckBox x:Name="rightHandFishCheckBox" Content="右手柄机器鱼" HorizontalAlignment="Left" Margin="203,119,0,0" VerticalAlignment="Top" FontSize="14" IsChecked="{Binding IsRightHandFishChecked, Mode=TwoWay}" Visibility="Hidden"/>
             <TextBlock HorizontalAlignment="Left" Margin="100.248,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14"><Run FontWeight="Bold" Text="连接及手动控制框"/></TextBlock>
         </Grid>
         <Grid x:Name="autoFishGrid" Margin="362,432,0,0" HorizontalAlignment="Left" Width="329" Height="87" VerticalAlignment="Top">

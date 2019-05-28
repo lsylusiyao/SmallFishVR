@@ -1,16 +1,16 @@
 ﻿using BridgeDll;
 using System;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 
 namespace SmallFishVR
 {
-    
+
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
@@ -25,8 +25,8 @@ namespace SmallFishVR
                 readGuid: "0000fff4-0000-1000-8000-00805f9b34fb"); //新建继承的带处理数据的蓝牙连接对象
         public string TempStr { get; set; } //委托临时使用的，提交给界面更新数据
         public bool IsVRSave2FileChecked { get; set; } = false; //是否把VR数据存储成文件
-        public bool IsLeftHandFishChecked { get; set; } = false; //是否开启左手柄控制鱼
-        public bool IsRightHandFishChecked { get; set; } = true; //是否开启右手柄控制鱼
+        public bool IsLeftHandFishChecked { get; set; } = false; //是否开启左手柄控制鱼（目前单条鱼，因此不需要）
+        public bool IsRightHandFishChecked { get; set; } = true; //是否开启右手柄控制鱼（目前单条鱼，因此不需要）
 
         private bool isVRControlStart = false; //VR控制是否开启
         string isControlling = string.Empty; //是否在收集的数据前面加入文字
@@ -83,7 +83,7 @@ namespace SmallFishVR
         {
             InitializeComponent();
             data = new DataStore();
-            BLESend.UpdateBoxEvent += UpdateBLEBox;
+            BLESend.UpdateBoxEvent += UpdateBLEBox; //接收事件
             Bindings();
             DefaultSettings();
         }
@@ -119,7 +119,9 @@ namespace SmallFishVR
             if (VRThread != null && VRThread.IsAlive) VRThread.Abort();
             if (listenVRThread != null && listenVRThread.IsAlive) listenVRThread.Abort();
             if (VRControlFishThread != null && VRControlFishThread.IsAlive) VRControlFishThread.Abort();
-            DirectoryInfo dI = new DirectoryInfo("../../data/"); //删除所有空的数据txt，省得考虑各种是否创建的问题了
+
+            //删除所有空的数据txt，省得考虑各种是否创建的问题了
+            DirectoryInfo dI = new DirectoryInfo("../../data/"); 
             try
             {
                 foreach (FileInfo file in dI.GetFiles("VRDataOn*.txt"))
@@ -207,7 +209,7 @@ namespace SmallFishVR
                     showVRDevicesButton.IsEnabled = true;
                     setDataZeroButton.IsEnabled = true;
                 }
-                catch (System.Exception ex)
+                catch (System.Exception ex) //这里可能开启失败，但是不知道CLR怎么把错误throw回来，于是只好这样
                 {
                     MessageBox.Show("Error:" + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
@@ -395,134 +397,44 @@ namespace SmallFishVR
             while (keepWhileFlag)
             {
                 Thread.Sleep(150);
-                
-                //对于两个机器鱼的适配，不想改了
-                for (int i = 0; i < 2; i++)
+
+                HandData = RightHandData;
+
+                #region 设置颜色部分
+
+                if (HandData[COLOR] >= divisionPoint[1] || HandData[COLOR] <= -divisionPoint[1])
                 {
-                    if (!IsLeftHandFishChecked && !IsRightHandFishChecked)
-                    {
-                        MessageBox.Show("没有选择手柄控制，请至少选择一个", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        keepWhileFlag = false;
-                        break;
-                    }
-                    if (i == 0)
-                    {
-                        if (IsLeftHandFishChecked) HandData = LeftHandData;
-                        else continue;
-                    }
-                    if (i == 1)
-                    {
-                        if (IsRightHandFishChecked) HandData = RightHandData;
-                        else continue;
-                    }
-
-                    #region 设置颜色部分
-
-                    if (HandData[COLOR] >= divisionPoint[1] || HandData[COLOR] <= -divisionPoint[1])
-                    {
-                        BLESend.SetColorCycle(i, HandData[COLOR] > 0 ? '-' : '+', isChangedColor);
-                        isChangedColor = true;
-                    }
-                    else isChangedColor = false;
-                    // if(TriggerData[i] == 1) spSend.SetColorCycle(i, '+'); //trigger更新颜色方法，备用
-
-                    #endregion
-
-                    #region 设置速度，手柄向前为负
-                    if (HandData[SPEED] >= -divisionPoint[0]) { BLESend.SetMove(i, SendData2Fish.Direction.Stop); continue; } //
-                    else if (HandData[SPEED] >= -divisionPoint[1]) tempSpeed = SendData2Fish.Speed.VeryLow;
-                    else if (HandData[SPEED] >= -divisionPoint[2]) tempSpeed = SendData2Fish.Speed.Low;
-                    else if (HandData[SPEED] >= -divisionPoint[3]) tempSpeed = SendData2Fish.Speed.Medium;
-                    else tempSpeed = SendData2Fish.Speed.High;
-                    #endregion
-
-                    #region 设置前后左右靠触摸板控制
-                    if (Math.Abs(HandData[LR]) < 10 && Math.Abs(HandData[FB]) < 10) //停止
-                        BLESend.SetMove(i, SendData2Fish.Direction.Stop);
-                    else if(Math.Abs(HandData[LR]) >= Math.Abs(HandData[FB])) //控制左右转
-                    {
-                        if (HandData[LR] > 0) BLESend.SetMove(i, SendData2Fish.Direction.Right, tempSpeed);
-                        else BLESend.SetMove(i, SendData2Fish.Direction.Left, tempSpeed);
-                    }
-                    else //控制向前运动
-                    {
-                        if (HandData[FB] > 0) BLESend.SetMove(i, SendData2Fish.Direction.Forward, tempSpeed);
-                        else BLESend.SetMove(i, SendData2Fish.Direction.Stop);
-                    }
-                    #endregion
-
-                    #region 原来的控制方法
-                    //if (HandData[FB] < divisionPoint[0] && HandData[FB] > -divisionPoint[0] &&
-                    //    HandData[LR] < divisionPoint[0] && HandData[LR] > -divisionPoint[0]) //在一开始的范围内就认为停止
-                    //{
-                    //    spSend.SetMove(i, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
-                    //    //isSent = false;
-                    //    isStop = false;
-                    //} //这里速度随便给
-                    //else
-                    //{
-                    //    if (HandData[FB] > divisionPoint[0]) //左右任意，只要前后足够靠后，就认为停止
-                    //    {
-                    //        spSend.SetMove(i, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
-                    //        isStop = true;
-                    //        continue;
-                    //    }
-
-                    //    #region 左右转发送数据
-
-                    //    //只有左右方向恢复，鱼才会前进运动
-                    //    if (HandData[LR] <= divisionPoint[1] || HandData[LR] >= -divisionPoint[1])
-                    //    {
-                    //        spSend.SetMove(i,
-                    //          HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
-                    //          SendData2Fish.Speed.VeryLow, isStop);
-                    //        //isSent = true;
-                    //    }
-                    //    else if (HandData[LR] <= divisionPoint[2] || HandData[LR] >= -divisionPoint[2])
-                    //    {
-                    //        spSend.SetMove(i,
-                    //          HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
-                    //          SendData2Fish.Speed.Low, isStop);
-                    //        continue;
-                    //        //isSent = true;
-                    //    }
-                    //    else if (HandData[LR] <= divisionPoint[3] || HandData[LR] >= -divisionPoint[3])
-                    //    {
-                    //        spSend.SetMove(i,
-                    //          HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
-                    //          SendData2Fish.Speed.Medium, isStop);
-                    //        continue;
-                    //        //isSent = true;
-                    //    }
-                    //    else
-                    //    {
-                    //        spSend.SetMove(i,
-                    //          HandData[LR] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
-                    //          SendData2Fish.Speed.High, isStop);
-                    //        continue;
-                    //        //isSent = true;
-                    //    }
-                    //    #endregion
-
-                    //    #region 前进发送数据
-
-                    //    if (HandData[FB] > -divisionPoint[0] && HandData[FB] < 0)
-                    //    {
-                    //        //这条其实不写也行，反正应该到不了这个区域
-                    //        spSend.SetMove(i, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
-                    //    }
-                    //    else if (HandData[FB] > -divisionPoint[1])
-                    //    { spSend.SetMove(i, SendData2Fish.Direction.Forward, SendData2Fish.Speed.Low); }
-                    //    else if (HandData[FB] > -divisionPoint[2])
-                    //    { spSend.SetMove(i, SendData2Fish.Direction.Forward, SendData2Fish.Speed.Medium); }
-                    //    else { spSend.SetMove(i, SendData2Fish.Direction.Forward, SendData2Fish.Speed.High); }
-
-                    //    #endregion
-                    //}
-                    #endregion
+                    BLESend.SetColorCycle(HandData[COLOR] > 0 ? '-' : '+', isChangedColor);
+                    isChangedColor = true;
                 }
+                else isChangedColor = false;
+                // if(TriggerData[i] == 1) spSend.SetColorCycle(i, '+'); //trigger更新颜色方法，备用
 
+                #endregion
 
+                #region 设置速度，手柄向前为负
+                if (HandData[SPEED] >= -divisionPoint[0]) { BLESend.SetMove(SendData2Fish.Direction.Stop); continue; } //
+                else if (HandData[SPEED] >= -divisionPoint[1]) tempSpeed = SendData2Fish.Speed.VeryLow;
+                else if (HandData[SPEED] >= -divisionPoint[2]) tempSpeed = SendData2Fish.Speed.Low;
+                else if (HandData[SPEED] >= -divisionPoint[3]) tempSpeed = SendData2Fish.Speed.Medium;
+                else tempSpeed = SendData2Fish.Speed.High;
+                #endregion
+
+                #region 设置前后左右靠触摸板控制
+                if (Math.Abs(HandData[LR]) < 10 && Math.Abs(HandData[FB]) < 10) //停止
+                    BLESend.SetMove(SendData2Fish.Direction.Stop);
+                else if (Math.Abs(HandData[LR]) >= Math.Abs(HandData[FB])) //控制左右转
+                {
+                    if (HandData[LR] > 0) BLESend.SetMove(SendData2Fish.Direction.Right, tempSpeed);
+                    else BLESend.SetMove(SendData2Fish.Direction.Left, tempSpeed);
+                }
+                else //控制向前运动
+                {
+                    if (HandData[FB] > 0) BLESend.SetMove(SendData2Fish.Direction.Forward, tempSpeed);
+                    else BLESend.SetMove(SendData2Fish.Direction.Stop);
+                }
+                #endregion
+                
             }
         }
 
@@ -542,7 +454,7 @@ namespace SmallFishVR
             */
 
             int[] divisionPoint = new int[] { 8, 16, 24, 30 }; //Stop-1-2-3-4的分界距离点
-            // bool isChangedColor = false; //颜色改变完了的话，就不重复发送了，直到手柄恢复到0位置
+            bool isChangedColor = false; //颜色改变完了的话，就不重复发送了，直到手柄恢复到0位置
             bool keepWhileFlag = true; //保持循环控制，在停止的时候变成false来直接结束循环
             bool isStop = false; //已经停止的flag，用于发送数据
 
@@ -551,114 +463,89 @@ namespace SmallFishVR
             const int COLOR2 = 1; //上下移动控制方法
             const int LR = 0; //左右
             const int FB = 2; //前后
-            //SendData2Fish.Speed tempSpeed = SendData2Fish.Speed.Low; //由前后角度出来的速度
 
             while (keepWhileFlag)
             {
-                Thread.Sleep(250); //这里不能太短了，测试发现VR的数据响应较慢，原因未知，再加上鱼本身反应速度不快，就这样吧
+                Thread.Sleep(150);
 
-                //对于两个机器鱼的适配
-                for (int i = 0; i < 2; i++)
+                #region 设置颜色部分
+
+                if (HandData[COLOR1] >= 15 || HandData[COLOR1] <= -15)
                 {
-                    if (!IsLeftHandFishChecked && !IsRightHandFishChecked)
+                    BLESend.SetColorCycle(HandData[COLOR1] > 0 ? '-' : '+', isChangedColor);
+                } //旋转控制
+                else isChangedColor = true; //改完一次不回到原位的话，就不再更改了
+
+                //if (HandData[COLOR2] >= divisionPoint[0] || HandData[COLOR2] <= -divisionPoint[0])
+                //{
+                //    BLESend.SetColorCycle(HandData[COLOR2] > 0 ? '-' : '+');
+                //} //上下控制
+
+                #endregion
+
+                if (HandData[FB] < divisionPoint[0] && HandData[FB] > -divisionPoint[0] &&
+                    HandData[LR] < divisionPoint[0] && HandData[LR] > -divisionPoint[0]) //在一开始的范围内就认为停止
+                {
+                    BLESend.SetMove(SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
+                    isStop = false;
+                } //这里速度随便给
+                else
+                {
+                    if (HandData[FB] > -divisionPoint[0]) //左右任意，只要前后足够靠后，就认为停止
                     {
-                        MessageBox.Show("没有选择手柄控制，请至少选择一个", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        keepWhileFlag = false;
-                        break;
+                        BLESend.SetMove(SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
+                        isStop = true;
+                        continue;
                     }
-                    if (i == 0)
+
+                    #region 左右转发送数据
+
+                    
+                    if (HandData[LR] <= divisionPoint[1] || HandData[LR] >= -divisionPoint[1])
                     {
-                        if (IsLeftHandFishChecked) HandData = LeftHandData;
-                        else continue;
+                        BLESend.SetMove(
+                          HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
+                          SendData2Fish.Speed.VeryLow, isStop);
                     }
-                    if (i == 1)
+                    else if (HandData[LR] <= divisionPoint[2] || HandData[LR] >= -divisionPoint[2])
                     {
-                        if (IsRightHandFishChecked) HandData = RightHandData;
-                        else continue;
+                        BLESend.SetMove(
+                          HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
+                          SendData2Fish.Speed.Low, isStop);
+                        continue;
                     }
-
-                    #region 设置颜色部分
-
-                    if (HandData[COLOR1] >= 15 || HandData[COLOR1] <= -15)
+                    else if (HandData[LR] <= divisionPoint[3] || HandData[LR] >= -divisionPoint[3])
                     {
-                        BLESend.SetColorCycle(i, HandData[COLOR1] > 0 ? '-' : '+');
-                    } //旋转控制
-
-                    if(HandData[COLOR2] >= divisionPoint[0] || HandData[COLOR2] <= -divisionPoint[0])
-                    {
-                        BLESend.SetColorCycle(i,HandData[COLOR2] > 0 ? '-' : '+');
-                    } //上下控制
-
-                    #endregion
-
-                    if (HandData[FB] < divisionPoint[0] && HandData[FB] > -divisionPoint[0] &&
-                        HandData[LR] < divisionPoint[0] && HandData[LR] > -divisionPoint[0]) //在一开始的范围内就认为停止
-                    {
-                        BLESend.SetMove(i, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
-                        //isSent = false;
-                        isStop = false;
-                    } //这里速度随便给
+                        BLESend.SetMove(
+                          HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
+                          SendData2Fish.Speed.Medium, isStop);
+                        continue;
+                    }
                     else
                     {
-                        if (HandData[FB] > -divisionPoint[0]) //左右任意，只要前后足够靠后，就认为停止
-                        {
-                            BLESend.SetMove(i, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
-                            isStop = true;
-                            continue;
-                        }
-
-                        #region 左右转发送数据
-
-                        //只有左右方向恢复，鱼才会前进运动
-                        if (HandData[LR] <= divisionPoint[1] || HandData[LR] >= -divisionPoint[1])
-                        {
-                            BLESend.SetMove(i,
-                              HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
-                              SendData2Fish.Speed.VeryLow, isStop);
-                            //isSent = true;
-                        }
-                        else if (HandData[LR] <= divisionPoint[2] || HandData[LR] >= -divisionPoint[2])
-                        {
-                            BLESend.SetMove(i,
-                              HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
-                              SendData2Fish.Speed.Low, isStop);
-                            continue;
-                            //isSent = true;
-                        }
-                        else if (HandData[LR] <= divisionPoint[3] || HandData[LR] >= -divisionPoint[3])
-                        {
-                            BLESend.SetMove(i,
-                              HandData[5] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
-                              SendData2Fish.Speed.Medium, isStop);
-                            continue;
-                            //isSent = true;
-                        }
-                        else
-                        {
-                            BLESend.SetMove(i,
-                              HandData[LR] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
-                              SendData2Fish.Speed.High, isStop);
-                            continue;
-                            //isSent = true;
-                        }
-                        #endregion
-
-                        #region 前进发送数据
-
-                        if (HandData[FB] > -divisionPoint[0] && HandData[FB] < 0)
-                        {
-                            //这条其实不写也行，反正应该到不了这个区域
-                            BLESend.SetMove(i, SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
-                        }
-                        else if (HandData[FB] > -divisionPoint[1])
-                        { BLESend.SetMove(i, SendData2Fish.Direction.Forward, SendData2Fish.Speed.Low); }
-                        else if (HandData[FB] > -divisionPoint[2])
-                        { BLESend.SetMove(i, SendData2Fish.Direction.Forward, SendData2Fish.Speed.Medium); }
-                        else { BLESend.SetMove(i, SendData2Fish.Direction.Forward, SendData2Fish.Speed.High); }
-
-                        #endregion
+                        BLESend.SetMove(
+                          HandData[LR] > 0 ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
+                          SendData2Fish.Speed.High, isStop);
+                        continue;
                     }
+                    #endregion
+
+                    #region 前进发送数据
+
+                    if (HandData[FB] > -divisionPoint[0] && HandData[FB] < 0)
+                    {
+                        //这条其实不写也行，反正应该到不了这个区域
+                        BLESend.SetMove(SendData2Fish.Direction.Stop, SendData2Fish.Speed.VeryLow);
+                    }
+                    else if (HandData[FB] > -divisionPoint[1])
+                    { BLESend.SetMove(SendData2Fish.Direction.Forward, SendData2Fish.Speed.Low); }
+                    else if (HandData[FB] > -divisionPoint[2])
+                    { BLESend.SetMove(SendData2Fish.Direction.Forward, SendData2Fish.Speed.Medium); }
+                    else { BLESend.SetMove(SendData2Fish.Direction.Forward, SendData2Fish.Speed.High); }
+
+                    #endregion
                 }
+
 
 
             }
@@ -724,14 +611,14 @@ namespace SmallFishVR
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SwitchColor1Button_Click(object sender, RoutedEventArgs e) => BLESend.SetColorCycle(0, '-');
+        private void SwitchColor1Button_Click(object sender, RoutedEventArgs e) => BLESend.SetColorCycle('-');
 
         /// <summary>
         /// 顺时针方向（+）设置鱼颜色
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SwitchColor2Button_Click(object sender, RoutedEventArgs e) => BLESend.SetColorCycle(0, '+');
+        private void SwitchColor2Button_Click(object sender, RoutedEventArgs e) => BLESend.SetColorCycle('+');
 
         /// <summary>
         /// 左转按钮
@@ -739,7 +626,7 @@ namespace SmallFishVR
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void TurnLeftButton_Click(object sender, RoutedEventArgs e) 
-            => BLESend.SetMove(0, SendData2Fish.Direction.Left, (SendData2Fish.Speed)speedSlider.Value);
+            => BLESend.SetMove(SendData2Fish.Direction.Left, (SendData2Fish.Speed)speedSlider.Value);
 
         /// <summary>
         /// 前进按钮
@@ -747,7 +634,7 @@ namespace SmallFishVR
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void TurnForwardButton_Click(object sender, RoutedEventArgs e) 
-            => BLESend.SetMove(0, SendData2Fish.Direction.Forward, (SendData2Fish.Speed)speedSlider.Value);
+            => BLESend.SetMove(SendData2Fish.Direction.Forward, (SendData2Fish.Speed)speedSlider.Value);
 
         /// <summary>
         /// 右转按钮
@@ -755,7 +642,7 @@ namespace SmallFishVR
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void TurnRightButton_Click(object sender, RoutedEventArgs e) 
-            => BLESend.SetMove(0, SendData2Fish.Direction.Right, (SendData2Fish.Speed)speedSlider.Value);
+            => BLESend.SetMove(SendData2Fish.Direction.Right, (SendData2Fish.Speed)speedSlider.Value);
 
         /// <summary>
         /// 按下前进按钮
@@ -768,7 +655,7 @@ namespace SmallFishVR
                 while (true)
                 {
                     Dispatcher.Invoke(() =>
-                    { BLESend.SetMove(0, SendData2Fish.Direction.Forward, (SendData2Fish.Speed)speedSlider.Value); });
+                    { BLESend.SetMove(SendData2Fish.Direction.Forward, (SendData2Fish.Speed)speedSlider.Value); });
                     Thread.Sleep(100);
                 }
             });
@@ -794,7 +681,7 @@ namespace SmallFishVR
                 while (true)
                 {
                     Dispatcher.Invoke(() =>
-                    { BLESend.SetMove(0, SendData2Fish.Direction.Left, (SendData2Fish.Speed)speedSlider.Value); });
+                    { BLESend.SetMove(SendData2Fish.Direction.Left, (SendData2Fish.Speed)speedSlider.Value); });
                     Thread.Sleep(100);
                 }
             });
@@ -819,7 +706,7 @@ namespace SmallFishVR
                 while (true)
                 {
                     Dispatcher.Invoke(() =>
-                    { BLESend.SetMove(0, SendData2Fish.Direction.Right, (SendData2Fish.Speed)speedSlider.Value); });
+                    { BLESend.SetMove(SendData2Fish.Direction.Right, (SendData2Fish.Speed)speedSlider.Value); });
                     Thread.Sleep(100);
                 }
             });
@@ -846,7 +733,7 @@ namespace SmallFishVR
             var endTime = DateTime.Now.AddSeconds(GoCircleTime);
             while(DateTime.Now <= endTime)
             {
-                BLESend.SetMove(0, IsLeft ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
+                BLESend.SetMove(IsLeft ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right,
                     IsHighSpeed ? SendData2Fish.Speed.High : SendData2Fish.Speed.Medium);
                 Thread.Sleep(100);
             }
@@ -858,25 +745,25 @@ namespace SmallFishVR
         private void GoSThread()
         {
             var startTime = DateTime.Now;
-            var seprateTime1 = DateTime.Now.AddSeconds(GoSTime[0]);
+            var seprateTime1 = startTime.AddSeconds(GoSTime[0]);
             var seprateTime2 = seprateTime1.AddSeconds(GoSTime[1] + 1);
             var seprateTime3 = seprateTime1.AddSeconds(GoSTime[1] + GoSTime[2] + 2);
 
             while (DateTime.Now <= seprateTime1)
             {
-                BLESend.SetMove(0, IsFirstRight ? SendData2Fish.Direction.Right : SendData2Fish.Direction.Left,
+                BLESend.SetMove(IsFirstRight ? SendData2Fish.Direction.Right : SendData2Fish.Direction.Left,
                     IsFirstRight ? SendData2Fish.Speed.High : SendData2Fish.Speed.Low);
                 Thread.Sleep(100);
             }
             while (DateTime.Now <= seprateTime2)
             {
-                BLESend.SetMove(0, IsFirstRight ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right, 
+                BLESend.SetMove(IsFirstRight ? SendData2Fish.Direction.Left : SendData2Fish.Direction.Right, 
                     SendData2Fish.Speed.High);
                 Thread.Sleep(100);
             }
             while(DateTime.Now <= seprateTime3)
             {
-                BLESend.SetMove(0, IsStraightFinally? SendData2Fish.Direction.Forward 
+                BLESend.SetMove(IsStraightFinally? SendData2Fish.Direction.Forward 
                     : IsFirstRight? SendData2Fish.Direction.Right : SendData2Fish.Direction.Left, 
                     IsStraightFinally? SendData2Fish.Speed.Medium : SendData2Fish.Speed.High);
                 Thread.Sleep(100);
