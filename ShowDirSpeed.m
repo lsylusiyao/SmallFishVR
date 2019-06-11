@@ -72,8 +72,8 @@ function result = ShowDirSpeed(path)
     p.Parent.XAxis.FontSize = 16; %更改X轴数据字号
     p.Parent.YAxis.FontSize = 16; %更改y轴数据字号
     xlabel('时间 / ms');
-    ylabel('横坐标');
-    title('触摸盘的横坐标原始数据', 'FontSize', 18);
+    ylabel('触摸位置X坐标');
+    title('触摸位置X坐标原始数据', 'FontSize', 18);
     axis([-Inf Inf min(data(:,4)) - 1 max(data(:,4)) + 1]);
     grid on;
 
@@ -82,8 +82,8 @@ function result = ShowDirSpeed(path)
     p.Parent.XAxis.FontSize = 16; %更改X轴数据字号
     p.Parent.YAxis.FontSize = 16; %更改y轴数据字号
     xlabel('时间 / ms');
-    ylabel('纵坐标');
-    title('触摸盘纵坐标原始数据', 'FontSize', 18);
+    ylabel('触摸位置Y坐标');
+    title('触摸位置Y坐标原始数据', 'FontSize', 18);
     axis([-Inf Inf min(data(:,5)) - 1 max(data(:,5)) + 1]);
     grid on;
 
